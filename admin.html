@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Paneli | EnglishPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Firebase CDN (compat sürümleri) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="firebase-config.js"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <nav class="bg-gray-900 text-white py-4 px-6 flex justify-between items-center shadow">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-shield-alt text-xl text-blue-400"></i>
+            <div>
+                <p class="text-xs uppercase tracking-widest text-gray-400">EnglishPro</p>
+                <h1 class="font-bold text-lg">Admin Paneli</h1>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <span id="admin-email" class="text-sm text-gray-300"></span>
+            <a href="dashboard.html" class="text-xs bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-full font-semibold">Öğrenci Paneline Git</a>
+            <button onclick="logout()" class="text-xs bg-red-500 hover:bg-red-600 px-3 py-1 rounded-full font-semibold">Çıkış</button>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto py-8 px-4 space-y-8">
+
+        <!-- UYARI / YÜKLENİYOR -->
+        <div id="admin-warning" class="bg-yellow-50 text-yellow-800 border border-yellow-200 px-4 py-3 rounded-lg text-sm hidden"></div>
+
+        <!-- KISIM 1: Kullanıcı Listesi -->
+        <section class="bg-white rounded-2xl shadow border border-gray-100 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-users-cog text-blue-600"></i>
+                        Kayıtlı Kullanıcılar
+                    </h2>
+                    <p class="text-sm text-gray-500">Firebase Auth ile oluşturulmuş kullanıcılar Firestore `users` koleksiyonundan listelenir.</p>
+                </div>
+                <button onclick="loadUsers()" class="text-xs bg-gray-900 text-white px-3 py-2 rounded-lg hover:bg-gray-800 flex items-center gap-1">
+                    <i class="fas fa-rotate-right"></i> Yenile
+                </button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead>
+                        <tr class="bg-gray-50 text-gray-500 text-left">
+                            <th class="px-3 py-2">Ad Soyad</th>
+                            <th class="px-3 py-2">E-posta</th>
+                            <th class="px-3 py-2">Paket</th>
+                            <th class="px-3 py-2">Rol</th>
+                            <th class="px-3 py-2">Kayıt Tarihi</th>
+                            <th class="px-3 py-2 text-right">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-table-body">
+                        <tr>
+                            <td colspan="6" class="px-3 py-4 text-center text-gray-400">Yükleniyor...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- KISIM 2: PDF / Video Yükleme -->
+        <section class="grid md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-2xl shadow border border-gray-100 p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-cloud-upload-alt text-green-600"></i>
+                    PDF / Video Yükle
+                </h2>
+                <form id="upload-form" class="space-y-4" onsubmit="handleUpload(event)">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Başlık</label>
+                        <input type="text" id="resource-title" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Örn: İş İngilizcesi – Toplantı Kalıpları" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tür</label>
+                        <select id="resource-type" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                            <option value="pdf">PDF</option>
+                            <option value="video">Video</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Dosya</label>
+                        <input type="file" id="resource-file" class="w-full text-sm" accept=".pdf,video/*" required>
+                        <p class="text-xs text-gray-400 mt-1">PDF için `.pdf`, video için yaygın formatlar (`.mp4`, `.mov` vb.) yükleyebilirsiniz.</p>
+                    </div>
+                    <button id="upload-btn" type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 flex items-center justify-center gap-2">
+                        <i class="fas fa-upload"></i>
+                        <span>Yükle</span>
+                    </button>
+                    <p id="upload-status" class="text-xs text-gray-500 mt-1"></p>
+                </form>
+            </div>
+
+            <!-- KISIM 3: Mevcut Kaynaklar -->
+            <div class="bg-white rounded-2xl shadow border border-gray-100 p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-book-open text-purple-600"></i>
+                    Yüklü Kaynaklar
+                </h2>
+                <div id="resource-list" class="space-y-3 max-h-80 overflow-y-auto text-sm">
+                    <p class="text-gray-400 text-center py-4">Yükleniyor...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- KISIM 3: Randevular -->
+        <section class="bg-white rounded-2xl shadow border border-gray-100 p-6" id="appointments-section">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-calendar-check text-emerald-600"></i>
+                        Öğrenci Randevuları
+                    </h2>
+                    <p class="text-sm text-gray-500">Öğrencilerin dashboard üzerinden oluşturduğu randevuları görüntüleyin.</p>
+                    <p id="appointment-filter-label" class="text-xs text-gray-500 mt-1"></p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="loadAppointments()" class="text-xs bg-gray-900 text-white px-3 py-2 rounded-lg hover:bg-gray-800 flex items-center gap-1">
+                        <i class="fas fa-rotate-right"></i> Yenile
+                    </button>
+                    <button onclick="clearAppointmentFilter()" class="text-xs bg-gray-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 border border-gray-200">
+                        Filtreyi Temizle
+                    </button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead>
+                        <tr class="bg-gray-50 text-gray-500 text-left">
+                            <th class="px-3 py-2">Öğrenci</th>
+                            <th class="px-3 py-2">Tarih & Saat</th>
+                            <th class="px-3 py-2">Oluşturulma</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointment-table-body">
+                        <tr>
+                            <td colspan="3" class="px-3 py-3 text-center text-gray-400 text-sm">Henüz yüklenmedi.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Auth durumu & admin kontrolü
+        auth.onAuthStateChanged(async (user) => {
+            const warningEl = document.getElementById('admin-warning');
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            document.getElementById('admin-email').innerText = user.email || '';
+
+            const isAdmin = Array.isArray(window.ADMIN_EMAILS) && window.ADMIN_EMAILS.includes(user.email);
+            if (!isAdmin) {
+                warningEl.classList.remove('hidden');
+                warningEl.innerText = 'Bu sayfaya erişim yetkiniz yok. Admin e-postasına sahip değilsiniz.';
+                setTimeout(() => window.location.href = 'dashboard.html', 2500);
+                return;
+            }
+
+            // Admin ise veri yükle
+            loadUsers();
+            loadResources();
+            loadAppointments();
+        });
+
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            });
+        }
+
+        // Firestore: users koleksiyonunu listele
+        async function loadUsers() {
+            const tbody = document.getElementById('user-table-body');
+            tbody.innerHTML = '<tr><td colspan="6" class="px-3 py-4 text-center text-gray-400">Yükleniyor...</td></tr>';
+            try {
+                const snap = await db.collection('users').orderBy('createdAt', 'desc').get();
+                if (snap.empty) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="px-3 py-4 text-center text-gray-400">Kayıtlı kullanıcı bulunamadı.</td></tr>';
+                    return;
+                }
+                let html = '';
+                snap.forEach(doc => {
+                    const u = doc.data();
+                    const userId = doc.id;
+                    const date = u.createdAt && u.createdAt.toDate ? u.createdAt.toDate().toLocaleString('tr-TR') : '-';
+                    const currentPackage = u.currentPackage || 'Standart';
+                    html += `
+                        <tr class="border-t border-gray-100">
+                            <td class="px-3 py-2">${u.displayName || '-'}</td>
+                            <td class="px-3 py-2">${u.email || '-'}</td>
+                            <td class="px-3 py-2 text-xs text-gray-700">
+                                <select onchange="updateUserPackage('${userId}', this.value)" class="border border-gray-200 rounded-lg px-2 py-1 text-xs bg-white">
+                                    <option value="Standart Paket" ${currentPackage === 'Standart Paket' || currentPackage === 'Standart' ? 'selected' : ''}>Standart Paket</option>
+                                    <option value="Pro Master" ${currentPackage === 'Pro Master' ? 'selected' : ''}>Pro Master</option>
+                                    <option value="VIP Özel" ${currentPackage === 'VIP Özel' ? 'selected' : ''}>VIP Özel</option>
+                                </select>
+                            </td>
+                            <td class="px-3 py-2 text-xs">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full ${u.role === 'admin' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}">
+                                    ${u.role || 'öğrenci'}
+                                </span>
+                            </td>
+                            <td class="px-3 py-2 text-xs text-gray-500">${date}</td>
+                            <td class="px-3 py-2 text-right text-xs">
+                                <button onclick="viewUserAppointments('${u.email || ''}')" class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-100">
+                                    Randevular
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = '<tr><td colspan="6" class="px-3 py-4 text-center text-red-500">Kullanıcılar yüklenirken hata oluştu.</td></tr>';
+            }
+        }
+
+        // Kaynak yükleme
+        async function handleUpload(e) {
+            e.preventDefault();
+            const titleInput = document.getElementById('resource-title');
+            const typeSelect = document.getElementById('resource-type');
+            const fileInput = document.getElementById('resource-file');
+            const statusEl = document.getElementById('upload-status');
+            const btn = document.getElementById('upload-btn');
+
+            const file = fileInput.files[0];
+            if (!file) {
+                statusEl.innerText = 'Lütfen bir dosya seçin.';
+                return;
+            }
+
+            // 15 MB üzerindeki dosyaları reddet (çok uzun sürmesin)
+            const maxSizeBytes = 15 * 1024 * 1024;
+            if (file.size > maxSizeBytes) {
+                statusEl.innerText = 'Dosya boyutu çok büyük. Lütfen 15 MB\'dan küçük bir dosya yükleyin.';
+                return;
+            }
+
+            const type = typeSelect.value;
+            const title = titleInput.value.trim();
+            if (!title) {
+                statusEl.innerText = 'Başlık alanı boş olamaz.';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.classList.add('opacity-60', 'cursor-not-allowed');
+            statusEl.innerText = 'Yükleniyor... (0%)';
+
+            try {
+                const user = auth.currentUser;
+                if (!user) {
+                    statusEl.innerText = 'Oturum süresi doldu, lütfen tekrar giriş yapın.';
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-60', 'cursor-not-allowed');
+                    return;
+                }
+
+                const timestamp = Date.now();
+                const safeName = file.name.replace(/\s+/g, '_');
+                const path = `resources/${type}/${timestamp}_${safeName}`;
+
+                const ref = storage.ref().child(path);
+                const uploadTask = ref.put(file);
+
+                await new Promise((resolve, reject) => {
+                    uploadTask.on('state_changed',
+                        (snapshot) => {
+                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            statusEl.innerText = `Yükleniyor... (%${Math.round(progress)})`;
+                        },
+                        (error) => {
+                            reject(error);
+                        },
+                        () => {
+                            resolve();
+                        }
+                    );
+                });
+
+                const url = await ref.getDownloadURL();
+
+                await db.collection('resources').add({
+                    title,
+                    type,
+                    storagePath: path,
+                    url,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    createdBy: user.uid
+                });
+
+                statusEl.innerText = 'Yükleme başarılı.';
+                titleInput.value = '';
+                fileInput.value = '';
+                loadResources();
+            } catch (err) {
+                console.error(err);
+                statusEl.innerText = 'Yükleme sırasında hata oluştu.';
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-60', 'cursor-not-allowed');
+            }
+        }
+
+        // Kaynakları Firestore'dan çek
+        async function loadResources() {
+            const listEl = document.getElementById('resource-list');
+            listEl.innerHTML = '<p class="text-gray-400 text-center py-4">Yükleniyor...</p>';
+            try {
+                const snap = await db.collection('resources')
+                    .orderBy('createdAt', 'desc')
+                    .limit(50)
+                    .get();
+                if (snap.empty) {
+                    listEl.innerHTML = '<p class="text-gray-400 text-center py-4">Henüz yüklenmiş kaynak yok.</p>';
+                    return;
+                }
+                let html = '';
+                snap.forEach(doc => {
+                    const r = doc.data();
+                    const date = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleString('tr-TR') : '-';
+                    html += `
+                        <div class="flex items-center justify-between border border-gray-100 rounded-lg px-3 py-2">
+                            <div>
+                                <p class="font-semibold text-gray-800 text-sm">${r.title || '-'}</p>
+                                <p class="text-xs text-gray-500">${r.type === 'video' ? 'Video' : 'PDF'} • ${date}</p>
+                            </div>
+                            <a href="${r.url}" target="_blank" class="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-full hover:bg-blue-100">
+                                <i class="fas fa-external-link-alt mr-1"></i> Aç
+                            </a>
+                        </div>
+                    `;
+                });
+                listEl.innerHTML = html;
+            } catch (err) {
+                console.error(err);
+                listEl.innerHTML = '<p class="text-red-500 text-center py-4 text-sm">Kaynaklar yüklenirken hata oluştu.</p>';
+            }
+        }
+
+        let currentAppointmentFilterEmail = null;
+
+        // Öğrenci randevularını listele
+        async function loadAppointments(filterEmail) {
+            const tbody = document.getElementById('appointment-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '<tr><td colspan="3" class="px-3 py-3 text-center text-gray-400 text-sm">Yükleniyor...</td></tr>';
+            currentAppointmentFilterEmail = filterEmail || null;
+            const labelEl = document.getElementById('appointment-filter-label');
+            if (labelEl) {
+                labelEl.textContent = currentAppointmentFilterEmail
+                    ? `Filtre: ${currentAppointmentFilterEmail} için randevular`
+                    : 'Filtre: Tüm öğrenciler';
+            }
+            try {
+                const snap = await db.collection('appointments')
+                    .orderBy('createdAt', 'desc')
+                    .limit(100)
+                    .get();
+                if (snap.empty) {
+                    tbody.innerHTML = '<tr><td colspan="3" class="px-3 py-3 text-center text-gray-400 text-sm">Henüz oluşturulmuş randevu yok.</td></tr>';
+                    return;
+                }
+                let html = '';
+                let count = 0;
+                snap.forEach(doc => {
+                    const a = doc.data();
+                    if (currentAppointmentFilterEmail && a.email !== currentAppointmentFilterEmail) return;
+                    count++;
+                    html += `
+                        <tr class="border-t border-gray-100">
+                            <td class="px-3 py-2 text-sm text-gray-800">${a.displayName || '-'}<br><span class="text-xs text-gray-500">${a.email || ''}</span></td>
+                            <td class="px-3 py-2 text-sm text-gray-800">${a.timeSlot || '-'}</td>
+                            <td class="px-3 py-2 text-xs text-gray-500">${a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().toLocaleString('tr-TR') : '-'}</td>
+                        </tr>
+                    `;
+                });
+                if (count === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3" class="px-3 py-3 text-center text-gray-400 text-sm">Seçili filtre için randevu bulunamadı.</td></tr>';
+                } else {
+                    tbody.innerHTML = html;
+                }
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = '<tr><td colspan="3" class="px-3 py-3 text-center text-red-500 text-sm">Randevular yüklenirken hata oluştu.</td></tr>';
+            }
+        }
+
+        function clearAppointmentFilter() {
+            loadAppointments();
+            const section = document.getElementById('appointments-section');
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function viewUserAppointments(email) {
+            if (!email) return;
+            loadAppointments(email);
+            const section = document.getElementById('appointments-section');
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+</html>
+
