@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" href="favicon.png">
 <title>Öğrenci Paneli | EnglishPro</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -1003,8 +1003,8 @@ function renderRes(list) {
   g.innerHTML = list.map(r => {
     const p=r.type==='pdf',ts=p?'background:#dcfce7;color:#15803d;':'background:#ede9fe;color:#7c3aed;';
     const img=p?'https://img.freepik.com/free-vector/english-book-illustration_1284-42354.jpg':'https://img.freepik.com/free-photo/english-british-england-language-education-concept_53876-123214.jpg';
-    const viewUrl=p?`https://docs.google.com/viewer?url=${encodeURIComponent(r.url)}&embedded=true`:r.url;
-    return `<div class="rc"><div class="rth"><img src="${img}" alt="${r.title}"><div class="rth-ov"><i class="fas fa-${p?'file-pdf':'play-circle'}"></i></div><span class="rtag" style="${ts}">${p?'PDF':'Video'}</span></div><div class="rb"><div class="rt">${r.title||'Kaynak'}</div><div class="rd">${p?'İndirilebilir PDF.':'Video dersi.'}</div><div class="ract"><a href="${viewUrl}" target="_blank" class="rbn rbn-p">${p?'<i class="fas fa-file-pdf"></i> Aç':'<i class="fas fa-play"></i> İzle'}</a><a href="${r.url}" download target="_blank" class="rbn rbn-s"><i class="fas fa-download"></i> İndir</a></div></div></div>`;
+    const viewUrl=r.url;
+    return `<div class="rc"><div class="rth"><img src="${img}" alt="${r.title}"><div class="rth-ov"><i class="fas fa-${p?'file-pdf':'play-circle'}"></i></div><span class="rtag" style="${ts}">${p?'PDF':'Video'}</span></div><div class="rb"><div class="rt">${r.title||'Kaynak'}</div><div class="rd">${p?'İndirilebilir PDF.':'Video dersi.'}</div><div class="ract"><a href="${viewUrl}" target="_blank" class="rbn rbn-p">${p?'<i class="fas fa-file-pdf"></i> Aç':'<i class="fas fa-play"></i> İzle'}</a><a href="${viewUrl}" download class="rbn rbn-s"><i class="fas fa-download"></i> İndir</a></div></div></div>`;
   }).join('');
 }
 function fRes(t,btn){document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderRes(t==='all'?allRes:allRes.filter(r=>r.type===t));}
