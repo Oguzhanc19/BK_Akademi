@@ -15,7 +15,7 @@ const firebaseConfig = {
   projectId: "bkakademi-5177f",
   // ÖNEMLİ: Storage bucket alanı firebase konsolunda genelde *.appspot.com şeklindedir.
   // Konsolda "Storage" sekmesinden gördüğünüz bucket ismini bire bir buraya yazın.
-  storageBucket: "bkakademi-5177f.appspot.com",
+  storageBucket: "bkakademi-5177f.firebasestorage.app",
   messagingSenderId: "1052989546166",
   appId: "1:1052989546166:web:302602fde140c2bfa91017",
   measurementId: "G-3KGQ65EKBE"
