@@ -1,78 +1,348 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Master | Profesyonel Eğitim</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap'); body { font-family: 'Poppins', sans-serif; }</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EnglishPro | Profesyonel İngilizce Akademisi</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+:root{--ink:#0f172a;--ink2:#334155;--muted:#64748b;--bg:#f8faff;--surface:#fff;--accent:#4f46e5;--accent2:#7c3aed;--al:#eef2ff;--gold:#f59e0b;--border:#e2e8f0;--sh:0 4px 20px rgba(0,0,0,.07);}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;width:100%;z-index:100;padding:1.2rem 3rem;display:flex;justify-content:space-between;align-items:center;transition:all .35s;}
+nav.sc{background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:1rem 3rem;box-shadow:0 2px 20px rgba(0,0,0,.05);}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;text-decoration:none;color:var(--ink);}
+.nav-logo em{font-style:italic;color:var(--accent);}
+.nav-links{display:flex;align-items:center;gap:2rem;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:500;transition:color .2s;}
+.nav-links a:hover{color:var(--ink);}
+.btn-nav{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;padding:.6rem 1.4rem;border-radius:8px;font-size:.82rem;font-weight:600;text-decoration:none;transition:all .22s;box-shadow:0 4px 14px rgba(79,70,229,.3);}
+.btn-nav:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(79,70,229,.4);}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:8rem 3rem 4rem;position:relative;overflow:hidden;background:linear-gradient(160deg,#f8faff 60%,#eef2ff 100%);}.hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;width:100%;max-width:1200px;margin:0 auto;position:relative;z-index:1;}
+.hero::before{content:'';position:absolute;top:-10rem;right:-8rem;width:40rem;height:40rem;background:radial-gradient(circle,rgba(79,70,229,.08) 0%,transparent 70%);pointer-events:none;}
+.hero::after{content:'';position:absolute;bottom:-10rem;left:-5rem;width:30rem;height:30rem;background:radial-gradient(circle,rgba(124,58,237,.06) 0%,transparent 70%);pointer-events:none;}
+.eyebrow{display:inline-flex;align-items:center;gap:.6rem;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--al);padding:.38rem 1rem;border-radius:100px;margin-bottom:1.5rem;border:1px solid #c7d2fe;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(3rem,5.5vw,4.8rem);font-weight:700;line-height:1.07;margin-bottom:1.5rem;color:var(--ink);}
+.hero h1 em{font-style:italic;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-desc{font-size:1rem;line-height:1.8;color:var(--muted);max-width:480px;margin-bottom:2.5rem;font-weight:300;}
+.hero-cta{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;padding:.9rem 2.2rem;border-radius:10px;font-size:.88rem;font-weight:700;text-decoration:none;transition:all .25s;box-shadow:0 8px 28px rgba(79,70,229,.3);border:none;cursor:pointer;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(79,70,229,.4);}
+.btn-ghost{color:var(--ink);font-size:.88rem;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:.5rem;transition:gap .2s;}
+.btn-ghost:hover{gap:.8rem;}
+.hero-right{position:relative;z-index:1;}
+.hero-photo{width:100%;max-width:460px;border-radius:20px;box-shadow:0 30px 80px rgba(79,70,229,.15),0 8px 30px rgba(0,0,0,.1);display:block;filter:brightness(1.02);}
+.hero-photo-wrap{position:relative;display:inline-block;}
+.hero-badge{position:absolute;bottom:-1.5rem;left:-1.5rem;background:#fff;border-radius:14px;padding:1.1rem 1.4rem;box-shadow:0 20px 50px rgba(0,0,0,.1);display:flex;align-items:center;gap:.9rem;border:1px solid var(--border);}
+.hero-badge-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+.hero-badge strong{display:block;font-size:.82rem;font-weight:700;color:var(--ink);}
+.hero-badge span{font-size:.72rem;color:var(--muted);}
+.floating-card{position:absolute;background:#fff;border-radius:12px;padding:.9rem 1.1rem;box-shadow:0 12px 40px rgba(79,70,229,.12);border:1px solid #c7d2fe;display:flex;align-items:center;gap:.7rem;}
+.fc1{top:1.5rem;right:-1.5rem;animation:float 3s ease-in-out infinite;}
+.fc2{top:40%;right:-2rem;animation:float 3s ease-in-out infinite .8s;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+.fc-icon{width:32px;height:32px;background:var(--al);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:.8rem;flex-shrink:0;}
+.fc-text strong{display:block;font-size:.78rem;font-weight:700;color:var(--ink);}
+.fc-text span{font-size:.68rem;color:var(--muted);}
+
+/* MARQUEE */
+.marquee{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:1.1rem 0;overflow:hidden;background:#fff;}
+.mtrack{display:flex;gap:3.5rem;white-space:nowrap;animation:marquee 20s linear infinite;}
+.mitem{display:flex;align-items:center;gap:.65rem;font-size:.78rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);flex-shrink:0;}
+.mitem i{color:var(--accent);}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* SECTIONS */
+section{padding:7rem 3rem;}.sec-inner{max-width:1200px;margin:0 auto;width:100%;}
+.sec-label{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.9rem;}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:700;line-height:1.12;margin-bottom:1rem;color:var(--ink);}
+.sec-title em{font-style:italic;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.sec-sub{color:var(--muted);font-size:.95rem;font-weight:300;line-height:1.7;max-width:520px;}
+.container{max-width:1100px;margin:0 auto;}
+
+/* FEATURES */
+.feat-bg{background:#fff;}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:4rem;}
+.feat-card{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:2rem;transition:all .25s;position:relative;overflow:hidden;}
+.feat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--accent),var(--accent2));opacity:0;transition:opacity .3s;}
+.feat-card:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(79,70,229,.12);border-color:transparent;}
+.feat-card:hover::before{opacity:1;}
+.feat-card:hover .feat-icon,.feat-card:hover .feat-title,.feat-card:hover .feat-desc{color:#fff!important;}
+.feat-card:hover .feat-icon-wrap{background:rgba(255,255,255,.2)!important;}
+.feat-icon-wrap{width:44px;height:44px;background:var(--al);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;transition:background .3s;position:relative;z-index:1;}
+.feat-icon{color:var(--accent);font-size:.95rem;transition:color .3s;}
+.feat-title{font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:.65rem;transition:color .3s;position:relative;z-index:1;}
+.feat-desc{font-size:.85rem;line-height:1.7;color:var(--muted);transition:color .3s;position:relative;z-index:1;}
+
+/* HOW */
+.how{background:var(--bg);}
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;}
+.step-item{display:flex;gap:1.25rem;padding:1.5rem 0;border-bottom:1px solid var(--border);}
+.step-item:last-child{border:none;}
+.step-num{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.78rem;font-weight:700;flex-shrink:0;box-shadow:0 4px 12px rgba(79,70,229,.3);}
+.step-tag{display:inline-block;background:var(--al);color:var(--accent);font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:100px;margin-bottom:.4rem;}
+.step-title{font-size:.9rem;font-weight:700;color:var(--ink);margin-bottom:.4rem;}
+.step-desc{font-size:.83rem;line-height:1.7;color:var(--muted);font-weight:300;}
+.mock-cards{position:relative;height:320px;}
+.mock-card{position:absolute;background:#fff;border:1px solid var(--border);border-radius:14px;padding:1.3rem 1.5rem;box-shadow:0 12px 40px rgba(0,0,0,.07);}
+.mc1{top:0;left:0;width:280px;z-index:3;}
+.mc2{top:70px;left:35px;width:260px;z-index:2;opacity:.75;}
+.mc3{top:140px;left:70px;width:240px;z-index:1;opacity:.45;}
+.mc-lbl{font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:.6rem;}
+.mc-title{font-size:.9rem;font-weight:700;color:var(--ink);margin-bottom:.3rem;}
+.mc-sub{font-size:.75rem;color:var(--muted);}
+.mc-badge{display:inline-flex;align-items:center;gap:.3rem;background:#ecfdf5;color:#059669;font-size:.68rem;font-weight:700;padding:.25rem .6rem;border-radius:100px;margin-top:.6rem;}
+.mc-badge::before{content:'';width:6px;height:6px;background:#059669;border-radius:50%;}
+
+/* STATS */
+.stats-strip{background:linear-gradient(135deg,var(--accent),var(--accent2));padding:4rem 3rem;}
+.stats-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;text-align:center;}
+.stat-n{font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:700;color:#fff;line-height:1;}
+.stat-l{font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-top:.4rem;}
+
+/* TESTIMONIALS */
+.testi{background:#fff;}
+.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:4rem;}
+.tc{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:2rem;transition:all .25s;}
+.tc:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(79,70,229,.08);border-color:#c7d2fe;}
+.tc-stars{display:flex;gap:.2rem;margin-bottom:1rem;}
+.tc-stars i{color:var(--gold);font-size:.78rem;}
+.tc-text{font-size:.9rem;line-height:1.8;color:var(--ink2);font-style:italic;margin-bottom:1.5rem;font-weight:300;}
+.tc-auth{display:flex;align-items:center;gap:.85rem;}
+.tc-av{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:.85rem;}
+.tc-name{font-weight:700;font-size:.85rem;}
+.tc-role{font-size:.72rem;color:var(--muted);}
+
+/* CTA */
+.cta{background:linear-gradient(160deg,#f8faff 60%,#eef2ff 100%);text-align:center;position:relative;overflow:hidden;}
+.cta::before{content:'';position:absolute;top:-5rem;left:50%;transform:translateX(-50%);width:40rem;height:40rem;background:radial-gradient(circle,rgba(79,70,229,.07) 0%,transparent 70%);pointer-events:none;}
+.cta h2{font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:700;margin-bottom:1rem;line-height:1.1;position:relative;}
+.cta h2 em{font-style:italic;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.cta p{color:var(--muted);font-size:1rem;max-width:460px;margin:0 auto 2.5rem;font-weight:300;}
+
+footer{border-top:1px solid var(--border);padding:2.5rem 3rem;display:flex;justify-content:space-between;align-items:center;background:#fff;}
+.f-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;text-decoration:none;color:var(--ink);}
+.f-logo em{font-style:italic;color:var(--accent);}
+footer p{font-size:.78rem;color:var(--muted);}
+.f-links{display:flex;gap:1.5rem;}
+.f-links a{font-size:.78rem;color:var(--muted);text-decoration:none;transition:color .18s;}
+.f-links a:hover{color:var(--accent);}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.v{opacity:1;transform:translateY(0);}
+.rd1{transition-delay:.1s;}.rd2{transition-delay:.2s;}.rd3{transition-delay:.3s;}
+
+/* OLD MQ REMOVED */
+@media(max-width:768px){
+  .hero{padding:7rem 1.5rem 4rem;}.hero-inner{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+  .feat-grid,.tg{grid-template-columns:1fr;}
+  .how-grid{grid-template-columns:1fr;}
+  .mock-cards{display:none;}
+  .stats-inner{grid-template-columns:1fr 1fr;}
+  nav,nav.sc{padding:1rem 1.5rem;}
+  footer{flex-direction:column;gap:1.25rem;text-align:center;}
+  section{padding:5rem 1.5rem;}
+}
+
+/* ══ RESPONSIVE INDEX ══ */
+@media(max-width:1024px){
+  .hero{gap:2.5rem;padding:8rem 2rem 4rem;}
+  .feat-grid{grid-template-columns:1fr 1fr;}
+  .how-grid{grid-template-columns:1fr;}
+  .mock-cards{display:none;}
+  .tg{grid-template-columns:1fr 1fr;}
+  .stats-inner{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:768px){
+  nav,nav.sc{padding:1rem 1.5rem;}
+  .hero{padding:7rem 1.5rem 4rem;}.hero-inner{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+  .hero h1{font-size:2.6rem;}
+  .hero-desc{font-size:.92rem;}
+  .feat-grid{grid-template-columns:1fr;}
+  .how-grid{grid-template-columns:1fr;}
+  .tg{grid-template-columns:1fr;}
+  .stats-inner{grid-template-columns:1fr 1fr;gap:1.5rem;}
+  .stat-n{font-size:2.5rem;}
+  section{padding:4rem 1.5rem;}
+  .stats-strip{padding:3rem 1.5rem;}
+  footer{flex-direction:column;gap:1.25rem;text-align:center;padding:1.5rem;}
+  .f-links{justify-content:center;}
+  .marquee{display:none;}
+  .cta{padding:5rem 1.5rem;}
+  .nav-links a:not(.btn-nav){display:none;}
+}
+@media(max-width:480px){
+  .hero h1{font-size:2rem;}
+  .hero-cta{flex-direction:column;gap:.75rem;}
+  .btn-primary,.btn-ghost{width:100%;text-align:center;justify-content:center;}
+  .stats-inner{grid-template-columns:1fr 1fr;}
+  .stat-n{font-size:2rem;}
+  .cta h2{font-size:2rem;}
+}
+@media(min-width:1400px){
+  .hero{padding:9rem 4rem 5rem;max-width:1400px;margin:0 auto;}
+  .container{max-width:1300px;}
+}
+@media(min-width:1800px){
+  .hero{padding:10rem 5rem 6rem;}
+  .container{max-width:1500px;}
+  .feat-grid{grid-template-columns:repeat(3,1fr);}
+}
+
+.mob-menu-btn{display:none;background:none;border:1px solid var(--border);border-radius:8px;padding:.45rem .7rem;cursor:pointer;color:var(--ink);font-size:.9rem;}
+.mob-menu-open .nav-links a{display:flex!important;}
+@media(max-width:768px){.mob-menu-btn{display:block;}}
+</style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body>
 
-    <nav class="bg-white/90 backdrop-blur-md shadow-sm fixed w-full z-20">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-            <span class="text-2xl font-bold text-blue-900"><i class="fas fa-graduation-cap"></i> EnglishPro</span>
-            <div class="space-x-4">
-                <a href="login.html" class="text-gray-600 hover:text-blue-600 font-medium">Giriş Yap</a>
-                <a href="register.html" class="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition shadow-lg">Kayıt Ol</a>
-            </div>
+<nav id="nb">
+  <a href="index.html" class="nav-logo">English<em>Pro</em></a>
+  <div class="nav-links">
+    <a href="about.html">Hakkında</a>
+    <a href="#features">Özellikler</a>
+    <a href="login.html">Giriş</a>
+    <a href="register.html" class="btn-nav">Başla →</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+  <div style="position:relative;z-index:1;">
+    <div class="eyebrow"><i class="fas fa-graduation-cap"></i> Profesyonel Akademi</div>
+    <h1>İngilizceyi<br><em>Hayatına</em><br>Entegre Et.</h1>
+    <p class="hero-desc">Birebir mentorluk, özel içerikler ve akıllı randevu sistemiyle İngilizce sadece bir ders değil — bir yaşam biçimi haline gelir.</p>
+    <div class="hero-cta">
+      <a href="register.html" class="btn-primary">Ücretsiz Başla</a>
+      <a href="about.html" class="btn-ghost">Daha Fazla <i class="fas fa-arrow-right" style="font-size:.78rem;"></i></a>
+    </div>
+  </div>
+  <div class="hero-right" style="position:relative;z-index:1;">
+    <div class="hero-photo-wrap">
+      <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" class="hero-photo" alt="Sarah Alkan">
+      <div class="hero-badge">
+        <div class="hero-badge-num">2K+</div>
+        <div><strong>Başarılı Öğrenci</strong><span>10 yıllık deneyim</span></div>
+      </div>
+      <div class="floating-card fc1">
+        <div class="fc-icon"><i class="fas fa-check"></i></div>
+        <div class="fc-text"><strong>Randevu Onaylandı</strong><span>Zoom linki hazır!</span></div>
+      </div>
+      <div class="floating-card fc2">
+        <div class="fc-icon"><i class="fas fa-file-pdf"></i></div>
+        <div class="fc-text"><strong>Yeni PDF Eklendi</strong><span>İş İngilizcesi Seti</span></div>
+      </div>
+    </div>
+  </div></div>
+</header>
+
+<div class="marquee">
+  <div class="mtrack">
+    <span class="mitem"><i class="fas fa-star"></i> İş İngilizcesi</span>
+    <span class="mitem"><i class="fas fa-microphone"></i> Telaffuz Eğitimi</span>
+    <span class="mitem"><i class="fas fa-briefcase"></i> Mülakat Hazırlığı</span>
+    <span class="mitem"><i class="fas fa-video"></i> Zoom Dersleri</span>
+    <span class="mitem"><i class="fas fa-file-pdf"></i> Özel PDF Materyaller</span>
+    <span class="mitem"><i class="fas fa-calendar-check"></i> Akıllı Randevu</span>
+    <span class="mitem"><i class="fas fa-bell"></i> Anlık Bildirimler</span>
+    <span class="mitem"><i class="fas fa-globe"></i> Online Dersler</span>
+    <span class="mitem"><i class="fas fa-star"></i> İş İngilizcesi</span>
+    <span class="mitem"><i class="fas fa-microphone"></i> Telaffuz Eğitimi</span>
+    <span class="mitem"><i class="fas fa-briefcase"></i> Mülakat Hazırlığı</span>
+    <span class="mitem"><i class="fas fa-video"></i> Zoom Dersleri</span>
+    <span class="mitem"><i class="fas fa-file-pdf"></i> Özel PDF Materyaller</span>
+    <span class="mitem"><i class="fas fa-calendar-check"></i> Akıllı Randevu</span>
+    <span class="mitem"><i class="fas fa-bell"></i> Anlık Bildirimler</span>
+    <span class="mitem"><i class="fas fa-globe"></i> Online Dersler</span>
+  </div>
+</div>
+
+<section class="feat-bg" id="features">
+  <div class="container">
+    <div class="reveal"><div class="sec-label">Ne Sunuyoruz?</div></div>
+    <div class="reveal rd1"><h2 class="sec-title">Tam kapsamlı bir<br><em>öğrenme deneyimi.</em></h2></div>
+    <div class="feat-grid">
+      <div class="feat-card reveal"><div class="feat-icon-wrap"><i class="fas fa-file-pdf feat-icon"></i></div><div class="feat-title">Özel PDF Kütüphanesi</div><div class="feat-desc">Her ders için hazırlanmış indirilebilir çalışma kağıtları, özet notlar ve egzersizler.</div></div>
+      <div class="feat-card reveal rd1"><div class="feat-icon-wrap"><i class="fas fa-video feat-icon"></i></div><div class="feat-title">Video Ders Serisi</div><div class="feat-desc">Konuları pekiştirmek için profesyonelce hazırlanmış video içeriklerine sınırsız erişim.</div></div>
+      <div class="feat-card reveal rd2"><div class="feat-icon-wrap"><i class="fas fa-calendar-check feat-icon"></i></div><div class="feat-title">Akıllı Randevu Sistemi</div><div class="feat-desc">Talebinizi gönderin, admin onaylasın, Zoom linkiniz direkt bildiriminize gelsin.</div></div>
+      <div class="feat-card reveal"><div class="feat-icon-wrap"><i class="fas fa-bell feat-icon"></i></div><div class="feat-title">Anlık Bildirimler</div><div class="feat-desc">Randevu onayı ve Zoom linki paylaşımını anında panelinizde görün.</div></div>
+      <div class="feat-card reveal rd1"><div class="feat-icon-wrap"><i class="fas fa-user-graduate feat-icon"></i></div><div class="feat-title">Kişisel Profil</div><div class="feat-desc">Ders geçmişinizi ve materyallerinizi tek panelden yönetin.</div></div>
+      <div class="feat-card reveal rd2"><div class="feat-icon-wrap"><i class="fas fa-headset feat-icon"></i></div><div class="feat-title">Doğrudan İletişim</div><div class="feat-desc">Sorularınızı panel üzerinden iletin. Her kanaldan ulaşabilirsiniz.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="how">
+  <div class="container">
+    <div class="how-grid">
+      <div>
+        <div class="reveal"><div class="sec-label">Nasıl Çalışır?</div></div>
+        <div class="reveal rd1"><h2 class="sec-title">Üç adımda<br><em>ders başlıyor.</em></h2></div>
+        <div style="margin-top:2.5rem;">
+          <div class="step-item reveal"><div class="step-num">1</div><div><div class="step-tag">Kayıt</div><div class="step-title">Ücretsiz Hesap Oluştur</div><div class="step-desc">E-posta veya Google ile saniyeler içinde kayıt olun. Hiçbir ücret yok.</div></div></div>
+          <div class="step-item reveal rd1"><div class="step-num">2</div><div><div class="step-tag">Talep</div><div class="step-title">Randevu Talebi Gönder</div><div class="step-desc">Müsait olduğunuz tarih ve saati seçin. Talebiniz admin onayına düşer.</div></div></div>
+          <div class="step-item reveal rd2"><div class="step-num">3</div><div><div class="step-tag">Ders</div><div class="step-title">Zoom Linki Geldi, Başlayalım!</div><div class="step-desc">Onaylandığında bildirim alırsınız. Zoom linki ders günü panelinize iletilir.</div></div></div>
         </div>
-    </nav>
-
-    <header class="pt-32 pb-20 px-4">
-        <div class="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center gap-10">
-            <div class="md:w-1/2">
-                <h1 class="text-5xl font-bold text-blue-900 leading-tight mb-6">
-                    İngilizceyi Ezberleme, <br> <span class="text-blue-500">Hayatına Entegre Et.</span>
-                </h1>
-                <p class="text-lg text-gray-600 mb-8 leading-relaxed">
-                    Kurumsal hayatta veya akademik kariyerinizde ihtiyacınız olan özgüveni kazanın. Size özel PDF kaynaklar, birebir mentorluk ve video serileriyle yanınızdayız.
-                </p>
-                <div class="flex gap-4">
-                    <a href="register.html" class="bg-blue-900 text-white px-8 py-4 rounded-lg shadow-lg hover:bg-blue-800 transition font-bold">Hemen Başla</a>
-                    <a href="about.html" class="border border-blue-900 text-blue-900 px-8 py-4 rounded-lg hover:bg-blue-50 transition font-bold">İncele</a>                </div>
-            </div>
-            <div class="md:w-1/2 relative">
-                <div class="absolute -z-10 top-0 right-0 bg-blue-100 w-full h-full rounded-full blur-3xl opacity-50"></div>
-                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-                     alt="Profesyonel Eğitmen" 
-                     class="w-full rounded-2xl shadow-2xl transform rotate-2 hover:rotate-0 transition duration-500 border-4 border-white">
-            </div>
+      </div>
+      <div class="reveal rd1">
+        <div class="mock-cards">
+          <div class="mock-card mc1"><div class="mc-lbl">Randevu Talebi</div><div class="mc-title">15 Nisan 2025 · 10:00–11:00</div><div class="mc-sub">İş İngilizcesi · Orta Seviye</div><div class="mc-badge">Onaylandı</div></div>
+          <div class="mock-card mc2"><div class="mc-lbl">Zoom Linki</div><div class="mc-title">zoom.us/j/98765432</div><div class="mc-sub">Dersiniz için link hazır!</div></div>
+          <div class="mock-card mc3"><div class="mc-lbl">Bildirim</div><div class="mc-title">Randevunuz Onaylandı ✓</div></div>
         </div>
-    </header>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <section id="features" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold text-gray-900">Eğitim Süreciniz Nasıl İşleyecek?</h2>
-                <p class="mt-2 text-gray-500">Sadece ders değil, tam kapsamlı bir koçluk sistemi.</p>
-            </div>
-            <div class="grid md:grid-cols-3 gap-10">
-                <div class="p-8 bg-gray-50 rounded-2xl hover:shadow-xl transition group">
-                    <div class="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 text-2xl mb-6 group-hover:bg-blue-600 group-hover:text-white transition">
-                        <i class="fas fa-file-pdf"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Özel PDF Kütüphanesi</h3>
-                    <p class="text-gray-600">Her ders için özel hazırlanmış, indirilebilir çalışma kağıtları ve özet notlar.</p>
-                </div>
-                <div class="p-8 bg-gray-50 rounded-2xl hover:shadow-xl transition group">
-                    <div class="w-14 h-14 bg-green-100 rounded-lg flex items-center justify-center text-green-600 text-2xl mb-6 group-hover:bg-green-600 group-hover:text-white transition">
-                        <i class="fas fa-video"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Video Destekli Eğitim</h3>
-                    <p class="text-gray-600">Konuları pekiştirmeniz için dilediğiniz zaman izleyebileceğiniz video serileri.</p>
-                </div>
-                <div class="p-8 bg-gray-50 rounded-2xl hover:shadow-xl transition group">
-                    <div class="w-14 h-14 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 text-2xl mb-6 group-hover:bg-purple-600 group-hover:text-white transition">
-                        <i class="fas fa-calendar-check"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Kolay Randevu Sistemi</h3>
-                    <p class="text-gray-600">Takvim üzerinden size uygun saati seçin, birebir dersinizi anında planlayın.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="reveal"><div class="stat-n">2K+</div><div class="stat-l">Mezun Öğrenci</div></div>
+    <div class="reveal rd1"><div class="stat-n">10+</div><div class="stat-l">Yıl Deneyim</div></div>
+    <div class="reveal rd2"><div class="stat-n">98%</div><div class="stat-l">Memnuniyet</div></div>
+    <div class="reveal rd3"><div class="stat-n">500+</div><div class="stat-l">Materyal</div></div>
+  </div>
+</div>
 
+<section class="testi">
+  <div class="container">
+    <div class="reveal"><div class="sec-label">Öğrenci Görüşleri</div></div>
+    <div class="reveal rd1"><h2 class="sec-title">Hayatları <em>değişti.</em></h2></div>
+    <div class="tg">
+      <div class="tc reveal"><div class="tc-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="tc-text">"Sarah Hoca'nın materyalleri piyasadaki hiçbir kitapta yok. İş İngilizcesi PDF'leri sayesinde terfi aldım."</p><div class="tc-auth"><div class="tc-av">MK</div><div><div class="tc-name">Mehmet K.</div><div class="tc-role">Yazılım Mühendisi</div></div></div></div>
+      <div class="tc reveal rd1"><div class="tc-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="tc-text">"Randevu sistemi inanılmaz pratik. Talep gönderiyorum, onaylanıyor, Zoom linki geliyor. Hiç bu kadar kolay olmamıştı."</p><div class="tc-auth"><div class="tc-av">EA</div><div><div class="tc-name">Elif A.</div><div class="tc-role">Üniversite Öğrencisi</div></div></div></div>
+      <div class="tc reveal rd2"><div class="tc-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="tc-text">"Utangaçlığımı yenmemi sağlayan tek platform. Dersler çok verimli, her seferinde gerçekten ilerliyorum."</p><div class="tc-auth"><div class="tc-av">AY</div><div><div class="tc-name">Ahmet Y.</div><div class="tc-role">Finans Uzmanı</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="container">
+    <div class="reveal"><div class="sec-label">Hazır mısın?</div></div>
+    <h2 class="reveal rd1">Başlamak için<br>doğru an <em>şimdi.</em></h2>
+    <p class="reveal rd2">Ücretsiz üye ol, ilk ders talebini bugün gönder.</p>
+    <a href="register.html" class="btn-primary reveal rd3">Ücretsiz Kayıt Ol</a>
+  </div>
+</section>
+
+<footer>
+  <a href="index.html" class="f-logo">English<em>Pro</em></a>
+  <p>© 2025 EnglishPro · Sarah Alkan</p>
+  <div class="f-links"><a href="about.html">Hakkında</a><a href="login.html">Giriş</a><a href="register.html">Kayıt</a></div>
+</footer>
+
+<script>
+window.addEventListener('scroll',()=>document.getElementById('nb').classList.toggle('sc',window.scrollY>60));
+const obs=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('v');});},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
 </body>
 </html>

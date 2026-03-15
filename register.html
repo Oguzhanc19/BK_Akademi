@@ -1,154 +1,110 @@
 <!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <title>Kayıt Ol | EnglishPro</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap'); body { font-family: 'Poppins', sans-serif; }</style>
+<html lang="tr"><head><meta charset="UTF-8"><title>Kayıt Ol | EnglishPro</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script><script src="firebase-config.js"></script>
+<style>
+:root{--ink:#0f172a;--muted:#64748b;--border:#e2e8f0;--bg:#f8faff;--accent:#4f46e5;--accent2:#7c3aed;--al:#eef2ff;--green:#059669;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;}
+.left{width:46%;background:linear-gradient(160deg,#0f172a 0%,#1e1b4b 50%,#312e81 100%);display:flex;flex-direction:column;justify-content:space-between;padding:3rem;position:relative;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;}
+.orb1{width:400px;height:400px;background:rgba(79,70,229,.35);top:-100px;right:-100px;}
+.orb2{width:350px;height:350px;background:rgba(124,58,237,.25);bottom:-80px;left:-60px;}
+.orb3{width:200px;height:200px;background:rgba(16,185,129,.15);top:40%;left:20%;}
+.l-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:#fff;text-decoration:none;position:relative;z-index:1;}
+.l-logo em{font-style:italic;color:#a5b4fc;}
+.l-mid{position:relative;z-index:1;}
+.l-mid h2{font-family:'Playfair Display',serif;font-size:2.3rem;font-weight:700;color:#fff;line-height:1.2;margin-bottom:2rem;}
+.l-mid h2 em{font-style:italic;color:#a5b4fc;}
+.benefit{display:flex;align-items:center;gap:.85rem;padding:.72rem 0;border-bottom:1px solid rgba(255,255,255,.06);}
+.benefit:last-child{border:none;}
+.bico{width:32px;height:32px;background:rgba(79,70,229,.25);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#a5b4fc;font-size:.75rem;flex-shrink:0;}
+.btxt{font-size:.84rem;color:rgba(255,255,255,.7);font-weight:300;}
+.l-bot{font-size:.72rem;color:rgba(255,255,255,.2);position:relative;z-index:1;}
+.right{flex:1;display:flex;align-items:center;justify-content:center;padding:3rem;background:#fff;}
+.form-box{width:100%;max-width:400px;}
+.back{display:inline-flex;align-items:center;gap:.45rem;color:var(--muted);font-size:.8rem;text-decoration:none;margin-bottom:2.5rem;transition:color .18s;}
+.back:hover{color:var(--accent);}
+.ftitle{font-family:'Playfair Display',serif;font-size:2.3rem;font-weight:700;line-height:1.1;margin-bottom:.35rem;}
+.ftitle em{font-style:italic;color:var(--accent);}
+.fsub{font-size:.85rem;color:var(--muted);margin-bottom:2.5rem;font-weight:300;}
+label{display:block;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;}
+.field{margin-bottom:1.15rem;}
+.iw{position:relative;}
+.iw i{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.78rem;pointer-events:none;}
+input[type="email"],input[type="password"],input[type="text"]{width:100%;padding:.85rem 1rem .85rem 2.4rem;background:#f8faff;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;font-family:'Plus Jakarta Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;}
+input:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(79,70,229,.1);}
+input::placeholder{color:#cbd5e1;}
+.btn-main{width:100%;padding:.92rem;background:linear-gradient(135deg,var(--green),#047857);color:#fff;border:none;border-radius:8px;font-size:.87rem;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all .25s;margin-bottom:.75rem;box-shadow:0 4px 14px rgba(5,150,105,.3);}
+.btn-main:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(5,150,105,.4);}
+.divider{display:flex;align-items:center;gap:.9rem;margin:.75rem 0;color:var(--muted);font-size:.75rem;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.btn-google{width:100%;padding:.82rem;background:#fff;color:var(--ink);border:1.5px solid var(--border);border-radius:8px;font-size:.86rem;font-weight:500;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all .22s;display:flex;align-items:center;justify-content:center;gap:.75rem;}
+.btn-google:hover{border-color:var(--accent);background:var(--al);}
+.btn-google img{width:18px;}
+.err{font-size:.78rem;color:#dc2626;text-align:center;min-height:1rem;margin-top:.4rem;}
+.ffoot{text-align:center;margin-top:2rem;font-size:.83rem;color:var(--muted);}
+.ffoot a{color:var(--accent);text-decoration:none;font-weight:600;}
 
-    <!-- Firebase CDN (compat) -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-    <script src="firebase-config.js"></script>
-</head>
-<body class="h-screen flex bg-white">
+@media(max-width:768px){
+  .left{display:none;}
+  .right{padding:1.5rem;}
+}
+@media(max-width:480px){
+  .right{padding:1rem;}
+  .ftitle{font-size:1.8rem;}
+}
+@media(min-width:1400px){
+  .left{width:52%;}
+}
 
-    <div class="hidden md:flex w-1/2 relative bg-blue-900 overflow-hidden items-center justify-center">
-        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" 
-             class="absolute inset-0 w-full h-full object-cover opacity-30">
-        <div class="relative z-10 text-center px-10">
-            <h2 class="text-4xl font-bold text-white mb-4 tracking-wider">Join the Club</h2>
-            <div class="w-20 h-1 bg-green-400 mx-auto mb-6"></div>
-            <p class="text-gray-300 text-lg">"The limits of my language mean the limits of my world."</p>
-        </div>
-    </div>
-
-    <div class="w-full md:w-1/2 flex items-center justify-center p-8 bg-gray-50">
-        <div class="w-full max-w-md bg-white p-10 rounded-2xl shadow-xl">
-            <div class="text-center mb-8">
-                <i class="fas fa-user-plus text-4xl text-green-500 mb-2"></i>
-                <h2 class="text-2xl font-bold text-gray-800">Hesap Oluştur</h2>
-                <p class="text-sm text-gray-500 mt-2">Ücretsiz üyeliğinizi hemen başlatın.</p>
-            </div>
-            
-            <form onsubmit="handleRegister(event)">
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Ad Soyad</label>
-                    <input id="reg-name" type="text" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">E-posta</label>
-                    <input id="reg-email" type="email" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50" required>
-                </div>
-                <div class="mb-6">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Şifre</label>
-                    <input id="reg-password" type="password" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50" required>
-                </div>
-                <button type="submit" class="w-full bg-green-600 text-white py-4 rounded-lg font-bold hover:bg-green-700 transition shadow-lg transform active:scale-95 duration-200">
-                    Kayıt Ol
-                </button>
-            </form>
-
-            <div class="mt-4">
-                <button onclick="handleGoogleRegister()" class="w-full border border-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 flex items-center justify-center gap-2 text-sm">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" alt="Google">
-                    Google ile Kayıt Ol / Giriş Yap
-                </button>
-            </div>
-
-            <p id="reg-error" class="mt-3 text-sm text-red-500 text-center"></p>
-            <div class="mt-6 text-center text-sm">
-                <span class="text-gray-500">Zaten üye misiniz?</span>
-                <a href="login.html" class="text-blue-600 font-bold hover:underline ml-1">Giriş Yap</a>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function normalizeFirebaseError(err) {
-            if (!err || !err.code) return err && err.message ? err.message : 'Bilinmeyen bir hata oluştu.';
-            switch (err.code) {
-                case 'auth/email-already-in-use':
-                    return 'Bu e-posta adresi zaten kullanımda.';
-                case 'auth/weak-password':
-                    return 'Şifre en az 6 karakter olmalıdır.';
-                case 'auth/operation-not-allowed':
-                    return 'Bu giriş yöntemi bu proje için pasif. Firebase konsolundan ilgili sign-in methodunu aktif etmelisiniz.';
-                default:
-                    return err.message || 'Bir hata oluştu.';
-            }
-        }
-
-        async function handleRegister(e) {
-            e.preventDefault();
-            const name = document.getElementById('reg-name').value.trim();
-            const email = document.getElementById('reg-email').value.trim();
-            const password = document.getElementById('reg-password').value;
-            const errorEl = document.getElementById('reg-error');
-            errorEl.textContent = '';
-
-            if (!name) {
-                errorEl.textContent = 'Lütfen ad soyad alanını doldurun.';
-                return;
-            }
-
-            try {
-                const cred = await auth.createUserWithEmailAndPassword(email, password);
-                await cred.user.updateProfile({ displayName: name });
-
-                // Firestore içinde kullanıcı belgesi oluştur
-                await db.collection('users').doc(cred.user.uid).set({
-                    uid: cred.user.uid,
-                    email,
-                    displayName: name,
-                    role: Array.isArray(window.ADMIN_EMAILS) && window.ADMIN_EMAILS.includes(email) ? 'admin' : 'student',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                // Yeni kullanıcıyı varsayılan olarak öğrenci paneline gönder
-                window.location.href = 'dashboard.html';
-            } catch (err) {
-                console.error(err);
-                errorEl.textContent = 'Kayıt sırasında hata oluştu: ' + normalizeFirebaseError(err);
-            }
-        }
-
-        async function handleGoogleRegister() {
-            const errorEl = document.getElementById('reg-error');
-            errorEl.textContent = '';
-            const provider = new firebase.auth.GoogleAuthProvider();
-
-            try {
-                const result = await auth.signInWithPopup(provider);
-                const user = result.user;
-
-                // Firestore kullanıcı dokümanı yoksa oluştur
-                const userRef = db.collection('users').doc(user.uid);
-                const snap = await userRef.get();
-                if (!snap.exists) {
-                    await userRef.set({
-                        uid: user.uid,
-                        email: user.email,
-                        displayName: user.displayName || '',
-                        role: Array.isArray(window.ADMIN_EMAILS) && window.ADMIN_EMAILS.includes(user.email) ? 'admin' : 'student',
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
-
-                // Adminse admin paneline, değilse dashboard'a
-                if (Array.isArray(window.ADMIN_EMAILS) && window.ADMIN_EMAILS.includes(user.email)) {
-                    window.location.href = 'admin.html';
-                } else {
-                    window.location.href = 'dashboard.html';
-                }
-            } catch (err) {
-                console.error(err);
-                errorEl.textContent = 'Google ile kayıt/giriş sırasında hata oluştu: ' + normalizeFirebaseError(err);
-            }
-        }
-    </script>
-</body>
-</html>
+</style></head><body>
+<div class="left">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <a href="index.html" class="l-logo">English<em>Pro</em></a>
+  <div class="l-mid">
+    <h2>Kariyerinin<br>kapılarını <em>aç.</em></h2>
+    <div class="benefit"><div class="bico"><i class="fas fa-file-pdf"></i></div><div class="btxt">Sınırsız PDF ve video kaynağı</div></div>
+    <div class="benefit"><div class="bico"><i class="fas fa-video"></i></div><div class="btxt">Zoom üzerinden birebir dersler</div></div>
+    <div class="benefit"><div class="bico"><i class="fas fa-calendar-check"></i></div><div class="btxt">Akıllı randevu ve onay sistemi</div></div>
+    <div class="benefit"><div class="bico"><i class="fas fa-bell"></i></div><div class="btxt">Anlık bildirimler ve Zoom linki</div></div>
+  </div>
+  <div class="l-bot">© 2025 EnglishPro · Sarah Alkan</div>
+</div>
+<div class="right">
+  <div class="form-box">
+    <a href="index.html" class="back"><i class="fas fa-arrow-left"></i> Ana Sayfa</a>
+    <div class="ftitle">Hesap<br><em>oluştur.</em></div>
+    <div class="fsub">Ücretsiz üyeliğinizi hemen başlatın.</div>
+    <form onsubmit="doReg(event)">
+      <div class="field"><label>Ad Soyad</label><div class="iw"><i class="fas fa-user"></i><input id="name" type="text" placeholder="Adınız Soyadınız" required></div></div>
+      <div class="field"><label>E-posta</label><div class="iw"><i class="fas fa-envelope"></i><input id="email" type="email" placeholder="ornek@email.com" required></div></div>
+      <div class="field"><label>Şifre</label><div class="iw"><i class="fas fa-lock"></i><input id="pass" type="password" placeholder="En az 6 karakter" required></div></div>
+      <button type="submit" class="btn-main">Kayıt Ol →</button>
+    </form>
+    <div class="divider">veya</div>
+    <button onclick="doGoogle()" class="btn-google"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G"> Google ile Kayıt Ol</button>
+    <div class="err" id="err"></div>
+    <div class="ffoot">Zaten üye misiniz? <a href="login.html">Giriş Yap</a></div>
+  </div>
+</div>
+<script>
+function norm(e){if(!e||!e.code)return'Bir hata oluştu.';if(e.code==='auth/email-already-in-use')return'Bu e-posta zaten kayıtlı.';if(e.code==='auth/weak-password')return'Şifre en az 6 karakter olmalı.';return e.message||'Bir hata oluştu.';}
+async function doReg(e){
+  e.preventDefault();
+  const n=document.getElementById('name').value.trim(),em=document.getElementById('email').value.trim(),pw=document.getElementById('pass').value;
+  const err=document.getElementById('err');err.textContent='';
+  if(!n){err.textContent='Lütfen adınızı girin.';return;}
+  try{const c=await auth.createUserWithEmailAndPassword(em,pw);await c.user.updateProfile({displayName:n});await db.collection('users').doc(c.user.uid).set({uid:c.user.uid,email:em,displayName:n,role:Array.isArray(window.ADMIN_EMAILS)&&window.ADMIN_EMAILS.includes(em)?'admin':'student',createdAt:firebase.firestore.FieldValue.serverTimestamp()});window.location.href='dashboard.html';}
+  catch(e){err.textContent=norm(e);}
+}
+async function doGoogle(){
+  const err=document.getElementById('err');err.textContent='';
+  try{const r=await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());const ref=db.collection('users').doc(r.user.uid);if(!(await ref.get()).exists)await ref.set({uid:r.user.uid,email:r.user.email,displayName:r.user.displayName||'',role:Array.isArray(window.ADMIN_EMAILS)&&window.ADMIN_EMAILS.includes(r.user.email)?'admin':'student',createdAt:firebase.firestore.FieldValue.serverTimestamp()});window.location.href=Array.isArray(window.ADMIN_EMAILS)&&window.ADMIN_EMAILS.includes(r.user.email)?'admin.html':'dashboard.html';}
+  catch(e){err.textContent='Google ile kayıt başarısız.';}
+}
+</script>
+</body></html>

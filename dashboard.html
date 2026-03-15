@@ -1,662 +1,1309 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <title>Öğrenci Paneli | EnglishPro</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap'); 
-        body { font-family: 'Outfit', sans-serif; }
-        
-        .active-menu { background-color: #1e3a8a; border-right: 4px solid #3b82f6; }
-        .hidden-section { display: none; }
-        
-        /* Modal Arkaplanı */
-        .modal-overlay { background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); }
-        
-        /* Fade In Animasyonu */
-        .fade-in { animation: fadeIn 0.4s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+<meta charset="UTF-8">
+<title>Öğrenci Paneli | EnglishPro</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="firebase-config.js"></script>
+<style>
+:root{
+  --bg:#f0f4ff;--sur:#fff;--sur2:#f8faff;
+  --ink:#0f172a;--ink2:#334155;--mu:#64748b;
+  --bdr:#e2e8f0;--bdr2:#f1f5f9;
+  --ac:#4f46e5;--al:#eef2ff;--ac2:#7c3aed;
+  --gld:#f59e0b;--gl:#fffbeb;
+  --grn:#059669;--grl:#ecfdf5;
+  --red:#dc2626;--rl:#fef2f2;
+  --blu:#2563eb;--bl:#eff6ff;
+  --org:#ea580c;--ol:#fff7ed;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+  --sh2:0 4px 20px rgba(0,0,0,.08);--sh3:0 12px 40px rgba(0,0,0,.1);
+  --sw:256px;--r:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);display:flex;min-height:100vh;overflow:hidden;}html{height:100%;}
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-    </style>
+/* ── SIDEBAR ── */
+aside{width:var(--sw);background:var(--ink);display:flex;flex-direction:column;height:100vh;position:sticky;top:0;flex-shrink:0;box-shadow:4px 0 24px rgba(15,23,42,.15);}
+.s-head{padding:1.6rem 1.5rem 1.4rem;border-bottom:1px solid rgba(255,255,255,.07);}
+.s-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;text-decoration:none;color:#fff;display:block;}
+.s-logo em{font-style:italic;color:#818cf8;}
+.s-sub{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:.2rem;}
+.s-nav{padding:1.25rem .75rem;flex:1;overflow-y:auto;}
+.s-lbl{font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.2);padding:0 .75rem;margin-bottom:.4rem;margin-top:1.25rem;}
+.nb{width:100%;display:flex;align-items:center;gap:.75rem;padding:.68rem .9rem;border-radius:8px;border:none;background:transparent;color:rgba(255,255,255,.42);font-family:'Plus Jakarta Sans',sans-serif;font-size:.84rem;font-weight:500;cursor:pointer;text-align:left;transition:all .18s;margin-bottom:.1rem;}
+.nb i{width:.9rem;text-align:center;font-size:.82rem;flex-shrink:0;}
+.nb:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);}
+.nb.active{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;font-weight:600;box-shadow:0 4px 14px rgba(79,70,229,.4);}
+.nbadge{margin-left:auto;background:#ef4444;color:#fff;font-size:.6rem;font-weight:700;padding:.1rem .4rem;border-radius:100px;display:none;}
+.s-foot{padding:1.25rem 1.5rem;border-top:1px solid rgba(255,255,255,.07);}
+.s-user{display:flex;align-items:center;gap:.75rem;margin-bottom:.9rem;}
+.s-av{width:36px;height:36px;background:linear-gradient(135deg,var(--ac),var(--ac2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:.95rem;color:#fff;flex-shrink:0;box-shadow:0 4px 12px rgba(79,70,229,.4);}
+.s-uname{font-size:.84rem;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.s-urole{font-size:.66rem;color:rgba(255,255,255,.35);}
+.logout-btn{display:flex;align-items:center;gap:.5rem;color:rgba(255,255,255,.28);font-size:.78rem;cursor:pointer;background:none;border:none;font-family:'Plus Jakarta Sans',sans-serif;transition:color .18s;}
+.logout-btn:hover{color:#f87171;}
 
-    <!-- Firebase CDN (compat) -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-    <script src="firebase-config.js"></script>
+/* ── MAIN ── */
+main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+.topbar{padding:1.1rem 2rem;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center;background:var(--sur);position:sticky;top:0;z-index:10;}
+.tb-t{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--ink);}
+.tb-t em{font-style:italic;color:var(--ac);}
+.tb-r{display:flex;align-items:center;gap:.6rem;}
+.icon-btn{width:36px;height:36px;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mu);transition:all .18s;position:relative;}
+.icon-btn:hover{border-color:var(--ac);color:var(--ac);background:var(--al);}
+.ndot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--red);border-radius:50%;border:1.5px solid var(--sur);display:none;}
+.av-top{width:36px;height:36px;background:linear-gradient(135deg,var(--ac),var(--ac2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;color:#fff;font-size:.88rem;cursor:pointer;}
+/* Points chip in topbar */
+.pts-chip{display:flex;align-items:center;gap:.4rem;background:var(--gl);border:1px solid #fde68a;border-radius:100px;padding:.3rem .85rem;font-size:.78rem;font-weight:700;color:#92400e;cursor:pointer;transition:all .18s;}
+.pts-chip:hover{background:#fef3c7;}
+.pts-chip i{color:var(--gld);}
+
+.content-wrap{flex:1;overflow-y:auto;display:flex;justify-content:center;}
+.content{flex:1;padding:1.75rem 2rem;min-height:0;max-width:1200px;width:100%;}
+.sec{display:none;}
+.sec.active{display:block;animation:fu .3s ease both;}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── CARDS ── */
+.card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;}
+.ch{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.4rem;border-bottom:1px solid var(--bdr2);}
+.ch h3{font-size:.88rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:.5rem;}
+.ch h3 i{color:var(--ac);}
+.cb{padding:1.25rem 1.4rem;}
+.btn-sm{padding:.38rem .9rem;border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .18s;border:1.5px solid var(--al);background:var(--al);color:var(--ac);}
+.btn-sm:hover{background:var(--ac);color:#fff;border-color:var(--ac);}
+
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+.stat{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:1.2rem 1.4rem;box-shadow:var(--sh);transition:transform .2s,box-shadow .2s;}
+.stat:hover{transform:translateY(-2px);box-shadow:var(--sh2);}
+.stat-ic{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.9rem;margin-bottom:.9rem;}
+.stat-val{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--ink);line-height:1;margin-bottom:.25rem;}
+.stat-lbl{font-size:.72rem;color:var(--mu);font-weight:500;}
+
+.badge{display:inline-flex;align-items:center;gap:.28rem;padding:.26rem .65rem;border-radius:100px;font-size:.7rem;font-weight:600;}
+.bp{background:var(--gl);color:#92400e;}
+.ba{background:var(--grl);color:var(--grn);}
+.br{background:var(--rl);color:var(--red);}
+.bc{background:var(--bl);color:var(--blu);}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+
+/* ── MOTIVATION BANNER ── */
+.motiv{background:linear-gradient(135deg,var(--ac),var(--ac2));border-radius:var(--r);padding:1.4rem 1.75rem;display:flex;align-items:center;justify-content:space-between;box-shadow:0 8px 28px rgba(79,70,229,.22);margin-bottom:1.25rem;}
+.motiv-left .tag{font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:.35rem;}
+.motiv-left .text{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:#fff;line-height:1.35;}
+.motiv-left .author{font-size:.75rem;color:rgba(255,255,255,.6);margin-top:.3rem;}
+.motiv-icon{width:52px;height:52px;background:rgba(255,255,255,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;}
+
+/* ── STREAK ── */
+.streak-card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:1.25rem 1.4rem;box-shadow:var(--sh);}
+.streak-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.streak-num{display:flex;align-items:center;gap:.6rem;}
+.streak-flame{font-size:1.6rem;}
+.streak-count{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--org);line-height:1;}
+.streak-label{font-size:.78rem;color:var(--mu);font-weight:500;}
+.streak-days{display:grid;grid-template-columns:repeat(7,1fr);gap:.4rem;}
+.sd{display:flex;flex-direction:column;align-items:center;gap:.3rem;}
+.sd-name{font-size:.6rem;font-weight:700;text-transform:uppercase;color:var(--mu);}
+.sd-circle{width:32px;height:32px;border-radius:50%;border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:.78rem;color:var(--mu);font-weight:600;transition:all .2s;}
+.sd-circle.done{background:var(--grn);border-color:var(--grn);color:#fff;}
+.sd-circle.today{border-color:var(--ac);background:var(--ac);color:#fff;box-shadow:0 4px 10px rgba(79,70,229,.35);}
+.sd-circle.missed{background:var(--bdr);border-color:transparent;color:var(--mu);}
+
+/* ── APPT ── */
+.al{display:flex;flex-direction:column;gap:.7rem;}
+.ai{background:var(--sur2);border:1px solid var(--bdr);border-radius:10px;padding:1rem 1.15rem;display:flex;align-items:center;gap:1rem;transition:all .18s;}
+.ai:hover{box-shadow:var(--sh2);transform:translateY(-1px);border-color:#c7d2fe;}
+.ai-date{width:48px;height:48px;background:linear-gradient(135deg,var(--al),#ddd6fe);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;border:1px solid #c7d2fe;}
+.ai-date .d{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;color:var(--ac);line-height:1;}
+.ai-date .m{font-size:.58rem;color:var(--ac2);font-weight:600;text-transform:uppercase;}
+.ai-body{flex:1;min-width:0;}
+.ai-time{font-weight:700;font-size:.88rem;color:var(--ink);margin-bottom:.18rem;}
+.ai-note{font-size:.74rem;color:var(--mu);}
+.ai-act{display:flex;flex-direction:column;align-items:flex-end;gap:.35rem;flex-shrink:0;}
+.zoom-pill{display:flex;align-items:center;gap:.6rem;background:linear-gradient(135deg,#eff6ff,#eef2ff);border:1px solid #bfdbfe;border-radius:8px;padding:.6rem .9rem;margin-top:.5rem;}
+.zoom-pill i{color:var(--blu);font-size:.8rem;flex-shrink:0;}
+.zoom-pill a{color:var(--blu);font-size:.78rem;font-weight:600;text-decoration:none;word-break:break-all;}
+.zcopy{margin-left:auto;background:var(--blu);color:#fff;padding:.3rem .7rem;border-radius:6px;font-size:.7rem;font-weight:600;cursor:pointer;border:none;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;transition:all .18s;flex-shrink:0;}
+.zcopy:hover{background:#1d4ed8;}
+.zoom-soon{font-size:.73rem;color:var(--mu);margin-top:.4rem;display:flex;align-items:center;gap:.35rem;}
+.zoom-soon i{color:var(--gld);}
+.cancel-sm{padding:.32rem .7rem;background:var(--rl);color:var(--red);border:1px solid #fecaca;border-radius:6px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .18s;}
+.cancel-sm:hover{background:var(--red);color:#fff;}
+
+/* ── BOOKING ── */
+.book-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+.bcard{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:1.6rem;box-shadow:var(--sh);}
+.bcard h3{font-size:.9rem;font-weight:700;color:var(--ink);margin-bottom:1.25rem;display:flex;align-items:center;gap:.45rem;}
+.bcard h3 i{color:var(--ac);}
+.lbl{display:block;font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-bottom:.4rem;}
+.inp{width:100%;padding:.78rem 1rem;background:var(--sur2);border:1.5px solid var(--bdr);border-radius:8px;font-size:.87rem;font-family:'Plus Jakarta Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;margin-bottom:.95rem;}
+.inp:focus{border-color:var(--ac);background:#fff;box-shadow:0 0 0 3px rgba(79,70,229,.1);}
+textarea.inp{resize:vertical;min-height:85px;}
+.tslots{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.95rem;}
+.slot{padding:.68rem .5rem;background:var(--sur2);border:1.5px solid var(--bdr);border-radius:8px;font-size:.8rem;color:var(--mu);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .18s;text-align:center;font-weight:500;}
+.slot:hover{border-color:var(--ac);color:var(--ac);background:var(--al);}
+.slot.sel{border-color:var(--ac);background:var(--ac);color:#fff;font-weight:600;box-shadow:0 4px 12px rgba(79,70,229,.3);}
+.ibox{background:var(--bl);border:1px solid #bfdbfe;border-radius:8px;padding:.75rem 1rem;font-size:.78rem;color:#1e40af;margin-bottom:.95rem;}
+.ibox i{margin-right:.35rem;}
+.bsummary{background:var(--al);border:1.5px solid #c7d2fe;border-radius:8px;padding:.85rem 1rem;margin-bottom:.95rem;display:none;}
+.bsummary .slbl{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ac2);margin-bottom:.25rem;}
+.bsummary .sval{font-weight:700;font-size:.9rem;color:var(--ink);}
+.btn-sub{width:100%;padding:.88rem;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border:none;border-radius:8px;font-size:.85rem;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all .25s;box-shadow:0 4px 14px rgba(79,70,229,.3);}
+.btn-sub:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 24px rgba(79,70,229,.4);}
+.btn-sub:disabled{opacity:.38;cursor:not-allowed;box-shadow:none;}
+
+/* ── RESOURCES ── */
+.rfil{display:flex;gap:.5rem;margin-bottom:1.25rem;}
+.ftab{padding:.38rem .9rem;border-radius:100px;font-size:.78rem;font-weight:500;cursor:pointer;border:1.5px solid var(--bdr);background:var(--sur);color:var(--mu);font-family:'Plus Jakarta Sans',sans-serif;transition:all .18s;}
+.ftab.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.1rem;}
+.rc{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);transition:all .22s;}
+.rc:hover{transform:translateY(-4px);box-shadow:var(--sh3);border-color:#c7d2fe;}
+.rth{height:140px;position:relative;overflow:hidden;background:var(--bg);}
+.rth img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+.rc:hover .rth img{transform:scale(1.06);}
+.rth-ov{position:absolute;inset:0;background:rgba(79,70,229,.35);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;}
+.rc:hover .rth-ov{opacity:1;}
+.rth-ov i{color:#fff;font-size:1.8rem;}
+.rtag{position:absolute;top:.6rem;left:.6rem;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.22rem .55rem;border-radius:100px;}
+.rb{padding:1.1rem;}
+.rt{font-weight:700;font-size:.86rem;color:var(--ink);margin-bottom:.3rem;line-height:1.4;}
+.rd{font-size:.74rem;color:var(--mu);margin-bottom:.9rem;line-height:1.5;}
+.ract{display:flex;gap:.55rem;}
+.rbn{flex:1;padding:.52rem;border-radius:6px;font-size:.76rem;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .18s;text-align:center;text-decoration:none;display:block;border:none;}
+.rbn-p{background:var(--al);color:var(--ac);}
+.rbn-p:hover{background:var(--ac);color:#fff;}
+.rbn-s{background:var(--sur2);color:var(--mu);border:1px solid var(--bdr);}
+.rbn-s:hover{background:var(--bg);color:var(--ink);}
+
+/* ── NOTIFS ── */
+.nlist{display:flex;flex-direction:column;gap:.65rem;}
+.ni{display:flex;align-items:flex-start;gap:.9rem;padding:1rem 1.2rem;border:1px solid var(--bdr);border-radius:10px;background:var(--sur);transition:all .18s;}
+.ni.unread{background:linear-gradient(135deg,#fafbff,var(--al));border-color:#c7d2fe;}
+.ni:hover{box-shadow:var(--sh2);}
+.ndot-n{width:8px;height:8px;border-radius:50%;background:var(--ac);flex-shrink:0;margin-top:.38rem;}
+.ndot-n.r{background:var(--bdr);}
+.ntxt{flex:1;}
+.ntit{font-weight:700;font-size:.84rem;color:var(--ink);margin-bottom:.18rem;}
+.nbod{font-size:.77rem;color:var(--mu);line-height:1.55;}
+.ntim{font-size:.68rem;color:var(--mu);margin-top:.2rem;}
+
+/* ── PROFILE ── */
+.pg2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+.pav-lg{width:72px;height:72px;background:linear-gradient(135deg,var(--ac),var(--ac2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:#fff;box-shadow:0 8px 24px rgba(79,70,229,.3);}
+.ir{display:flex;justify-content:space-between;align-items:center;padding:.8rem 0;border-bottom:1px solid var(--bdr2);}
+.ir:last-child{border:none;}
+.ik{font-size:.75rem;color:var(--mu);font-weight:500;}
+.iv{font-size:.84rem;font-weight:700;color:var(--ink);}
+
+/* ── WORD GAME ── */
+.wg-board{display:flex;flex-direction:column;align-items:center;gap:.5rem;margin:1rem 0;}
+.wg-row{display:flex;gap:.4rem;}
+.wg-cell{width:52px;height:52px;border:2px solid var(--bdr);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:var(--ink);background:var(--sur);transition:all .3s;text-transform:uppercase;}
+.wg-cell.filled{border-color:var(--ink2);background:var(--sur2);}
+.wg-cell.correct{background:#22c55e;border-color:#16a34a;color:#fff;}
+.wg-cell.present{background:#f59e0b;border-color:#d97706;color:#fff;}
+.wg-cell.absent{background:#6b7280;border-color:#4b5563;color:#fff;}
+.wg-cell.active-row{border-color:var(--ac);background:var(--al);}
+.wg-cell.hint{background:var(--bl);border-color:#93c5fd;color:var(--blu);}
+@keyframes flip{0%{transform:rotateX(0);}50%{transform:rotateX(-90deg);}100%{transform:rotateX(0);}}
+.wg-cell.flip{animation:flip .5s ease;}
+@keyframes bounce{0%,100%{transform:translateY(0);}40%{transform:translateY(-8px);}60%{transform:translateY(-4px);}}
+.wg-cell.bounce{animation:bounce .5s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-6px);}40%,80%{transform:translateX(6px);}}
+.wg-row.shake{animation:shake .4s ease;}
+
+.kbd{display:flex;flex-direction:column;align-items:center;gap:.4rem;margin-top:1rem;}
+.kbd-row{display:flex;gap:.3rem;}
+.k{min-width:36px;height:44px;background:var(--ink2);color:#fff;border:none;border-radius:6px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .18s;padding:0 .5rem;}
+.k:hover{background:var(--ink);}
+.k.correct{background:#22c55e;}
+.k.present{background:#f59e0b;}
+.k.absent{background:#4b5563;}
+.k.wide{min-width:56px;font-size:.72rem;}
+
+/* Meaning modal */
+.meaning-box{background:linear-gradient(135deg,#f0f9ff,#eff6ff);border:1px solid #bfdbfe;border-radius:10px;padding:1.1rem 1.25rem;margin-top:.75rem;display:none;}
+.meaning-box.show{display:block;}
+.mb-word{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--ac);margin-bottom:.25rem;}
+.mb-type{font-size:.7rem;color:var(--mu);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;}
+.mb-def{font-size:.88rem;color:var(--ink2);line-height:1.6;margin-bottom:.5rem;}
+.mb-ex{font-size:.82rem;color:var(--mu);font-style:italic;border-left:2px solid var(--ac);padding-left:.75rem;}
+.mb-tr{font-size:.8rem;color:var(--grn);margin-top:.4rem;font-weight:600;}
+
+/* ── LEADERBOARD ── */
+.lb-list{display:flex;flex-direction:column;gap:.5rem;}
+.lb-item{display:flex;align-items:center;gap:.85rem;padding:.85rem 1rem;background:var(--sur2);border:1px solid var(--bdr);border-radius:10px;transition:all .18s;}
+.lb-item:hover{box-shadow:var(--sh2);border-color:#c7d2fe;}
+.lb-item.me{background:linear-gradient(135deg,var(--al),#f5f3ff);border-color:#c7d2fe;}
+.lb-rank{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;width:28px;text-align:center;flex-shrink:0;}
+.lb-rank.gold{color:#d97706;}
+.lb-rank.silver{color:#64748b;}
+.lb-rank.bronze{color:#92400e;}
+.lb-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;color:#fff;font-size:.85rem;flex-shrink:0;}
+.lb-name{flex:1;font-weight:600;font-size:.85rem;color:var(--ink);}
+.lb-pts{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--gld);}
+.lb-pts-label{font-size:.65rem;color:var(--mu);text-align:right;}
+.lb-crown{font-size:1rem;}
+
+/* MODAL */
+.mbg{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(6px);z-index:1000;display:none;align-items:center;justify-content:center;}
+.mbg.open{display:flex;}
+.modal{background:var(--sur);border:1px solid var(--bdr);border-radius:16px;padding:2rem;width:90%;max-width:400px;box-shadow:var(--sh3);}
+.modal h3{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:.45rem;color:var(--ink);}
+.modal p{color:var(--mu);font-size:.84rem;line-height:1.65;margin-bottom:1.5rem;}
+.mbtns{display:flex;gap:.75rem;}
+.mc{flex:1;padding:.72rem;background:var(--sur2);border:1.5px solid var(--bdr);color:var(--ink2);border-radius:8px;font-size:.84rem;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+.md{flex:1;padding:.72rem;background:var(--red);color:#fff;border:none;border-radius:8px;font-size:.84rem;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+.md:hover{background:#b91c1c;}
+
+/* POINTS POPUP */
+.pts-popup{position:fixed;top:5rem;right:2rem;background:linear-gradient(135deg,var(--gld),#d97706);color:#fff;padding:.65rem 1.2rem;border-radius:100px;font-size:.85rem;font-weight:700;z-index:9999;transform:translateY(-3rem);opacity:0;transition:all .4s;pointer-events:none;box-shadow:0 8px 24px rgba(245,158,11,.4);}
+.pts-popup.show{transform:translateY(0);opacity:1;}
+
+/* Streak popup modal */
+.streak-modal .streak-big{font-family:'Playfair Display',serif;font-size:4rem;font-weight:700;color:var(--org);text-align:center;line-height:1;}
+.streak-modal .streak-msg{text-align:center;color:var(--mu);font-size:.9rem;margin-top:.5rem;}
+.wg-status{text-align:center;padding:.5rem;font-size:.82rem;font-weight:600;border-radius:8px;margin-bottom:.5rem;min-height:2rem;}
+.wg-status.err{background:var(--rl);color:var(--red);}
+.wg-status.ok{background:var(--grl);color:var(--grn);}
+.wg-timer{font-size:.82rem;color:var(--mu);display:flex;align-items:center;gap:.35rem;}
+.wg-timer i{color:var(--ac);}
+
+.empty{text-align:center;padding:2.5rem 1rem;}
+.empty i{font-size:2.2rem;color:var(--bdr);margin-bottom:.75rem;display:block;}
+.empty p{font-size:.85rem;color:var(--mu);}
+
+#toast{position:fixed;bottom:2rem;right:2rem;color:#fff;padding:.85rem 1.4rem;border-radius:10px;font-size:.84rem;font-weight:600;z-index:9999;transform:translateY(5rem);opacity:0;transition:all .3s;pointer-events:none;box-shadow:var(--sh3);}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.s{background:var(--grn);}
+#toast.e{background:var(--red);}
+::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:3px;}
+
+/* ══ RESPONSIVE ══ */
+.mob-toggle{display:none;position:fixed;bottom:1.25rem;right:1.25rem;width:52px;height:52px;background:linear-gradient(135deg,var(--ac),var(--ac2));border-radius:50%;color:#fff;font-size:1.2rem;border:none;cursor:pointer;z-index:200;box-shadow:0 8px 24px rgba(79,70,229,.4);align-items:center;justify-content:center;transition:all .25s;}
+.mob-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:150;backdrop-filter:blur(3px);}
+.mob-overlay.open{display:block;}
+
+@media(max-width:1024px){
+  :root{--sw:220px;}
+  .stat-row{grid-template-columns:repeat(2,1fr);}
+  .book-grid{grid-template-columns:1fr;}
+  .content{padding:1.25rem;}
+  .motiv{flex-direction:column;gap:.75rem;}
+  .motiv-icon{display:none;}
+  .content-wrap{justify-content:flex-start;}
+}
+
+@media(max-width:768px){
+  body{overflow-x:hidden;}
+  aside{position:fixed;left:0;top:0;height:100%;width:280px;z-index:160;transform:translateX(-100%);transition:transform .3s ease;}
+  aside.mob-open{transform:translateX(0);}
+  main{width:100%;height:100vh;overflow:hidden;}
+  .content-wrap{overflow-y:auto;height:calc(100vh - 60px);}
+  .mob-toggle{display:flex;}
+  .topbar{padding:.85rem 1rem;}
+  .tb-t{font-size:1.1rem;}
+  .content{padding:1rem;}
+  .grid2,.grid3,.book-grid,.pg2{grid-template-columns:1fr;}
+  .stat-row{grid-template-columns:1fr 1fr;gap:.75rem;}
+  .streak-days{gap:.25rem;}
+  .sd-circle{width:28px;height:28px;font-size:.72rem;}
+  .sd-name{font-size:.55rem;}
+  .ai{flex-wrap:wrap;}
+  .ai-act{flex-direction:row;align-items:center;width:100%;justify-content:flex-end;}
+  .wg-cell{width:44px;height:44px;font-size:1rem;}
+  .k{min-width:28px;height:38px;font-size:.72rem;padding:0 .3rem;}
+  .k.wide{min-width:44px;font-size:.62rem;}
+  .modal{padding:1.4rem;max-width:calc(100% - 2rem);}
+  .motiv{padding:1rem;}
+  .motiv-left .text{font-size:1rem;}
+  .bcard{padding:1.1rem;}
+  .tslots{grid-template-columns:repeat(3,1fr);}
+  .res-grid{grid-template-columns:1fr 1fr;}
+  #toast{bottom:5rem;right:1rem;left:1rem;text-align:center;}
+  .pts-popup{right:1rem;left:1rem;text-align:center;}
+  .wg-board{overflow-x:auto;width:100%;}
+}
+
+@media(max-width:480px){
+  .res-grid{grid-template-columns:1fr;}
+  .wg-cell{width:38px;height:38px;font-size:.9rem;}
+  .k{min-width:22px;height:34px;font-size:.62rem;}
+  .kbd-row{gap:.18rem;}
+  .sd-circle{width:24px;height:24px;font-size:.65rem;}
+  .stat-row{grid-template-columns:1fr 1fr;}
+  .pts-chip span:last-child{display:none;}
+}
+
+@media(min-width:1400px){
+  :root{--sw:280px;}
+  .wg-cell{width:58px;height:58px;font-size:1.35rem;}
+  .content{max-width:1300px;padding:2rem 2.5rem;}
+}
+@media(min-width:1800px){
+  :root{--sw:300px;}
+  .content{max-width:1500px;padding:2rem 3rem;}
+}
+</style>
 </head>
-<body class="bg-gray-50 h-screen flex overflow-hidden">
+<body>
 
-    <aside class="w-72 bg-gray-900 text-white flex flex-col justify-between h-full shadow-2xl z-20 flex-shrink-0 transition-all">
-        <div>
-            <div class="p-8 flex items-center gap-3 border-b border-gray-800 bg-gray-900">
-                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/30">
-                    <i class="fas fa-graduation-cap text-xl text-white"></i>
-                </div>
-                <div>
-                    <h1 class="text-xl font-bold tracking-wide">EnglishPro</h1>
-                    <p class="text-[10px] text-gray-400 uppercase tracking-widest">Student Panel</p>
-                </div>
-            </div>
-            
-            <nav class="mt-8 px-4 space-y-2">
-                <button onclick="switchTab('profile', this)" class="w-full flex items-center px-4 py-4 text-gray-300 hover:bg-gray-800 hover:text-white rounded-xl transition active-menu text-left group">
-                    <span class="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center mr-3 group-hover:bg-blue-600 transition"><i class="fas fa-user-circle text-sm"></i></span>
-                    <span class="font-medium">Üyelik Bilgilerim</span>
-                </button>
-                <button onclick="switchTab('resources', this)" class="w-full flex items-center px-4 py-4 text-gray-300 hover:bg-gray-800 hover:text-white rounded-xl transition text-left group">
-                    <span class="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center mr-3 group-hover:bg-purple-600 transition"><i class="fas fa-book-open text-sm"></i></span>
-                    <span class="font-medium">Kaynaklar</span>
-                </button>
-                <button onclick="switchTab('booking', this)" class="w-full flex items-center px-4 py-4 text-gray-300 hover:bg-gray-800 hover:text-white rounded-xl transition text-left group">
-                    <span class="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center mr-3 group-hover:bg-green-600 transition"><i class="fas fa-calendar-alt text-sm"></i></span>
-                    <span class="font-medium">Randevu Al</span>
-                </button>
-                <button onclick="switchTab('packages', this)" class="w-full flex items-center px-4 py-4 text-gray-300 hover:bg-gray-800 hover:text-white rounded-xl transition text-left group">
-                    <span class="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center mr-3 group-hover:bg-orange-600 transition"><i class="fas fa-rocket text-sm"></i></span>
-                    <span class="font-medium">Paketler</span>
-                </button>
-                <button onclick="switchTab('contact', this)" class="w-full flex items-center px-4 py-4 text-gray-300 hover:bg-gray-800 hover:text-white rounded-xl transition text-left group">
-                    <span class="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center mr-3 group-hover:bg-pink-600 transition"><i class="fas fa-headset text-sm"></i></span>
-                    <span class="font-medium">İletişim</span>
-                </button>
-            </nav>
+<aside>
+  <div>
+    <div class="s-head">
+      <a href="index.html" class="s-logo">English<em>Pro</em></a>
+      <div class="s-sub">Öğrenci Paneli</div>
+    </div>
+    <div class="s-nav">
+      <div class="s-lbl">Menü</div>
+      <button class="nb active" onclick="go('home',this)"><i class="fas fa-home"></i> Genel Bakış</button>
+      <button class="nb" onclick="go('book',this)"><i class="fas fa-calendar-plus"></i> Randevu Talebi</button>
+      <button class="nb" id="nav-ma" onclick="go('myappts',this)"><i class="fas fa-calendar-check"></i> Randevularım</button>
+      <button class="nb" onclick="go('res',this)"><i class="fas fa-book-open"></i> Kaynaklar</button>
+      <button class="nb" onclick="go('game',this)"><i class="fas fa-gamepad"></i> Kelime Oyunu</button>
+      <div class="s-lbl">Hesap</div>
+      <button class="nb" onclick="go('lb',this)"><i class="fas fa-trophy"></i> Sıralama</button>
+      <button class="nb" id="nav-notif" onclick="go('notifs',this)"><i class="fas fa-bell"></i> Bildirimler <span class="nbadge" id="nbadge">0</span></button>
+      <button class="nb" onclick="go('profile',this)"><i class="fas fa-user"></i> Profilim</button>
+    </div>
+  </div>
+  <div class="s-foot">
+    <div class="s-user">
+      <div class="s-av" id="sav">S</div>
+      <div><div class="s-uname" id="sname">Yükleniyor...</div><div class="s-urole">Öğrenci</div></div>
+    </div>
+    <button class="logout-btn" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</button>
+  </div>
+</aside>
+
+<main>
+  <div class="topbar">
+    <div>
+      <div class="tb-t" id="tb-t">Genel <em>Bakış</em></div>
+      <div style="font-size:.76rem;color:var(--mu);margin-top:.1rem;" id="tb-s">Panelinize hoşgeldiniz.</div>
+    </div>
+    <div class="tb-r">
+      <div class="pts-chip" id="pts-chip" onclick="go('lb',document.querySelector('.nb:nth-child(6)'))">
+        <i class="fas fa-star"></i> <span id="pts-display">0</span> Puan
+      </div>
+      <div class="icon-btn" onclick="go('notifs',document.getElementById('nav-notif'))">
+        <i class="fas fa-bell"></i><div class="ndot" id="ndot"></div>
+      </div>
+      <div class="av-top" id="av-top">S</div>
+    </div>
+  </div>
+
+  <div class="content-wrap"><div class="content">
+
+    <!-- HOME -->
+    <div id="home" class="sec active">
+      <!-- Motivation Banner -->
+      <div class="motiv" id="motiv-banner">
+        <div class="motiv-left">
+          <div class="tag">💡 Günün Motivasyonu</div>
+          <div class="text" id="motiv-text">Harika işler yapılır...</div>
+          <div class="author" id="motiv-author"></div>
         </div>
-        
-        <div class="p-6 border-t border-gray-800 bg-gray-900">
-            <a href="#" onclick="logout()" class="flex items-center text-red-400 hover:text-red-300 transition group p-2 hover:bg-red-500/10 rounded-lg">
-                <i class="fas fa-sign-out-alt mr-3"></i>
-                <span class="font-medium">Güvenli Çıkış</span>
-            </a>
-        </div>
-    </aside>
+        <div class="motiv-icon">🚀</div>
+      </div>
 
-    <main class="flex-1 overflow-y-auto bg-[#f3f4f6] p-6 md:p-10 relative">
-        
-        <header class="flex justify-between items-center mb-10 fade-in">
-            <div>
-                <h2 class="text-2xl font-bold text-gray-800">Hoşgeldiniz, <span id="student-name" class="text-blue-600">Öğrenci</span> 👋</h2>
-                <p class="text-gray-500 text-sm">Bugün İngilizce hedeflerin için harika bir gün!</p>
+      <div class="grid2">
+        <!-- Streak -->
+        <div class="streak-card">
+          <div class="streak-top">
+            <div class="streak-num">
+              <div class="streak-flame">🔥</div>
+              <div>
+                <div class="streak-count" id="streak-count">0</div>
+                <div class="streak-label">Günlük Seri</div>
+              </div>
             </div>
-            <div class="flex items-center gap-4">
-                <div class="bg-white p-2 rounded-full shadow-sm text-gray-400">
-                    <i class="fas fa-bell"></i>
-                </div>
-                <div id="student-avatar" class="w-10 h-10 rounded-full bg-blue-100 border-2 border-blue-200 flex items-center justify-center text-blue-600 font-bold">
-                    S
-                </div>
-            </div>
-        </header>
-
-        <div id="profile" class="content-section max-w-6xl mx-auto fade-in">
-            <div class="grid md:grid-cols-2 gap-8 mb-8">
-                
-                <div id="package-card" class="rounded-3xl shadow-2xl relative overflow-hidden h-64 transition transform hover:scale-[1.01] duration-300">
-                    </div>
-
-                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-center h-64 p-8 relative overflow-hidden group">
-                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-gray-50 rounded-full group-hover:bg-blue-50 transition duration-500"></div>
-
-                    <div id="no-appointment-view" class="relative z-10">
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-500 shadow-sm">
-                                <i class="fas fa-calendar-times text-2xl"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-800">Planlanmış Ders Yok</h3>
-                                <p class="text-gray-400 text-xs">Takviminiz şu an boş görünüyor.</p>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 mb-6 text-sm leading-relaxed">Düzenli pratik yapmak gelişimin anahtarıdır. Müsait bir zaman seçin.</p>
-                        <button onclick="switchTab('booking', document.querySelector('button[onclick*=\'booking\']'))" class="w-full bg-gray-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-gray-800 transition shadow-lg shadow-gray-200">
-                            <i class="fas fa-plus mr-2"></i> Yeni Randevu Oluştur
-                        </button>
-                    </div>
-
-                    <div id="appointment-booked-view" class="hidden relative z-10">
-                        <div class="flex items-center justify-between mb-6">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center text-green-600 shadow-inner">
-                                    <i class="fas fa-video"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-gray-800 text-lg">Online Ders</h3>
-                                    <p class="text-green-600 text-xs font-bold bg-green-50 px-2 py-1 rounded-md inline-block">Onaylandı</p>
-                                </div>
-                            </div>
-                            <button onclick="openCancelModal()" class="text-red-500 hover:text-white hover:bg-red-500 transition px-3 py-2 rounded-lg text-xs font-bold border border-red-100">
-                                İptal Et
-                            </button>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex justify-between items-center">
-                            <div>
-                                <p class="text-xs text-gray-400 uppercase font-bold mb-1">Tarih & Saat</p>
-                                <p class="text-lg font-bold text-gray-800" id="booked-time-slot">--</p>
-                            </div>
-                            <div class="text-right">
-                                <a href="#" class="text-blue-600 text-sm font-bold hover:underline">Linke Git <i class="fas fa-external-link-alt ml-1"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                    <p class="text-gray-400 text-xs">Tamamlanan Ders</p>
-                    <p class="text-2xl font-bold text-gray-800">12</p>
-                </div>
-                <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                    <p class="text-gray-400 text-xs">Video İzleme</p>
-                    <p class="text-2xl font-bold text-gray-800">8.5 Sa</p>
-                </div>
-                <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                    <p class="text-gray-400 text-xs">Sınav Puanı</p>
-                    <p class="text-2xl font-bold text-gray-800">85</p>
-                </div>
-                <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                    <p class="text-gray-400 text-xs">Seviye</p>
-                    <p class="text-2xl font-bold text-gray-800">B2</p>
-                </div>
-            </div>
+            <div style="font-size:.75rem;color:var(--mu);">Bu Hafta</div>
+          </div>
+          <div class="streak-days" id="streak-days"></div>
         </div>
 
-        <div id="resources" class="content-section hidden-section max-w-7xl mx-auto fade-in">
-            <div class="flex justify-between items-end mb-8">
-                <div>
-                    <h2 class="text-3xl font-bold text-gray-800">Kütüphane</h2>
-                    <p class="text-gray-500">Seviyenize uygun hazırlanmış materyaller.</p>
-                </div>
-                <div class="flex gap-2">
-                    <button class="px-4 py-2 bg-white rounded-lg text-sm font-bold shadow-sm text-blue-600 border border-blue-100">Tümü</button>
-                    <button class="px-4 py-2 bg-transparent rounded-lg text-sm font-medium text-gray-500 hover:bg-gray-200">Videolar</button>
-                    <button class="px-4 py-2 bg-transparent rounded-lg text-sm font-medium text-gray-500 hover:bg-gray-200">PDF</button>
-                </div>
+        <!-- Stats -->
+        <div class="card">
+          <div class="ch"><h3><i class="fas fa-chart-bar"></i> İstatistikler</h3></div>
+          <div class="cb" style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+            <div style="text-align:center;padding:.6rem;background:var(--al);border-radius:8px;">
+              <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--ac);" id="hs-total">0</div>
+              <div style="font-size:.7rem;color:var(--mu);">Toplam Randevu</div>
             </div>
-
-            <div id="resource-cards" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Firestore'dan dinamik olarak doldurulacak -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-2xl transition duration-300 group hidden" id="resource-card-template">
-                    <div class="h-48 bg-gray-900 relative cursor-pointer overflow-hidden">
-                        <img src="" class="w-full h-full object-cover opacity-70 group-hover:scale-105 transition duration-700 resource-image">
-                        <span class="absolute top-4 left-4 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider resource-tag">Kaynak</span>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="w-14 h-14 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center group-hover:scale-110 transition border border-white/30">
-                                <i class="fas fa-play text-xl text-white ml-1 resource-icon"></i>
-                            </div>
-                        </div>
-                        <span class="absolute bottom-3 right-3 bg-black/60 backdrop-blur text-white text-xs px-2 py-1 rounded font-mono resource-badge"></span>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-bold text-lg text-gray-800 mb-2 leading-tight resource-title">Başlık</h3>
-                        <p class="text-sm text-gray-500 mb-6 line-clamp-2 resource-desc">Admin tarafından eklenen kaynak.</p>
-                        <div class="grid grid-cols-2 gap-3">
-                            <a target="_blank" class="bg-blue-50 text-blue-600 py-2.5 rounded-xl text-sm font-bold hover:bg-blue-100 transition flex items-center justify-center resource-primary-btn">
-                                <span class="resource-primary-text">Aç</span>
-                            </a>
-                            <a target="_blank" class="border border-gray-200 text-gray-600 py-2.5 rounded-xl text-sm font-bold hover:bg-gray-50 transition flex items-center justify-center resource-secondary-btn">
-                                <i class="fas fa-download mr-2 text-gray-400"></i> <span class="resource-secondary-text">İndir</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+            <div style="text-align:center;padding:.6rem;background:var(--grl);border-radius:8px;">
+              <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--grn);" id="hs-ok">0</div>
+              <div style="font-size:.7rem;color:var(--mu);">Onaylanan</div>
             </div>
+            <div style="text-align:center;padding:.6rem;background:var(--gl);border-radius:8px;">
+              <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:#d97706;" id="hs-pend">0</div>
+              <div style="font-size:.7rem;color:var(--mu);">Bekleyen</div>
+            </div>
+            <div style="text-align:center;padding:.6rem;background:#f3e8ff;border-radius:8px;">
+              <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--ac2);" id="hs-pts">0</div>
+              <div style="font-size:.7rem;color:var(--mu);">Puan</div>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div id="booking" class="content-section hidden-section max-w-6xl mx-auto fade-in">
-            
-            <div class="flex items-center justify-center mb-10">
-                <div class="flex items-center">
-                    <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold shadow-lg shadow-blue-300">1</div>
-                    <span class="ml-3 font-bold text-gray-800">Tarih Seç</span>
-                </div>
-                <div class="w-20 h-1 bg-gray-200 mx-4 rounded-full"></div>
-                <div class="flex items-center opacity-50">
-                    <div class="w-10 h-10 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center font-bold">2</div>
-                    <span class="ml-3 font-medium text-gray-500">Saat Onayla</span>
-                </div>
-            </div>
-
-            <div class="flex flex-col lg:flex-row gap-8">
-                <div class="bg-white p-8 rounded-3xl shadow-sm flex-1 border border-gray-100">
-                    <h3 class="font-bold text-lg mb-6 text-gray-800 flex items-center"><i class="far fa-calendar-alt mr-2 text-blue-500"></i> Takvim</h3>
-                    <div class="relative">
-                        <input type="date" id="datePicker" class="w-full p-4 pl-12 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-lg text-gray-700 bg-gray-50 transition" onchange="generateTimeSlots()">
-                        <i class="fas fa-chevron-down absolute right-4 top-5 text-gray-400 pointer-events-none"></i>
-                        <i class="fas fa-calendar absolute left-4 top-5 text-gray-400"></i>
-                    </div>
-                    <p class="mt-6 text-sm text-gray-500 bg-blue-50 p-4 rounded-xl text-blue-800"><i class="fas fa-info-circle mr-1"></i> Tüm yıl boyunca dilediğiniz günü seçebilirsiniz.</p>
-                </div>
-
-                <div class="bg-white p-8 rounded-3xl shadow-sm w-full lg:w-96 border border-gray-100 flex flex-col">
-                    <h3 class="font-bold text-lg mb-6 text-gray-800 flex items-center"><i class="far fa-clock mr-2 text-blue-500"></i> Müsait Saatler</h3>
-                    
-                    <div id="time-slots-container" class="space-y-3 flex-1 overflow-y-auto max-h-80 pr-2">
-                        <div class="text-center py-10 opacity-50">
-                            <i class="fas fa-mouse-pointer text-4xl text-gray-300 mb-3"></i>
-                            <p class="text-gray-400 text-sm">Lütfen soldan bir tarih seçin.</p>
-                        </div>
-                    </div>
-
-                    <button onclick="confirmBooking()" class="w-full mt-6 bg-gray-900 text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg" id="confirm-booking-btn" disabled>
-                        Randevuyu Onayla
-                    </button>
-                </div>
-            </div>
+      <!-- Next appointment + Recent -->
+      <div class="grid2">
+        <div class="card">
+          <div class="ch"><h3><i class="fas fa-star"></i> Yaklaşan Dersim</h3><button class="btn-sm" onclick="go('book',document.querySelectorAll('.nb')[1])">+ Yeni Talep</button></div>
+          <div class="cb" id="next-body"><div class="empty" style="padding:1.25rem;"><i class="fas fa-calendar-times"></i><p>Onaylı dersiniz yok.</p></div></div>
         </div>
-
-        <div id="packages" class="content-section hidden-section max-w-6xl mx-auto fade-in">
-            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Planınızı Yükseltin</h2>
-            <div class="grid md:grid-cols-3 gap-6">
-                 <div class="bg-white border border-gray-100 p-8 rounded-3xl hover:shadow-2xl transition transform hover:-translate-y-2 duration-300">
-                    <h3 class="font-bold text-xl mb-2 text-gray-500">Standart</h3>
-                    <div class="text-4xl font-bold text-gray-800 mb-6">₺499<span class="text-sm font-normal text-gray-400">/ay</span></div>
-                    <ul class="space-y-3 mb-8 text-sm text-gray-600">
-                        <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i> PDF Kaynaklar</li>
-                        <li class="flex items-center"><i class="fas fa-check text-green-500 mr-3"></i> Video Erişim</li>
-                        <li class="flex items-center opacity-50"><i class="fas fa-times text-gray-300 mr-3"></i> Birebir Ders</li>
-                    </ul>
-                    <button class="w-full bg-gray-100 text-gray-800 py-3 rounded-xl font-bold hover:bg-gray-200 transition">Mevcut</button>
-                </div>
-                 <div class="bg-white border-2 border-blue-600 p-8 rounded-3xl relative hover:shadow-2xl transition transform hover:-translate-y-2 duration-300 shadow-blue-200 shadow-lg">
-                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-4 py-1 text-xs font-bold rounded-full uppercase tracking-wider shadow-lg">En Popüler</div>
-                    <h3 class="font-bold text-xl mb-2 text-blue-600">Pro Master</h3>
-                    <div class="text-4xl font-bold text-gray-800 mb-6">₺1200<span class="text-sm font-normal text-gray-400">/ay</span></div>
-                     <ul class="space-y-3 mb-8 text-sm text-gray-600">
-                        <li class="flex items-center"><i class="fas fa-check text-blue-500 mr-3"></i> Tüm Kaynaklar</li>
-                        <li class="flex items-center"><i class="fas fa-check text-blue-500 mr-3"></i> <strong>Ayda 2 Özel Ders</strong></li>
-                        <li class="flex items-center"><i class="fas fa-check text-blue-500 mr-3"></i> Öncelikli Destek</li>
-                    </ul>
-                    <button onclick="buyPackage('Pro Master', '₺1200')" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-500/30">Hemen Yükselt</button>
-                </div>
-                 <div class="bg-white border border-gray-100 p-8 rounded-3xl hover:shadow-2xl transition transform hover:-translate-y-2 duration-300">
-                    <h3 class="font-bold text-xl mb-2 text-purple-600">VIP Özel</h3>
-                    <div class="text-4xl font-bold text-gray-800 mb-6">₺2500<span class="text-sm font-normal text-gray-400">/ay</span></div>
-                    <ul class="space-y-3 mb-8 text-sm text-gray-600">
-                        <li class="flex items-center"><i class="fas fa-check text-purple-500 mr-3"></i> Sınırsız Kaynak</li>
-                        <li class="flex items-center"><i class="fas fa-check text-purple-500 mr-3"></i> <strong>Haftalık Koçluk</strong></li>
-                        <li class="flex items-center"><i class="fas fa-check text-purple-500 mr-3"></i> WhatsApp Hattı</li>
-                    </ul>
-                    <button onclick="buyPackage('VIP Özel', '₺2500')" class="w-full bg-purple-50 text-purple-600 bg-purple-50 border border-purple-100 py-3 rounded-xl font-bold hover:bg-purple-100 transition">Başvur</button>
-                </div>
+        <div class="card">
+          <div class="ch"><h3><i class="fas fa-gamepad"></i> Kelime Oyunu</h3><button class="btn-sm" onclick="go('game',document.querySelectorAll('.nb')[4])">Oyna →</button></div>
+          <div class="cb">
+            <div style="display:flex;align-items:center;gap:1rem;">
+              <div style="width:56px;height:56px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">🎮</div>
+              <div>
+                <div style="font-weight:700;font-size:.9rem;color:var(--ink);margin-bottom:.25rem;">İngilizce Kelime Avı</div>
+                <div style="font-size:.78rem;color:var(--mu);line-height:1.5;">Her gün yeni bir İngilizce kelimeyi tahmin et, anlam ve kullanımını öğren!</div>
+                <div style="margin-top:.5rem;font-size:.72rem;font-weight:600;color:var(--ac);" id="game-status-mini">🎯 Bugünkü kelimeyi tahmin ettin mi?</div>
+              </div>
             </div>
+          </div>
         </div>
-
-        <div id="contact" class="content-section hidden-section max-w-6xl mx-auto fade-in">
-            <h2 class="text-3xl font-bold text-gray-800 mb-8">Yardım Merkezi</h2>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="space-y-6">
-                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center transition hover:shadow-md">
-                        <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 text-2xl mr-6">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div>
-                            <p class="text-gray-400 text-xs font-bold uppercase">E-posta Desteği</p>
-                            <p class="text-xl font-bold text-gray-800">support@englishpro.com</p>
-                            <p class="text-gray-500 text-sm mt-1">Ortalama yanıt süresi: 2 saat</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center transition hover:shadow-md">
-                        <div class="w-14 h-14 bg-green-50 rounded-2xl flex items-center justify-center text-green-600 text-2xl mr-6">
-                            <i class="fab fa-whatsapp"></i>
-                        </div>
-                        <div>
-                            <p class="text-gray-400 text-xs font-bold uppercase">WhatsApp Hattı</p>
-                            <p class="text-xl font-bold text-gray-800">+90 555 123 45 67</p>
-                            <p class="text-gray-500 text-sm mt-1">Hafta içi 09:00 - 18:00</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
-                    <h3 class="font-bold text-lg mb-4 text-gray-800">Hızlı Mesaj Gönder</h3>
-                    <form onsubmit="event.preventDefault(); alert('Mesajınız iletildi!');">
-                        <div class="mb-4">
-                            <label class="block text-gray-500 text-sm mb-2">Konu</label>
-                            <select class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 outline-none focus:border-blue-500">
-                                <option>Teknik Destek</option>
-                                <option>Ders Programı Hakkında</option>
-                                <option>Ödeme Sorunu</option>
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-gray-500 text-sm mb-2">Mesajınız</label>
-                            <textarea class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 outline-none focus:border-blue-500 h-24" placeholder="Size nasıl yardımcı olabiliriz?"></textarea>
-                        </div>
-                        <button class="w-full bg-blue-900 text-white py-3 rounded-xl font-bold hover:bg-blue-800 transition">Gönder</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <div id="cancelModal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center fade-in">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full text-center border-4 border-white">
-            <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center text-red-500 mx-auto mb-6 animate-pulse">
-                <i class="fas fa-trash-alt text-3xl"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-gray-800 mb-2">Emin misiniz?</h3>
-            <p class="text-gray-500 mb-8 leading-relaxed">Bu randevuyu iptal ederseniz, bu saat başkası tarafından alınabilir.</p>
-            <div class="flex gap-4">
-                <button onclick="closeCancelModal()" class="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-bold hover:bg-gray-200 transition">Vazgeç</button>
-                <button onclick="confirmCancel()" class="flex-1 py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition shadow-lg shadow-red-200">Evet, İptal</button>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <script>
-        // --- 1. Auth Başlangıç ---
-        document.addEventListener('DOMContentLoaded', () => {
-            auth.onAuthStateChanged(async (user) => {
-                if (!user) {
-                    window.location.href = 'login.html';
-                    return;
-                }
+    <!-- BOOKING -->
+    <div id="book" class="sec">
+      <div class="book-grid">
+        <div class="bcard">
+          <h3><i class="far fa-calendar-alt"></i> Tarih & Saat Seç</h3>
+          <label class="lbl">Tarih</label>
+          <input type="date" class="inp" id="bdate" onchange="genSlots()">
+          <label class="lbl">Müsait Saatler</label>
+          <div class="tslots" id="tslots"><div style="grid-column:1/-1;text-align:center;padding:.9rem;font-size:.8rem;color:var(--mu);background:var(--sur2);border-radius:8px;"><i class="fas fa-arrow-up" style="margin-right:.4rem;"></i>Önce tarih seçin</div></div>
+          <div class="ibox"><i class="fas fa-info-circle"></i>Talebiniz admin onayına gönderilir. Onaylanınca Zoom linki iletilir.</div>
+        </div>
+        <div class="bcard">
+          <h3><i class="fas fa-pencil-alt"></i> Detaylar</h3>
+          <label class="lbl">Konu / Not <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--mu);">(isteğe bağlı)</span></label>
+          <textarea class="inp" id="bnote" placeholder="Ör: İş İngilizcesi, sunum hazırlığı..."></textarea>
+          <label class="lbl">Seviyeniz</label>
+          <select class="inp" id="blevel"><option value="">Seçin</option><option>Başlangıç (A1-A2)</option><option>Orta (B1-B2)</option><option>İleri (C1-C2)</option></select>
+          <div class="bsummary" id="bsummary"><div class="slbl">Seçiminiz</div><div class="sval" id="bsum"></div></div>
+          <button id="btn-sub" class="btn-sub" onclick="submitBooking()" disabled><i class="fas fa-paper-plane"></i> Randevu Talebi Gönder</button>
+        </div>
+      </div>
+    </div>
 
-                const nameSpan = document.getElementById('student-name');
-                const avatar = document.getElementById('student-avatar');
-                const displayName = user.displayName || (user.email ? user.email.split('@')[0] : 'Öğrenci');
+    <!-- MY APPTS -->
+    <div id="myappts" class="sec">
+      <div id="mal"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Yükleniyor...</p></div></div>
+    </div>
 
-                const isAdmin = Array.isArray(window.ADMIN_EMAILS) && window.ADMIN_EMAILS.includes(user.email);
-                nameSpan.textContent = isAdmin ? (displayName + ' (Admin)') : displayName;
-                avatar.textContent = displayName.charAt(0).toUpperCase();
+    <!-- RESOURCES -->
+    <div id="res" class="sec">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);">Kütüphane</div>
+        <div class="rfil"><button class="ftab active" onclick="fRes('all',this)">Tümü</button><button class="ftab" onclick="fRes('video',this)">Video</button><button class="ftab" onclick="fRes('pdf',this)">PDF</button></div>
+      </div>
+      <div id="rgrid" class="res-grid"><div class="empty" style="grid-column:1/-1;"><i class="fas fa-spinner fa-spin"></i><p>Yükleniyor...</p></div></div>
+    </div>
 
-                // Tarih seçim alanı için 1 yıllık dinamik aralık ayarla
-                const dateInput = document.getElementById('datePicker');
-                if (dateInput) {
-                    const today = new Date();
-                    const nextYear = new Date();
-                    nextYear.setFullYear(today.getFullYear() + 1);
-                    const toIso = (d) => d.toISOString().split('T')[0];
-                    dateInput.min = toIso(today);
-                    dateInput.max = toIso(nextYear);
-                }
+    <!-- WORD GAME -->
+    <div id="game" class="sec">
+      <div style="max-width:520px;margin:0 auto;">
+        <div class="card" style="margin-bottom:1.25rem;">
+          <div class="ch">
+            <h3><i class="fas fa-gamepad"></i> Kelime Avı — İngilizce</h3>
+            <div class="wg-timer"><i class="far fa-clock"></i><span id="wg-timer">—</span></div>
+          </div>
+          <div class="cb">
+            <div class="wg-status" id="wg-status"></div>
+            <div class="wg-board" id="wg-board"></div>
+            <div class="kbd" id="wg-kbd"></div>
+            <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:center;">
+              <button class="btn-sm" id="hint-btn" onclick="useHint()" style="background:var(--bl);color:var(--blu);border-color:#bfdbfe;"><i class="fas fa-lightbulb"></i> İpucu Al (+10sn)</button>
+              <button class="btn-sm" id="meaning-btn" onclick="toggleMeaning()" style="background:#f3e8ff;color:var(--ac2);border-color:#ddd6fe;display:none;"><i class="fas fa-book"></i> Anlam & Kullanım</button>
+            </div>
+            <div class="meaning-box" id="meaning-box"></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-                // Kullanıcı bilgisinden paket bilgisini çek
-                let currentPackage = 'Standart Paket';
-                try {
-                    const userDoc = await db.collection('users').doc(user.uid).get();
-                    if (userDoc.exists) {
-                        const data = userDoc.data();
-                        if (data.currentPackage) {
-                            currentPackage = data.currentPackage;
-                        }
-                    }
-                } catch (e) {
-                    console.warn('Paket bilgisi okunamadı:', e);
-                }
+    <!-- LEADERBOARD -->
+    <div id="lb" class="sec">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);">🏆 Sıralama</div>
+        <div style="font-size:.78rem;color:var(--mu);">Tüm kullanıcılar arasında</div>
+      </div>
+      <!-- My rank highlight -->
+      <div id="my-rank-card" style="background:linear-gradient(135deg,var(--ac),var(--ac2));border-radius:var(--r);padding:1.1rem 1.4rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:0 8px 24px rgba(79,70,229,.25);">
+        <div style="font-size:1.5rem;">🌟</div>
+        <div style="flex:1;"><div style="font-size:.72rem;color:rgba(255,255,255,.7);margin-bottom:.2rem;">Sıralamanız</div><div id="my-rank-text" style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;color:#fff;">Yükleniyor...</div></div>
+        <div style="text-align:right;"><div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:#fbbf24;" id="my-pts-big">0</div><div style="font-size:.7rem;color:rgba(255,255,255,.65);">puan</div></div>
+      </div>
+      <div class="card">
+        <div class="ch"><h3><i class="fas fa-list-ol"></i> Tüm Sıralama</h3><button class="btn-sm" onclick="loadLB()"><i class="fas fa-rotate-right"></i> Yenile</button></div>
+        <div class="cb" id="lb-list"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Yükleniyor...</p></div></div>
+      </div>
+    </div>
 
-                const packageCard = document.getElementById('package-card');
+    <!-- NOTIFS -->
+    <div id="notifs" class="sec">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;">Bildirimler</div>
+        <button class="ftab" onclick="markRead()">Tümünü Okundu İşaretle</button>
+      </div>
+      <div class="nlist" id="nlist"><div class="empty"><i class="fas fa-bell-slash"></i><p>Bildirim yok.</p></div></div>
+    </div>
 
-                if (isAdmin) {
-                    // Admin görünümü
-                    packageCard.className = "bg-gradient-to-br from-red-700 to-orange-600 rounded-3xl shadow-2xl relative overflow-hidden h-64 p-8 text-white flex flex-col justify-between";
-                    packageCard.innerHTML = `
-                        <div class="absolute top-0 right-0 p-0 opacity-10 transform translate-x-10 -translate-y-10">
-                            <i class="fas fa-crown text-[150px] text-white"></i>
-                        </div>
-                        <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/20 to-transparent"></div>
-                        
-                        <div class="relative z-10 flex justify-between items-start">
-                            <div>
-                                <p class="text-orange-200 text-xs font-bold uppercase tracking-widest mb-1">Admin Hesabı</p>
-                                <h3 class="text-3xl font-bold text-white tracking-tight">Tüm Sisteme Erişim</h3>
-                            </div>
-                            <i class="fas fa-user-shield text-white/70"></i>
-                        </div>
+    <!-- PROFILE -->
+    <div id="profile" class="sec">
+      <div class="pg2">
+        <div class="card"><div class="cb">
+          <div style="display:flex;align-items:center;gap:1.2rem;margin-bottom:1.5rem;">
+            <div class="pav-lg" id="pav">S</div>
+            <div><div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;" id="pname">—</div><div style="font-size:.8rem;color:var(--mu);" id="pemail">—</div></div>
+          </div>
+          <div class="ir"><span class="ik">Ad Soyad</span><span class="iv" id="pn">—</span></div>
+          <div class="ir"><span class="ik">E-posta</span><span class="iv" id="pe">—</span></div>
+          <div class="ir"><span class="ik">Durum</span><span class="iv"><span class="badge ba">Aktif Öğrenci</span></span></div>
+          <div class="ir"><span class="ik">Toplam Puan</span><span class="iv" style="color:var(--gld);" id="p-pts">0 ⭐</span></div>
+        </div></div>
+        <div class="card"><div class="ch"><h3><i class="fas fa-chart-bar"></i> İstatistikler</h3></div><div class="cb">
+          <div class="ir"><span class="ik">Toplam Randevu</span><span class="iv" id="ps-t">0</span></div>
+          <div class="ir"><span class="ik">Onaylanan</span><span class="iv" id="ps-ok">0</span></div>
+          <div class="ir"><span class="ik">Bekleyen</span><span class="iv" id="ps-p">0</span></div>
+          <div class="ir"><span class="ik">Kelime Oyunu</span><span class="iv" id="ps-wg">0 kez</span></div>
+          <div class="ir"><span class="ik">Giriş Serisi</span><span class="iv" id="ps-streak">0 gün 🔥</span></div>
+        </div></div>
+      </div>
+    </div>
 
-                        <div class="relative z-10">
-                             <div class="flex items-end gap-2 mb-4">
-                                <span class="text-4xl font-mono text-white/90">ADMIN</span>
-                                <span class="text-xs font-semibold bg-white/20 px-3 py-1 rounded-full uppercase tracking-wider">Kontrol Paneli</span>
-                             </div>
-                             <div class="flex justify-between items-end">
-                                <div>
-                                    <p class="text-[10px] text-orange-100 uppercase">Hesap Sahibi</p>
-                                    <p class="font-bold tracking-wide">${displayName.toUpperCase()}</p>
-                                </div>
-                                <a href="admin.html" class="bg-white/10 backdrop-blur border border-white/20 px-4 py-2 rounded-lg text-xs font-bold hover:bg-white/20 transition flex items-center gap-2">
-                                    <i class="fas fa-arrow-right"></i> Admin Paneline Git
-                                </a>
-                             </div>
-                        </div>
-                    `;
-                } else {
-                    // Normal öğrenci görünümü
-                    packageCard.className = "bg-gradient-to-br from-[#0f172a] to-[#1e3a8a] rounded-3xl shadow-2xl relative overflow-hidden h-64 p-8 text-white flex flex-col justify-between";
-                    packageCard.innerHTML = `
-                        <div class="absolute top-0 right-0 p-0 opacity-10 transform translate-x-10 -translate-y-10">
-                            <i class="fas fa-graduation-cap text-[150px] text-white"></i>
-                        </div>
-                        <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/20 to-transparent"></div>
-                        
-                        <div class="relative z-10 flex justify-between items-start">
-                            <div>
-                                <p class="text-blue-200 text-xs font-bold uppercase tracking-widest mb-1">Mevcut Üyelik</p>
-                                <h3 class="text-3xl font-bold text-white tracking-tight">${currentPackage}</h3>
-                            </div>
-                            <i class="fas fa-wifi text-white/50 transform rotate-90"></i>
-                        </div>
+  </div></div>
+</main>
 
-                        <div class="relative z-10">
-                             <div class="flex items-end gap-2 mb-4">
-                                <span class="text-4xl font-mono text-white/90">.... .... ....</span>
-                                <span class="text-xl font-mono text-white">4582</span>
-                             </div>
-                             <div class="flex justify-between items-end">
-                                <div>
-                                    <p class="text-[10px] text-blue-200 uppercase">Üye Sahibi</p>
-                                    <p class="font-bold tracking-wide">${displayName.toUpperCase()}</p>
-                                </div>
-                                <button onclick="switchTab('packages', document.querySelector('button[onclick*=\\'packages\\']'))" class="bg-white/10 backdrop-blur border border-white/20 px-4 py-2 rounded-lg text-xs font-bold hover:bg-white/20 transition">Yükselt</button>
-                             </div>
-                        </div>
-                    `;
-                }
+<!-- Cancel Modal -->
+<div class="mbg" id="cmod">
+  <div class="modal">
+    <h3>Talebi İptal Et</h3>
+    <p>Bu randevu talebini iptal etmek istediğinizden emin misiniz?</p>
+    <div class="mbtns"><button class="mc" onclick="closeMod()">Vazgeç</button><button class="md" onclick="doCancel()">İptal Et</button></div>
+  </div>
+</div>
 
-                // Kaynakları Firestore'dan çek
-                loadResourcesFromFirestore();
-            });
-        });
+<!-- Streak Modal -->
+<div class="mbg" id="streak-mod">
+  <div class="modal streak-modal" style="text-align:center;position:relative;">
+    <!-- Close button -->
+    <button onclick="closeMod()" style="position:absolute;top:.75rem;right:.75rem;width:32px;height:32px;background:var(--sur2);border:1px solid var(--bdr);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mu);font-size:.9rem;transition:all .18s;line-height:1;" onmouseover="this.style.background='var(--rl)';this.style.color='var(--red)'" onmouseout="this.style.background='var(--sur2)';this.style.color='var(--mu)'">✕</button>
+    <div style="font-size:3rem;margin-bottom:.5rem;">🔥</div>
+    <div class="streak-big" id="sm-count">1</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-top:.5rem;">Günlük Giriş Serisi!</div>
+    <div class="streak-msg" id="sm-msg">Sürekli gelişim için geri gelmeye devam et!</div>
+    <div style="margin-top:1.5rem;" id="sm-days"></div>
+    <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--bdr2);">
+      <div style="font-size:.82rem;color:var(--mu);margin-bottom:.75rem;font-weight:600;">🎮 Kelime Avı — Bugünün Oyunu Seni Bekliyor!</div>
+      <button class="btn-sub" onclick="closeMod();go('game',document.querySelectorAll('.nb')[4])">Hemen Başla →</button>
+    </div>
+  </div>
+</div>
 
-        function logout() {
-            auth.signOut().then(() => {
-                window.location.href = 'index.html';
-            });
-        }
+<div class="pts-popup" id="pts-popup"></div>
+<div id="toast"></div>
+<div class="mob-overlay" id="mob-overlay" onclick="closeSidebar()"></div>
+<button class="mob-toggle" id="mob-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
 
-        // --- 2. Sekme Fonksiyonları ---
-        function switchTab(sectionId, btnElement) {
-            document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden-section'));
-            const target = document.getElementById(sectionId);
-            target.classList.remove('hidden-section');
-            target.classList.add('fade-in'); // Animasyon ekle
+<script>
+function toggleSidebar(){
+  const aside=document.querySelector('aside');
+  const overlay=document.getElementById('mob-overlay');
+  const btn=document.getElementById('mob-toggle');
+  aside.classList.toggle('mob-open');
+  overlay.classList.toggle('open');
+  btn.innerHTML=aside.classList.contains('mob-open')?'<i class="fas fa-times"></i>':'<i class="fas fa-bars"></i>';
+}
+function closeSidebar(){
+  const aside=document.querySelector('aside');
+  aside.classList.remove('mob-open');
+  document.getElementById('mob-overlay').classList.remove('open');
+  document.getElementById('mob-toggle').innerHTML='<i class="fas fa-bars"></i>';
+}
+// Close sidebar when nav button clicked on mobile
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.nb').forEach(btn=>{
+    btn.addEventListener('click',()=>{ if(window.innerWidth<=768) closeSidebar(); });
+  });
+});
+</script>
 
-            if(btnElement) {
-                document.querySelectorAll('aside nav button').forEach(btn => btn.classList.remove('active-menu'));
-                btnElement.classList.add('active-menu');
-            }
-        }
+<script>
+// ══════════════════════════════════════════
+//  CONSTANTS & STATE
+// ══════════════════════════════════════════
+const MOTIVATIONS = [
+  {text:'"Every day is a chance to learn something new."', author:'— EnglishPro', icon:'📚'},
+  {text:'"Believe you can and you\'re halfway there."', author:'— Theodore Roosevelt', icon:'💪'},
+  {text:'"The secret of getting ahead is getting started."', author:'— Mark Twain', icon:'🚀'},
+  {text:'"Success is not final, failure is not fatal."', author:'— Winston Churchill', icon:'🏆'},
+  {text:'"A journey of a thousand miles begins with a single step."', author:'— Lao Tzu', icon:'👣'},
+  {text:'"Dream big, work hard, stay humble."', author:'— EnglishPro', icon:'✨'},
+  {text:'"Your English is getting better every day."', author:'— Sarah Alkan', icon:'🌟'},
+];
 
-        async function buyPackage(packageName, price) {
-            const user = auth.currentUser;
-            if (!user) {
-                window.location.href = 'login.html';
-                return;
-            }
-            try {
-                await db.collection('users').doc(user.uid).set({
-                    currentPackage: packageName
-                }, { merge: true });
-                alert(packageName + ' paketi başarıyla tanımlandı.');
-            } catch (e) {
-                console.error(e);
-                alert('Paket güncellenirken bir hata oluştu.');
-            }
-        }
+// English words for the game (word, type, definition in Turkish, example sentence)
+const WORD_BANK = [
+  {word:'BRAVE',type:'adjective',def:'Korkmadan tehlikeli veya zor durumlarla başa çıkabilmek',ex:'She was brave enough to speak in front of 500 people.',tr:'Cesur, yiğit'},
+  {word:'FOCUS',type:'verb / noun',def:'Bir şeye dikkat veya enerji odaklamak',ex:'You need to focus on your studies to improve.',tr:'Odaklanmak / Odak'},
+  {word:'GRASP',type:'verb / noun',def:'Bir şeyi anlamak veya kavramak; sıkıca tutmak',ex:'It took me a while to grasp the concept.',tr:'Kavramak, anlamak'},
+  {word:'PRIDE',type:'noun',def:'Başarılarından duyulan derin memnuniyet',ex:'She felt great pride when she passed the exam.',tr:'Gurur, kibir'},
+  {word:'SHARP',type:'adjective',def:'Keskin; zeka veya anlayış bakımından hızlı',ex:'He has a sharp mind for solving problems.',tr:'Keskin, zeki'},
+  {word:'BLEND',type:'verb / noun',def:'Birlikte karıştırmak veya birleştirmek',ex:'Blend the ingredients until smooth.',tr:'Karıştırmak / Karışım'},
+  {word:'CRAFT',type:'noun / verb',def:'El becerisi gerektiren iş; özenle yapmak',ex:'She crafted a beautiful letter to her teacher.',tr:'El sanatı / Yapmak'},
+  {word:'DREAM',type:'noun / verb',def:'Uyurken görülen düşünceler; hayal kurmak',ex:'Never stop dreaming of a better tomorrow.',tr:'Rüya / Hayal etmek'},
+  {word:'EAGER',type:'adjective',def:'Bir şeyi yapmak için çok hevesli olmak',ex:'He is eager to learn new vocabulary.',tr:'İstekli, hevesli'},
+  {word:'FLAME',type:'noun',def:'Yanıcı bir maddeden çıkan alev',ex:'The flame of curiosity never dies.',tr:'Alev, ateş'},
+  {word:'GRACE',type:'noun',def:'Zariflik, güzellik; iyilik, lütuf',ex:'She accepted the award with grace and humility.',tr:'Zarafet, lütuf'},
+  {word:'HAPPY',type:'adjective',def:'Sevinç veya memnuniyet hissi',ex:'Learning new words makes me happy.',tr:'Mutlu, sevinçli'},
+  {word:'IDEAL',type:'adjective',def:'Mükemmel; gerçekten istenen şey',ex:'This is the ideal time to practice English.',tr:'İdeal, mükemmel'},
+  {word:'JUDGE',type:'verb / noun',def:'Bir şey hakkında karar vermek veya fikir oluşturmak',ex:'Don\'t judge a book by its cover.',tr:'Yargılamak / Hakim'},
+  {word:'KNACK',type:'noun',def:'Bir şeyi yapma konusunda doğal yetenek',ex:'She has a knack for learning languages.',tr:'Yetenek, maharet'},
+  {word:'LIGHT',type:'noun / adj',def:'Görmeyi sağlayan enerji; ağır olmayan',ex:'The light of knowledge guides our path.',tr:'Işık / Hafif'},
+  {word:'MAGIC',type:'noun / adj',def:'Doğaüstü güçlere dayanan eylem; sihirli',ex:'There is magic in every new word you learn.',tr:'Sihir, büyü'},
+  {word:'NERVE',type:'noun',def:'Cesaret; vücuttaki sinir lifi',ex:'It takes nerve to speak a foreign language.',tr:'Cesaret / Sinir'},
+  {word:'OCEAN',type:'noun',def:'Dünya yüzeyinin büyük bir bölümünü kaplayan tuzlu su kütlesi',ex:'Learning English opens an ocean of opportunities.',tr:'Okyanus, deniz'},
+  {word:'PEACE',type:'noun',def:'Çatışma veya savaş olmayan; sakinlik hali',ex:'Speaking English fluently gives me peace of mind.',tr:'Barış, huzur'},
+];
 
-        // --- 3. RANDEVU MANTIĞI ---
-        let selectedSlot = null;
-        function generateTimeSlots() {
-            const dateInput = document.getElementById('datePicker').value;
-            const container = document.getElementById('time-slots-container');
-            
-            if (!dateInput) return;
+let cu = null, cid = null, ss = null, allRes = [], allAppts = [];
+let userPts = 0, userStreak = 0;
 
-            const dateObj = new Date(dateInput);
-            const formattedDate = dateObj.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+// Word game state
+let wgWord = '', wgGuesses = [], wgCurrentGuess = '', wgMaxGuesses = 6, wgDone = false, wgTimer = null, wgSeconds = 0, wgCurrentData = null;
+let todayKey = new Date().toISOString().slice(0,10); // YYYY-MM-DD
 
-            container.innerHTML = '';
-            const hours = ['10:00 - 11:00', '13:00 - 14:00', '15:30 - 16:30', '19:00 - 20:00'];
-            
-            hours.forEach(hour => {
-                const btn = document.createElement('button');
-                btn.className = 'w-full py-4 border border-gray-100 bg-gray-50 text-gray-600 rounded-xl hover:border-blue-500 hover:text-blue-600 hover:bg-white transition font-bold text-sm slot-btn mb-2 shadow-sm';
-                btn.innerHTML = `<div class="flex justify-between items-center"><span>${hour}</span> <i class="far fa-circle text-gray-300"></i></div>`;
-                
-                btn.onclick = function() {
-                    document.querySelectorAll('.slot-btn').forEach(b => {
-                        b.classList.remove('bg-blue-600', 'text-white', 'border-transparent', 'shadow-blue-300', 'shadow-lg');
-                        b.classList.add('bg-gray-50', 'text-gray-600');
-                        b.querySelector('i').classList.replace('fa-check-circle', 'fa-circle');
-                        b.querySelector('i').classList.remove('text-white');
-                    });
-                    
-                    this.classList.remove('bg-gray-50', 'text-gray-600');
-                    this.classList.add('bg-blue-600', 'text-white', 'border-transparent', 'shadow-lg', 'shadow-blue-300');
-                    this.querySelector('i').classList.replace('fa-circle', 'fa-check-circle');
-                    this.querySelector('i').classList.add('text-white');
-                    
-                    selectedSlot = `${formattedDate} | ${hour}`;
-                    const confirmBtn = document.getElementById('confirm-booking-btn');
-                    confirmBtn.disabled = false;
-                    confirmBtn.classList.remove('bg-gray-900');
-                    confirmBtn.classList.add('bg-blue-600');
-                };
-                container.appendChild(btn);
-            });
-        }
+const pageTitles = {
+  home:['Genel <em>Bakış</em>','Panelinize hoşgeldiniz.'],
+  book:['Randevu <em>Talebi</em>','Uygun tarih ve saatinizi seçin.'],
+  myappts:['Randevu<em>larım</em>','Tüm talep ve randevularınız.'],
+  res:['<em>Kütüphane</em>','Eğitim materyalleri.'],
+  game:['Kelime <em>Avı</em>','Bugünkü İngilizce kelimeyi tahmin et!'],
+  lb:['<em>Sıralama</em>','Tüm kullanıcılar arasındaki puanlar.'],
+  notifs:['<em>Bildirimler</em>','Güncellemeler.'],
+  profile:['<em>Profilim</em>','Hesap bilgileriniz.']
+};
 
-        async function confirmBooking() {
-            document.getElementById('no-appointment-view').classList.add('hidden');
-            document.getElementById('appointment-booked-view').classList.remove('hidden');
-            document.getElementById('booked-time-slot').innerText = selectedSlot;
-            
-            // Firestore'a randevu kaydı yaz
-            try {
-                const user = auth.currentUser;
-                if (user && selectedSlot) {
-                    await db.collection('appointments').add({
-                        userId: user.uid,
-                        email: user.email || '',
-                        displayName: user.displayName || (user.email ? user.email.split('@')[0] : ''),
-                        timeSlot: selectedSlot,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
-            } catch (e) {
-                console.error('Randevu kaydedilirken hata oluştu:', e);
-            }
+// ══════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════
+auth.onAuthStateChanged(async (user) => {
+  if (!user) { window.location.href = 'login.html'; return; }
+  cu = user;
+  const n = user.displayName || user.email.split('@')[0];
+  const ini = n.charAt(0).toUpperCase();
+  ['sav','av-top','pav'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = ini; });
+  document.getElementById('sname').textContent = n;
+  document.getElementById('pname').textContent = n;
+  document.getElementById('pemail').textContent = user.email;
+  document.getElementById('pn').textContent = n;
+  document.getElementById('pe').textContent = user.email;
 
-            alert('Randevunuz Başarıyla Oluşturuldu!');
-            switchTab('profile', document.querySelector('button[onclick*=\'profile\']'));
-        }
+  await handleLogin(); // streak + points on login
+  loadHome();
+  loadRes();
+  listenNotifs();
+  setMotivation();
+  initWordGame();
+});
 
-        function openCancelModal() { document.getElementById('cancelModal').classList.remove('hidden'); }
-        function closeCancelModal() { document.getElementById('cancelModal').classList.add('hidden'); }
-        
-        function confirmCancel() {
-            document.getElementById('appointment-booked-view').classList.add('hidden');
-            document.getElementById('no-appointment-view').classList.remove('hidden');
-            selectedSlot = null;
-            closeCancelModal();
-            const confirmBtn = document.getElementById('confirm-booking-btn');
-            confirmBtn.disabled = true;
-            confirmBtn.classList.add('bg-gray-900');
-            confirmBtn.classList.remove('bg-blue-600');
-        }
+function doLogout() { auth.signOut().then(() => window.location.href = 'index.html'); }
 
-        // --- 4. Firestore Kaynaklarını Öğrenciye Göster ---
-        async function loadResourcesFromFirestore() {
-            const container = document.getElementById('resource-cards');
-            const template = document.getElementById('resource-card-template');
-            container.innerHTML = '';
+// ══════════════════════════════════════════
+//  NAV
+// ══════════════════════════════════════════
+function go(id, btn) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const t = pageTitles[id] || ['Panel',''];
+  document.getElementById('tb-t').innerHTML = t[0];
+  document.getElementById('tb-s' || 'tb-s').textContent = t[1];
+  if (id === 'myappts') loadMA();
+  if (id === 'notifs') markRead();
+  if (id === 'lb') loadLB();
+}
 
-            try {
-                const snap = await db.collection('resources')
-                    .orderBy('createdAt', 'desc')
-                    .limit(30)
-                    .get();
+// ══════════════════════════════════════════
+//  MOTIVATION
+// ══════════════════════════════════════════
+function setMotivation() {
+  const day = Math.floor(Date.now() / 86400000);
+  const m = MOTIVATIONS[day % MOTIVATIONS.length];
+  document.getElementById('motiv-text').textContent = m.text;
+  document.getElementById('motiv-author').textContent = m.author;
+  document.querySelector('.motiv-icon').textContent = m.icon;
+}
 
-                if (snap.empty) {
-                    container.innerHTML = '<p class="text-center text-gray-400 col-span-3 py-10">Henüz admin tarafından eklenmiş kaynak bulunmuyor.</p>';
-                    return;
-                }
+// ══════════════════════════════════════════
+//  LOGIN STREAK & POINTS
+// ══════════════════════════════════════════
+async function handleLogin() {
+  try {
+    const ref = db.collection('users').doc(cu.uid);
+    const snap = await ref.get();
+    const data = snap.exists ? snap.data() : {};
+    const today = new Date().toISOString().slice(0,10);
+    const lastLogin = data.lastLoginDate || '';
+    const streak = data.loginStreak || 0;
+    userPts = data.points || 0;
+    userStreak = streak;
 
-                snap.forEach(doc => {
-                    const r = doc.data();
-                    const card = template.cloneNode(true);
-                    card.id = '';
-                    card.classList.remove('hidden');
+    let newStreak = streak;
+    let ptsEarned = 0;
 
-                    const titleEl = card.querySelector('.resource-title');
-                    const descEl = card.querySelector('.resource-desc');
-                    const imgEl = card.querySelector('.resource-image');
-                    const tagEl = card.querySelector('.resource-tag');
-                    const iconEl = card.querySelector('.resource-icon');
-                    const badgeEl = card.querySelector('.resource-badge');
-                    const primaryBtn = card.querySelector('.resource-primary-btn');
-                    const primaryText = card.querySelector('.resource-primary-text');
-                    const secondaryBtn = card.querySelector('.resource-secondary-btn');
-                    const secondaryText = card.querySelector('.resource-secondary-text');
+    if (lastLogin !== today) {
+      const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+      newStreak = lastLogin === yesterday ? streak + 1 : 1;
+      ptsEarned = 10; // login bonus
 
-                    titleEl.textContent = r.title || 'Kaynak';
-                    descEl.textContent = r.type === 'video'
-                        ? 'Bu içerik, admin tarafından eklenmiş bir video dersidir.'
-                        : 'Bu içerik, admin tarafından eklenmiş bir PDF dokümanıdır.';
+      // Update login history (last 7 days)
+      const loginHistory = data.loginHistory || [];
+      if (!loginHistory.includes(today)) loginHistory.push(today);
+      // Keep last 30 days
+      const cutoff = new Date(Date.now() - 30*86400000).toISOString().slice(0,10);
+      const trimmed = loginHistory.filter(d => d >= cutoff);
 
-                    // Basit görsel & ikon ayrımı
-                    if (r.type === 'video') {
-                        imgEl.src = 'https://img.freepik.com/free-photo/english-british-england-language-education-concept_53876-123214.jpg';
-                        tagEl.textContent = 'Video';
-                        tagEl.classList.remove('bg-blue-600');
-                        tagEl.classList.add('bg-purple-600');
-                        iconEl.className = 'fas fa-play text-xl text-white ml-1 resource-icon';
-                        primaryText.textContent = 'İzle';
-                        primaryBtn.href = r.url;
-                        secondaryText.textContent = 'Linki Aç';
-                        secondaryBtn.href = r.url;
-                        badgeEl.textContent = '';
-                    } else {
-                        imgEl.src = 'https://img.freepik.com/free-vector/english-book-illustration_1284-42354.jpg';
-                        tagEl.textContent = 'PDF';
-                        tagEl.classList.remove('bg-blue-600');
-                        tagEl.classList.add('bg-green-600');
-                        iconEl.className = 'fas fa-file-pdf text-xl text-white ml-1 resource-icon';
-                        primaryText.textContent = 'PDF Aç';
-                        primaryBtn.href = r.url;
-                        secondaryText.textContent = 'İndir';
-                        secondaryBtn.href = r.url;
-                        badgeEl.textContent = 'PDF';
-                    }
+      await ref.set({
+        loginStreak: newStreak,
+        lastLoginDate: today,
+        loginHistory: trimmed,
+        points: userPts + ptsEarned,
+        displayName: cu.displayName || '',
+        email: cu.email,
+        uid: cu.uid
+      }, { merge: true });
 
-                    container.appendChild(card);
-                });
-            } catch (err) {
-                console.error(err);
-                container.innerHTML = '<p class="text-center text-red-500 col-span-3 py-10">Kaynaklar yüklenirken hata oluştu.</p>';
-            }
-        }
-    </script>
+      userStreak = newStreak;
+      userPts += ptsEarned;
+
+      if (ptsEarned > 0) showPtsPopup('+' + ptsEarned + ' Giriş Puanı!');
+      // Show streak modal
+      setTimeout(() => showStreakModal(newStreak, trimmed), 800);
+    }
+
+    updatePtsDisplay();
+    renderStreak(data.loginHistory || [today]);
+  } catch(e) { console.error('handleLogin:', e); }
+}
+
+function updatePtsDisplay() {
+  document.getElementById('pts-display').textContent = userPts;
+  document.getElementById('hs-pts').textContent = userPts;
+  const pEl = document.getElementById('p-pts');
+  if (pEl) pEl.textContent = userPts + ' ⭐';
+  const pBig = document.getElementById('my-pts-big');
+  if (pBig) pBig.textContent = userPts;
+}
+
+async function addPoints(amount, reason) {
+  try {
+    userPts += amount;
+    await db.collection('users').doc(cu.uid).set({ points: userPts }, { merge: true });
+    updatePtsDisplay();
+    showPtsPopup('+' + amount + ' ' + reason + '!');
+  } catch(e) {}
+}
+
+function showPtsPopup(msg) {
+  const p = document.getElementById('pts-popup');
+  p.textContent = '⭐ ' + msg;
+  p.classList.add('show');
+  setTimeout(() => p.classList.remove('show'), 2500);
+}
+
+// ══════════════════════════════════════════
+//  STREAK DISPLAY
+// ══════════════════════════════════════════
+function renderStreak(loginHistory) {
+  const container = document.getElementById('streak-days');
+  const smDays = document.getElementById('sm-days');
+  document.getElementById('streak-count').textContent = userStreak;
+  const el = document.getElementById('ps-streak');
+  if (el) el.textContent = userStreak + ' gün 🔥';
+
+  const days = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+  const today = new Date();
+  const todayDow = (today.getDay() + 6) % 7; // Mon=0
+
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - todayDow + i);
+    const key = d.toISOString().slice(0,10);
+    const done = loginHistory.includes(key);
+    const isToday = i === todayDow;
+    const cls = isToday ? 'today' : done ? 'done' : (key < today.toISOString().slice(0,10) ? 'missed' : '');
+    const icon = done || isToday ? '✓' : (key < today.toISOString().slice(0,10) ? '·' : d.getDate());
+    html += `<div class="sd"><div class="sd-name">${days[i]}</div><div class="sd-circle ${cls}">${icon}</div></div>`;
+  }
+  container.innerHTML = html;
+
+  // Also render in streak modal
+  if (smDays) {
+    let smHtml = '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:.4rem;justify-items:center;">';
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - todayDow + i);
+      const key = d.toISOString().slice(0,10);
+      const done = loginHistory.includes(key);
+      const isToday = i === todayDow;
+      const cls = isToday ? 'today' : done ? 'done' : (key < today.toISOString().slice(0,10) ? 'missed' : '');
+      smHtml += `<div class="sd"><div class="sd-name">${days[i]}</div><div class="sd-circle ${cls}">${done||isToday?'✓':(key<today.toISOString().slice(0,10)?'·':d.getDate())}</div></div>`;
+    }
+    smDays.innerHTML = smHtml + '</div>';
+  }
+}
+
+function showStreakModal(count, history) {
+  document.getElementById('sm-count').textContent = count;
+  document.getElementById('sm-msg').textContent = count === 1 ? 'Günlük giriş serisinde ilk günün! Sürekli gelişim için geri gelmeye devam et!' : count >= 7 ? '🎉 İnanılmaz! ' + count + ' günlük serin var!' : 'Harika gidiyorsun! ' + count + '. gün!';
+  renderStreak(history);
+  document.getElementById('streak-mod').classList.add('open');
+}
+
+// ══════════════════════════════════════════
+//  HOME DATA
+// ══════════════════════════════════════════
+async function loadHome() {
+  try {
+    const snap = await db.collection('appointments').where('userId','==',cu.uid).get();
+    allAppts = snap.docs.map(d => ({id:d.id,...d.data()}));
+    allAppts.sort((a,b) => (b.createdAt&&b.createdAt.seconds||0)-(a.createdAt&&a.createdAt.seconds||0));
+
+    const t = allAppts.length, ok = allAppts.filter(a=>a.status==='approved').length, p = allAppts.filter(a=>a.status==='pending').length;
+    document.getElementById('hs-total').textContent = t;
+    document.getElementById('hs-ok').textContent = ok;
+    document.getElementById('hs-pend').textContent = p;
+    ['ps-t','ps-ok','ps-p'].forEach((id,i) => { const el=document.getElementById(id); if(el) el.textContent=[t,ok,p][i]; });
+
+    // Load user pts from firestore (fresh)
+    const uSnap = await db.collection('users').doc(cu.uid).get();
+    if (uSnap.exists) {
+      userPts = uSnap.data().points || 0;
+      userStreak = uSnap.data().loginStreak || 0;
+      const wgPlayed = uSnap.data().wgPlayed || 0;
+      const psWg = document.getElementById('ps-wg');
+      if (psWg) psWg.textContent = wgPlayed + ' kez';
+      const psS = document.getElementById('ps-streak');
+      if (psS) psS.textContent = userStreak + ' gün 🔥';
+      updatePtsDisplay();
+      renderStreak(uSnap.data().loginHistory || []);
+    }
+
+    const nb = document.getElementById('next-body');
+    const appr = allAppts.filter(a => a.status === 'approved');
+    if (appr.length > 0) {
+      nb.innerHTML = `<div class="al">${buildItem(appr[0], true)}</div>`;
+    } else {
+      nb.innerHTML = `<div class="empty" style="padding:1.25rem;"><i class="fas fa-calendar-times"></i><p>Onaylı dersiniz yok.<br><button class="btn-sm" style="margin-top:.6rem;" onclick="go('book',document.querySelectorAll('.nb')[1])">Randevu Talebi</button></p></div>`;
+    }
+  } catch(e) { console.error(e); showToast('Hata: '+e.message,'e'); }
+}
+
+function buildItem(a, big) {
+  const sm = {pending:`<span class="badge bp">⏳ Beklemede</span>`,approved:`<span class="badge ba">✓ Onaylandı</span>`,rejected:`<span class="badge br">✕ Reddedildi</span>`,completed:`<span class="badge bc">✔ Tamamlandı</span>`};
+  const ts = a.timeSlot || '—';
+  let dn='—',mn='—';
+  try { const p=ts.split('|'); if(p.length>0){const dp=p[0].trim().split(' ');if(dp.length>1){dn=dp[0];mn=dp[1].substring(0,3).toUpperCase();}}} catch(e){}
+  const time = ts.includes('|') ? ts.split('|')[1].trim() : ts;
+  const note = a.note ? `<div class="ai-note">📝 ${a.note}</div>` : '';
+  const canc = a.status==='pending' ? `<button class="cancel-sm" onclick="openCancel('${a.id}')">İptal</button>` : '';
+  let zh = '';
+  if (a.zoomLink && a.zoomLink.length > 3) {
+    if (big) { zh = `<div class="zoom-pill"><i class="fas fa-video"></i><a href="${a.zoomLink}" target="_blank">${a.zoomLink}</a><button class="zcopy" onclick="copyLink('${a.zoomLink}')"><i class="fas fa-copy"></i> Kopyala</button></div>`; }
+    else { zh = `<div style="margin-top:.35rem;"><a href="${a.zoomLink}" target="_blank" style="font-size:.75rem;color:var(--blu);font-weight:600;text-decoration:none;"><i class="fas fa-video" style="margin-right:.3rem;"></i>Zoom Linki</a></div>`; }
+  } else if (a.status==='approved') { zh = `<div class="zoom-soon"><i class="fas fa-hourglass-half"></i>Zoom linki yakında paylaşılacak.</div>`; }
+  return `<div class="ai"><div class="ai-date"><div class="d">${dn}</div><div class="m">${mn}</div></div><div class="ai-body"><div class="ai-time">${time}</div>${note}${zh}</div><div class="ai-act">${sm[a.status]||sm.pending}${canc}</div></div>`;
+}
+
+async function loadMA() {
+  const el = document.getElementById('mal');
+  el.innerHTML = `<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Yükleniyor...</p></div>`;
+  try {
+    const snap = await db.collection('appointments').where('userId','==',cu.uid).get();
+    if (snap.empty) { el.innerHTML = `<div class="empty"><i class="fas fa-calendar-times"></i><p>Henüz randevu talebiniz yok.</p></div>`; return; }
+    const docs = snap.docs.map(d=>({id:d.id,...d.data()}));
+    docs.sort((a,b) => (b.createdAt&&b.createdAt.seconds||0)-(a.createdAt&&a.createdAt.seconds||0));
+    el.innerHTML = `<div class="al">${docs.map(a=>buildItem(a,true)).join('')}</div>`;
+  } catch(e) { el.innerHTML = `<div class="empty"><i class="fas fa-exclamation-triangle"></i><p>Hata: ${e.message}</p></div>`; }
+}
+
+// ══════════════════════════════════════════
+//  BOOKING
+// ══════════════════════════════════════════
+function genSlots() {
+  const v = document.getElementById('bdate').value, c = document.getElementById('tslots');
+  if (!v) return; ss=null; document.getElementById('btn-sub').disabled=true; document.getElementById('bsummary').style.display='none';
+  const d = new Date(v), fmt = d.toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});
+  c.innerHTML = ['09:00 – 10:00','10:00 – 11:00','13:00 – 14:00','15:00 – 16:00','17:00 – 18:00','19:00 – 20:00'].map(s => `<button class="slot" onclick="pickSlot(this,'${fmt} | ${s}')">${s}</button>`).join('');
+}
+function pickSlot(btn, val) {
+  document.querySelectorAll('.slot').forEach(b=>b.classList.remove('sel')); btn.classList.add('sel'); ss=val;
+  document.getElementById('bsummary').style.display='block'; document.getElementById('bsum').textContent=val;
+  document.getElementById('btn-sub').disabled=false;
+}
+async function submitBooking() {
+  if (!ss) return;
+  const btn = document.getElementById('btn-sub'); btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...';
+  try {
+    await db.collection('appointments').add({userId:cu.uid,email:cu.email,displayName:cu.displayName||cu.email.split('@')[0],timeSlot:ss,note:document.getElementById('bnote').value.trim(),level:document.getElementById('blevel').value,status:'pending',zoomLink:'',createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    showToast('Randevu talebiniz gönderildi!','s');
+    document.getElementById('bdate').value=''; document.getElementById('bnote').value=''; document.getElementById('blevel').value='';
+    document.getElementById('tslots').innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:.9rem;font-size:.8rem;color:var(--mu);background:var(--sur2);border-radius:8px;"><i class="fas fa-arrow-up" style="margin-right:.4rem;"></i>Önce tarih seçin</div>`;
+    document.getElementById('bsummary').style.display='none'; ss=null;
+    loadHome(); go('myappts', document.getElementById('nav-ma'));
+  } catch(e) { showToast('Hata: '+e.message,'e'); }
+  finally { btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i> Randevu Talebi Gönder'; }
+}
+
+function openCancel(id) { cid=id; document.getElementById('cmod').classList.add('open'); }
+function closeMod() { document.querySelectorAll('.mbg').forEach(m=>m.classList.remove('open')); cid=null; }
+async function doCancel() {
+  if (!cid) return;
+  try { await db.collection('appointments').doc(cid).delete(); showToast('İptal edildi.','s'); closeMod(); loadHome(); loadMA(); }
+  catch(e) { showToast('Hata.','e'); }
+}
+function copyLink(l) { navigator.clipboard.writeText(l).then(()=>showToast('Link kopyalandı!','s')); }
+
+// ══════════════════════════════════════════
+//  RESOURCES
+// ══════════════════════════════════════════
+async function loadRes() {
+  const grid = document.getElementById('rgrid');
+  try {
+    const snap = await db.collection('resources').get();
+    if (snap.empty) { grid.innerHTML=`<div class="empty" style="grid-column:1/-1;"><i class="fas fa-inbox"></i><p>Kaynak eklenmemiş.</p></div>`; return; }
+    allRes = snap.docs.map(d=>({id:d.id,...d.data()}));
+    allRes.sort((a,b)=>(b.createdAt&&b.createdAt.seconds||0)-(a.createdAt&&a.createdAt.seconds||0));
+    renderRes(allRes);
+  } catch(e) { grid.innerHTML=`<div class="empty" style="grid-column:1/-1;"><i class="fas fa-exclamation-triangle"></i><p>Yüklenemedi.</p></div>`; }
+}
+function renderRes(list) {
+  const g = document.getElementById('rgrid');
+  if (!list.length) { g.innerHTML=`<div class="empty" style="grid-column:1/-1;"><i class="fas fa-search"></i><p>Bulunamadı.</p></div>`; return; }
+  g.innerHTML = list.map(r => {
+    const p=r.type==='pdf',ts=p?'background:#dcfce7;color:#15803d;':'background:#ede9fe;color:#7c3aed;';
+    const img=p?'https://img.freepik.com/free-vector/english-book-illustration_1284-42354.jpg':'https://img.freepik.com/free-photo/english-british-england-language-education-concept_53876-123214.jpg';
+    return `<div class="rc"><div class="rth"><img src="${img}" alt="${r.title}"><div class="rth-ov"><i class="fas fa-${p?'file-pdf':'play-circle'}"></i></div><span class="rtag" style="${ts}">${p?'PDF':'Video'}</span></div><div class="rb"><div class="rt">${r.title||'Kaynak'}</div><div class="rd">${p?'İndirilebilir PDF.':'Video dersi.'}</div><div class="ract"><a href="${r.url}" target="_blank" class="rbn rbn-p">${p?'<i class="fas fa-file-pdf"></i> Aç':'<i class="fas fa-play"></i> İzle'}</a><a href="${r.url}" target="_blank" class="rbn rbn-s"><i class="fas fa-download"></i> İndir</a></div></div></div>`;
+  }).join('');
+}
+function fRes(t,btn){document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderRes(t==='all'?allRes:allRes.filter(r=>r.type===t));}
+
+// ══════════════════════════════════════════
+//  WORD GAME
+// ══════════════════════════════════════════
+function getTodayWord() {
+  const day = Math.floor(Date.now() / 86400000);
+  return WORD_BANK[day % WORD_BANK.length];
+}
+
+async function initWordGame() {
+  const data = getTodayWord();
+  wgCurrentData = data;
+  wgWord = data.word; // 4-5 letters
+  wgGuesses = []; wgCurrentGuess = ''; wgDone = false;
+
+  // Check if already played today
+  const uSnap = await db.collection('users').doc(cu.uid).get();
+  const uData = uSnap.exists ? uSnap.data() : {};
+  const lastGame = uData.lastGameDate || '';
+
+  if (lastGame === todayKey) {
+    // Already played - show result
+    wgGuesses = uData.lastGameGuesses || [];
+    wgDone = true;
+    document.getElementById('game-status-mini').textContent = '✅ Bugünkü kelimeyi oynadın!';
+    document.getElementById('meaning-btn').style.display = 'inline-flex';
+  }
+
+  buildBoard();
+  buildKeyboard();
+  if (!wgDone) startTimer();
+  renderMeaning();
+}
+
+function buildBoard() {
+  const board = document.getElementById('wg-board');
+  board.innerHTML = '';
+  const len = wgWord.length;
+  for (let r = 0; r < wgMaxGuesses; r++) {
+    const row = document.createElement('div');
+    row.className = 'wg-row';
+    row.id = 'row-' + r;
+    for (let c = 0; c < len; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'wg-cell';
+      cell.id = `cell-${r}-${c}`;
+      // Fill guesses already made
+      if (r < wgGuesses.length) {
+        cell.textContent = wgGuesses[r][c] || '';
+        applyColor(cell, r, c);
+      }
+      row.appendChild(cell);
+    }
+    board.appendChild(row);
+  }
+}
+
+function applyColor(cell, rowIdx, colIdx) {
+  const guess = wgGuesses[rowIdx].toUpperCase();
+  const target = wgWord.toUpperCase();
+  const ch = guess[colIdx];
+  if (ch === target[colIdx]) cell.className = 'wg-cell correct';
+  else if (target.includes(ch)) cell.className = 'wg-cell present';
+  else cell.className = 'wg-cell absent';
+}
+
+function buildKeyboard() {
+  const rows = [
+    ['Q','W','E','R','T','Y','U','I','O','P','Ğ','Ü'],
+    ['A','S','D','F','G','H','J','K','L','Ş','İ'],
+    ['Z','X','C','V','B','N','M','Ö','Ç','←','TAHMİN']
+  ];
+  const kbd = document.getElementById('wg-kbd');
+  kbd.innerHTML = '';
+  rows.forEach(row => {
+    const r = document.createElement('div');
+    r.className = 'kbd-row';
+    row.forEach(key => {
+      const k = document.createElement('button');
+      k.className = 'k' + (key.length > 1 ? ' wide' : '');
+      k.id = 'key-' + key;
+      k.textContent = key;
+      k.onclick = () => handleKey(key);
+      r.appendChild(k);
+    });
+    kbd.appendChild(r);
+  });
+}
+
+function handleKey(key) {
+  if (wgDone) return;
+  if (key === '←') { wgCurrentGuess = wgCurrentGuess.slice(0,-1); }
+  else if (key === 'TAHMİN') { submitGuess(); return; }
+  else if (wgCurrentGuess.length < wgWord.length) { wgCurrentGuess += key; }
+  updateCurrentRow();
+}
+
+document.addEventListener('keydown', e => {
+  const active = document.querySelector('.sec.active');
+  if (!active || active.id !== 'game') return;
+  if (e.key === 'Backspace') handleKey('←');
+  else if (e.key === 'Enter') handleKey('TAHMİN');
+  else if (/^[a-zA-ZğüşıöçĞÜŞİÖÇ]$/.test(e.key)) handleKey(e.key.toUpperCase());
+});
+
+function updateCurrentRow() {
+  const rowIdx = wgGuesses.length;
+  if (rowIdx >= wgMaxGuesses) return;
+  for (let c = 0; c < wgWord.length; c++) {
+    const cell = document.getElementById(`cell-${rowIdx}-${c}`);
+    if (!cell) continue;
+    cell.textContent = wgCurrentGuess[c] || '';
+    cell.className = 'wg-cell' + (wgCurrentGuess[c] ? ' filled active-row' : '');
+  }
+}
+
+async function submitGuess() {
+  if (wgDone || wgCurrentGuess.length !== wgWord.length) {
+    if (wgCurrentGuess.length !== wgWord.length) shakeRow(wgGuesses.length);
+    return;
+  }
+  const guess = wgCurrentGuess.toUpperCase();
+  wgGuesses.push(guess);
+  const rowIdx = wgGuesses.length - 1;
+
+  // Animate cells
+  for (let c = 0; c < wgWord.length; c++) {
+    setTimeout(() => {
+      const cell = document.getElementById(`cell-${rowIdx}-${c}`);
+      if (cell) { cell.classList.add('flip'); setTimeout(()=>{ applyColor(cell, rowIdx, c); },250); }
+      // Update keyboard color
+      const ch = guess[c];
+      const kEl = document.getElementById('key-' + ch);
+      if (kEl) {
+        if (wgWord[c] === ch) kEl.className = 'k correct';
+        else if (wgWord.includes(ch) && !kEl.classList.contains('correct')) kEl.className = 'k present';
+        else if (!kEl.classList.contains('correct') && !kEl.classList.contains('present')) kEl.className = 'k absent';
+      }
+    }, c * 80);
+  }
+  wgCurrentGuess = '';
+
+  await new Promise(r => setTimeout(r, wgWord.length * 80 + 300));
+
+  if (guess === wgWord) {
+    wgDone = true;
+    clearInterval(wgTimer);
+    const bonusPts = Math.max(10, 60 - wgGuesses.length * 10);
+    document.getElementById('wg-status').textContent = `🎉 Tebrikler! "${wgWord}" doğru! +${bonusPts} puan`;
+    document.getElementById('wg-status').className = 'wg-status ok';
+    document.getElementById('meaning-btn').style.display = 'inline-flex';
+    for (let c=0; c < wgWord.length; c++) {
+      setTimeout(()=>{ const cell=document.getElementById(`cell-${wgGuesses.length-1}-${c}`); if(cell)cell.classList.add('bounce'); }, c*60);
+    }
+    await saveGameResult(true, bonusPts);
+    await addPoints(bonusPts, 'Kelime Oyunu');
+    document.getElementById('game-status-mini').textContent = '✅ Bugünkü kelimeyi oynadın!';
+  } else if (wgGuesses.length >= wgMaxGuesses) {
+    wgDone = true;
+    clearInterval(wgTimer);
+    document.getElementById('wg-status').textContent = `Kelime: "${wgWord}" idi. Yarın tekrar dene!`;
+    document.getElementById('wg-status').className = 'wg-status err';
+    document.getElementById('meaning-btn').style.display = 'inline-flex';
+    await saveGameResult(false, 5); // Consolation pts
+    await addPoints(5, 'Oyun Katılım');
+    document.getElementById('game-status-mini').textContent = '✅ Bugünkü kelimeyi oynadın!';
+  }
+}
+
+async function saveGameResult(won, pts) {
+  try {
+    const uData = (await db.collection('users').doc(cu.uid).get()).data() || {};
+    await db.collection('users').doc(cu.uid).set({
+      lastGameDate: todayKey,
+      lastGameGuesses: wgGuesses,
+      lastGameWon: won,
+      wgPlayed: (uData.wgPlayed || 0) + 1
+    }, { merge: true });
+  } catch(e) {}
+}
+
+function shakeRow(rowIdx) {
+  const row = document.getElementById('row-' + rowIdx);
+  if (row) { row.classList.add('shake'); setTimeout(()=>row.classList.remove('shake'), 500); }
+}
+
+function startTimer() {
+  wgSeconds = 0;
+  const el = document.getElementById('wg-timer');
+  wgTimer = setInterval(() => {
+    wgSeconds++;
+    const m = Math.floor(wgSeconds/60), s = wgSeconds%60;
+    el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }, 1000);
+}
+
+function useHint() {
+  if (wgDone) return;
+  wgSeconds += 10;
+  // Reveal a correct letter that hasn't been guessed yet
+  for (let c = 0; c < wgWord.length; c++) {
+    const alreadyCorrect = wgGuesses.some(g => g[c] === wgWord[c]);
+    if (!alreadyCorrect && !wgCurrentGuess.includes(wgWord[c])) {
+      const rowIdx = wgGuesses.length;
+      const cell = document.getElementById(`cell-${rowIdx}-${c}`);
+      if (cell) { cell.textContent = wgWord[c]; cell.className = 'wg-cell hint'; }
+      showToast('İpucu: ' + c + '. pozisyon = "' + wgWord[c] + '" (+10sn eklendi)', 's');
+      return;
+    }
+  }
+  showToast('Başka ipucu yok!', 'e');
+}
+
+function toggleMeaning() {
+  const box = document.getElementById('meaning-box');
+  box.classList.toggle('show');
+}
+
+function renderMeaning() {
+  const d = wgCurrentData;
+  if (!d) return;
+  const box = document.getElementById('meaning-box');
+  box.innerHTML = `
+    <div class="mb-word">${d.word}</div>
+    <div class="mb-type">${d.type}</div>
+    <div class="mb-def">${d.def}</div>
+    <div class="mb-ex">"${d.ex}"</div>
+    <div class="mb-tr">🇹🇷 ${d.tr}</div>`;
+}
+
+// ══════════════════════════════════════════
+//  LEADERBOARD
+// ══════════════════════════════════════════
+async function loadLB() {
+  const el = document.getElementById('lb-list');
+  el.innerHTML = `<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Yükleniyor...</p></div>`;
+  try {
+    const snap = await db.collection('users').get();
+    const users = snap.docs.map(d => ({id:d.id,...d.data()}))
+      .filter(u => u.role !== 'banned')
+      .sort((a,b) => (b.points||0) - (a.points||0));
+
+    if (!users.length) { el.innerHTML=`<div class="empty"><i class="fas fa-users"></i><p>Henüz kullanıcı yok.</p></div>`; return; }
+
+    const myIdx = users.findIndex(u => u.uid === cu.uid || u.id === cu.uid);
+    const myRank = myIdx + 1;
+    const myUser = users[myIdx];
+    document.getElementById('my-rank-text').textContent = myRank > 0 ? `${myRank}. Sıra — ${myUser?.displayName || 'Sen'}` : 'Sıralamada değilsiniz';
+    document.getElementById('my-pts-big').textContent = myUser?.points || userPts;
+
+    const medals = ['🥇','🥈','🥉'];
+    const rankClass = (i) => i===0?'gold':i===1?'silver':i===2?'bronze':'';
+
+    el.innerHTML = `<div class="lb-list">${users.slice(0,20).map((u,i) => {
+      const isMe = u.uid===cu.uid || u.id===cu.uid;
+      const name = u.displayName || u.email?.split('@')[0] || 'Öğrenci';
+      const pts = u.points || 0;
+      const ini = name.charAt(0).toUpperCase();
+      return `<div class="lb-item ${isMe?'me':''}">
+        <div class="lb-rank ${rankClass(i)}">${i<3?medals[i]:i+1}</div>
+        <div class="lb-av">${ini}</div>
+        <div class="lb-name">${name}${isMe?' <span style="font-size:.68rem;color:var(--ac);font-weight:700;">(Sen)</span>':''}</div>
+        <div><div class="lb-pts">${pts}</div><div class="lb-pts-label">puan</div></div>
+      </div>`;
+    }).join('')}</div>`;
+  } catch(e) { el.innerHTML=`<div class="empty"><i class="fas fa-exclamation-triangle"></i><p>Hata: ${e.message}</p></div>`; }
+}
+
+// ══════════════════════════════════════════
+//  NOTIFICATIONS
+// ══════════════════════════════════════════
+let nUnsub = null;
+function listenNotifs() {
+  if (nUnsub) nUnsub();
+  nUnsub = db.collection('notifications').where('userId','==',cu.uid).onSnapshot(snap => {
+    const allN = snap.docs.map(d=>({id:d.id,...d.data()}));
+    allN.sort((a,b)=>(b.createdAt&&b.createdAt.seconds||0)-(a.createdAt&&a.createdAt.seconds||0));
+    const un = allN.filter(n=>!n.read).length;
+    const badge=document.getElementById('nbadge'),dot=document.getElementById('ndot');
+    if(un>0){badge.style.display='inline-block';badge.textContent=un;dot.style.display='block';}else{badge.style.display='none';dot.style.display='none';}
+    const el=document.getElementById('nlist');
+    if(!allN.length){el.innerHTML=`<div class="empty"><i class="fas fa-bell-slash"></i><p>Bildirim yok.</p></div>`;return;}
+    el.innerHTML=allN.slice(0,30).map(n=>{
+      const t=n.createdAt&&n.createdAt.toDate?n.createdAt.toDate().toLocaleString('tr-TR'):'';
+      return `<div class="ni ${n.read?'':'unread'}"><div class="ndot-n ${n.read?'r':''}"></div><div class="ntxt"><div class="ntit">${n.title||'Bildirim'}</div><div class="nbod">${n.body||''}${n.zoomLink?`<div style="margin-top:.35rem;"><a href="${n.zoomLink}" target="_blank" style="font-size:.76rem;color:var(--blu);font-weight:600;text-decoration:none;"><i class="fas fa-video" style="margin-right:.3rem;"></i>Zoom Linki Aç</a></div>`:''}</div><div class="ntim">${t}</div></div></div>`;
+    }).join('');
+  });
+}
+async function markRead() {
+  try { const s=await db.collection('notifications').where('userId','==',cu.uid).where('read','==',false).get();const b=db.batch();s.forEach(d=>b.update(d.ref,{read:true}));await b.commit(); } catch(e){}
+}
+
+// ══════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════
+function showToast(msg, type='') {
+  const t=document.getElementById('toast');t.textContent=msg;t.className='show '+(type||'');setTimeout(()=>t.className='',3500);
+}
+</script>
 </body>
 </html>

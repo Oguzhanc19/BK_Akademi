@@ -1,428 +1,717 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <title>Admin Paneli | EnglishPro</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Admin Paneli | EnglishPro</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="firebase-config.js"></script>
+<style>
+:root{
+  --bg:#f0f4ff;--sur:#fff;--sur2:#f8faff;
+  --ink:#0f172a;--ink2:#334155;--mut:#64748b;
+  --bdr:#e2e8f0;--bdr2:#f1f5f9;
+  --acc:#4f46e5;--al:#eef2ff;--ac2:#7c3aed;
+  --gld:#f59e0b;--gl:#fffbeb;
+  --grn:#059669;--grl:#ecfdf5;
+  --red:#dc2626;--rl:#fef2f2;
+  --blu:#2563eb;--bl:#eff6ff;
+  --org:#ea580c;--ol:#fff7ed;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+  --sh2:0 4px 20px rgba(0,0,0,.08);--sh3:0 12px 40px rgba(0,0,0,.1);
+  --sw:248px;--r:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);display:flex;min-height:100vh;overflow:hidden;}
+aside{width:var(--sw);background:var(--ink);display:flex;flex-direction:column;height:100vh;position:sticky;top:0;flex-shrink:0;box-shadow:4px 0 24px rgba(15,23,42,.18);}
+.sh{padding:1.5rem 1.4rem 1.3rem;border-bottom:1px solid rgba(255,255,255,.07);}
+.logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;text-decoration:none;color:#fff;display:block;}
+.logo em{font-style:italic;color:#818cf8;}
+.lsub{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:.2rem;}
+.snav{padding:1.2rem .75rem;flex:1;overflow-y:auto;}
+.slbl{font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.18);padding:0 .75rem;margin-bottom:.4rem;margin-top:1.25rem;}
+.nb{width:100%;display:flex;align-items:center;gap:.75rem;padding:.68rem .9rem;border-radius:8px;border:none;background:transparent;color:rgba(255,255,255,.4);font-family:'Plus Jakarta Sans',sans-serif;font-size:.83rem;font-weight:500;cursor:pointer;text-align:left;transition:all .18s;margin-bottom:.1rem;position:relative;}
+.nb i{width:.9rem;text-align:center;font-size:.8rem;flex-shrink:0;}
+.nb:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.8);}
+.nb.active{background:linear-gradient(135deg,rgba(79,70,229,.35),rgba(124,58,237,.3));color:#a5b4fc;font-weight:600;}
+.nb.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:2.5px;background:#818cf8;border-radius:0 2px 2px 0;}
+.nbadge{margin-left:auto;background:#ef4444;color:#fff;font-size:.6rem;font-weight:700;padding:.1rem .4rem;border-radius:100px;display:none;}
+.sf{padding:1.2rem 1.4rem;border-top:1px solid rgba(255,255,255,.07);}
+.ausr{display:flex;align-items:center;gap:.7rem;margin-bottom:.85rem;}
+.aav{width:32px;height:32px;background:linear-gradient(135deg,var(--acc),var(--ac2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:.9rem;color:#fff;flex-shrink:0;}
+.aname{font-size:.8rem;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.arole{font-size:.62rem;color:rgba(255,255,255,.35);}
+.slinks{display:flex;gap:.5rem;}
+.sln{flex:1;padding:.48rem;border-radius:6px;font-size:.72rem;font-weight:600;text-align:center;cursor:pointer;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.4);font-family:'Plus Jakarta Sans',sans-serif;transition:all .18s;text-decoration:none;display:block;}
+.sln:hover{border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.75);}
+.sln-d{border-color:rgba(239,68,68,.2);color:rgba(248,113,113,.5);}
+.sln-d:hover{background:rgba(239,68,68,.12);color:#f87171;}
+main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.tbar{padding:1.1rem 2rem;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center;background:var(--sur);position:sticky;top:0;z-index:10;box-shadow:0 1px 0 var(--bdr);}
+.tbt{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--ink);}
+.tbt em{font-style:italic;color:var(--acc);}
+.tbr{display:flex;align-items:center;gap:.6rem;position:relative;}
+.ibtn{width:34px;height:34px;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mut);transition:all .18s;position:relative;}
+.ibtn:hover{border-color:var(--acc);color:var(--acc);background:var(--al);}
+.adot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--red);border-radius:50%;border:1.5px solid var(--sur);display:none;}
+.bref{background:var(--sur2);border:1px solid var(--bdr);color:var(--mut);padding:.42rem .9rem;border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:.4rem;transition:all .18s;}
+.bref:hover{border-color:var(--acc);color:var(--acc);}
+/* Notif panel */
+.np{position:absolute;top:calc(100% + .5rem);right:0;width:310px;background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);box-shadow:var(--sh3);z-index:200;overflow:hidden;display:none;}
+.np.open{display:block;animation:fu .2s ease both;}
+.np-hd{padding:.75rem 1rem;border-bottom:1px solid var(--bdr2);font-size:.8rem;font-weight:700;display:flex;justify-content:space-between;}
+.np-clr{font-size:.72rem;color:var(--acc);cursor:pointer;font-weight:600;}
+.np-lst{max-height:260px;overflow-y:auto;}
+.np-it{padding:.75rem 1rem;border-bottom:1px solid var(--bdr2);cursor:pointer;transition:background .18s;display:flex;gap:.6rem;}
+.np-it:last-child{border:none;}
+.np-it:hover{background:var(--sur2);}
+.np-it.unread{background:linear-gradient(to right,var(--al),var(--sur));}
+.np-dot{width:6px;height:6px;background:var(--acc);border-radius:50%;flex-shrink:0;margin-top:.38rem;}
+.np-dot.r{background:var(--bdr);}
+.np-tit{font-size:.78rem;font-weight:700;color:var(--ink);}
+.np-bod{font-size:.72rem;color:var(--mut);line-height:1.5;}
+.np-tm{font-size:.64rem;color:var(--mut);margin-top:.08rem;}
+.cont-wrap{flex:1;overflow-y:auto;display:flex;justify-content:center;}
+.cont{flex:1;padding:1.75rem 2rem;max-width:1300px;width:100%;}
+.sec{display:none;}
+.sec.active{display:block;animation:fu .3s ease both;}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.srow{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+.sc{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:1.2rem 1.4rem;box-shadow:var(--sh);transition:transform .2s,box-shadow .2s;}
+.sc:hover{transform:translateY(-2px);box-shadow:var(--sh2);}
+.sic{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.88rem;margin-bottom:.85rem;}
+.svl{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--ink);line-height:1;margin-bottom:.2rem;}
+.slb{font-size:.72rem;color:var(--mut);font-weight:500;}
+.card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:1.25rem;overflow:hidden;}
+.ch{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.4rem;border-bottom:1px solid var(--bdr2);}
+.ch-l h2{font-size:.88rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:.45rem;}
+.ch-l h2 i{color:var(--acc);}
+.ch-l p{font-size:.73rem;color:var(--mut);margin-top:.1rem;}
+.badge{display:inline-flex;align-items:center;gap:.28rem;padding:.26rem .65rem;border-radius:100px;font-size:.7rem;font-weight:600;}
+.bp{background:var(--gl);color:#92400e;}
+.ba{background:var(--grl);color:var(--grn);}
+.br{background:var(--rl);color:var(--red);}
+.bc{background:var(--bl);color:var(--blu);}
+.alist{display:flex;flex-direction:column;gap:.75rem;padding:1.1rem 1.4rem;}
+.ac{border:1px solid var(--bdr);border-radius:var(--r);padding:1.2rem 1.4rem;background:var(--sur2);transition:all .2s;border-left:3px solid transparent;}
+.ac:hover{box-shadow:var(--sh2);}
+.ac.pending{border-left-color:var(--gld);}
+.ac.approved{border-left-color:var(--grn);}
+.ac.rejected{border-left-color:var(--red);}
+.ac.completed{border-left-color:var(--blu);}
+.act{display:flex;align-items:flex-start;gap:.9rem;margin-bottom:.85rem;}
+.acav{width:38px;height:38px;background:linear-gradient(135deg,var(--al),#ddd6fe);border:1px solid #c7d2fe;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;color:var(--acc);font-size:.95rem;flex-shrink:0;}
+.acin{flex:1;}
+.acnm{font-weight:700;font-size:.88rem;color:var(--ink);}
+.acem{font-size:.73rem;color:var(--mut);}
+.actm{font-size:.82rem;font-weight:600;color:var(--ink2);margin-top:.3rem;display:flex;align-items:center;gap:.35rem;}
+.actm i{color:var(--mut);font-size:.72rem;}
+.acnt{font-size:.73rem;color:var(--mut);margin-top:.2rem;}
+.aclv{display:inline-block;background:var(--al);color:var(--acc);font-size:.67rem;font-weight:600;padding:.18rem .5rem;border-radius:100px;margin-top:.2rem;}
+.acbt{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.75rem;}
+.abtn{padding:.42rem .9rem;border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .18s;border:none;display:flex;align-items:center;gap:.3rem;}
+.ab-ok{background:var(--grl);color:var(--grn);border:1px solid #a7f3d0;}
+.ab-ok:hover{background:var(--grn);color:#fff;}
+.ab-no{background:var(--rl);color:var(--red);border:1px solid #fecaca;}
+.ab-no:hover{background:var(--red);color:#fff;}
+.ab-dn{background:var(--bl);color:var(--blu);border:1px solid #bfdbfe;}
+.ab-dn:hover{background:var(--blu);color:#fff;}
+/* ZOOM section - always visible for approved */
+.zs{background:var(--bl);border:1px solid #bfdbfe;border-radius:8px;padding:.85rem 1rem;margin-top:.75rem;}
+.zslbl{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blu);margin-bottom:.5rem;display:flex;align-items:center;gap:.35rem;}
+.zrow{display:flex;gap:.5rem;margin-top:.35rem;}
+.zinp{flex:1;padding:.65rem .9rem;background:#fff;border:1.5px solid #bfdbfe;border-radius:6px;font-size:.84rem;font-family:'Plus Jakarta Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;}
+.zinp:focus{border-color:var(--blu);box-shadow:0 0 0 3px rgba(37,99,235,.1);}
+.zinp::placeholder{color:#93c5fd;}
+.zsav{padding:.65rem 1.1rem;background:var(--blu);color:#fff;border:none;border-radius:6px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .18s;white-space:nowrap;}
+.zsav:hover{background:#1d4ed8;}
+.zcur{display:flex;align-items:center;gap:.55rem;padding:.45rem .7rem;background:rgba(255,255,255,.7);border-radius:6px;margin-bottom:.45rem;}
+.zcur i{color:var(--blu);font-size:.75rem;flex-shrink:0;}
+.zcur a{font-size:.77rem;font-weight:600;color:var(--blu);text-decoration:none;word-break:break-all;}
+.zcur a:hover{text-decoration:underline;}
+table{width:100%;border-collapse:collapse;font-size:.83rem;}
+thead tr{background:var(--sur2);}
+th{padding:.72rem 1.2rem;text-align:left;font-size:.68rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.07em;}
+td{padding:.85rem 1.2rem;border-top:1px solid var(--bdr2);color:var(--ink);}
+tr:hover td{background:#fafbff;}
+.uc{display:flex;align-items:center;gap:.7rem;}
+.uav{width:30px;height:30px;background:linear-gradient(135deg,var(--al),#ddd6fe);border:1px solid #c7d2fe;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:.82rem;color:var(--acc);flex-shrink:0;}
+.un{font-weight:700;font-size:.83rem;}
+.ue{font-size:.71rem;color:var(--mut);}
+.tbn{padding:.35rem .8rem;border-radius:6px;font-size:.72rem;font-weight:600;cursor:pointer;border:none;font-family:'Plus Jakarta Sans',sans-serif;transition:all .18s;}
+.tb-b{background:var(--bl);color:var(--blu);border:1px solid #bfdbfe;}
+.tb-b:hover{background:var(--blu);color:#fff;}
+.tb-r{background:var(--rl);color:var(--red);border:1px solid #fecaca;}
+.tb-r:hover{background:var(--red);color:#fff;}
+.tb-o{background:var(--ol);color:var(--org);border:1px solid #fed7aa;}
+.tb-o:hover{background:var(--org);color:#fff;}
+.ftabs{display:flex;gap:.5rem;margin-bottom:1.25rem;flex-wrap:wrap;}
+.ftab{padding:.38rem .9rem;border-radius:100px;font-size:.78rem;font-weight:500;cursor:pointer;border:1.5px solid var(--bdr);background:var(--sur);color:var(--mut);font-family:'Plus Jakarta Sans',sans-serif;transition:all .18s;}
+.ftab.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.ug{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+.ucrd{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:1.5rem;box-shadow:var(--sh);}
+.ucrd h2{font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:1.2rem;display:flex;align-items:center;gap:.45rem;}
+.ucrd h2 i{color:var(--acc);}
+.lbl{display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:.4rem;}
+.inp{width:100%;padding:.75rem .95rem;background:var(--sur2);border:1.5px solid var(--bdr);border-radius:8px;font-size:.87rem;font-family:'Plus Jakarta Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;margin-bottom:.9rem;}
+.inp:focus{border-color:var(--acc);background:#fff;box-shadow:0 0 0 3px rgba(79,70,229,.1);}
+.fw{border:2px dashed var(--bdr);border-radius:8px;padding:1.35rem;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:.9rem;background:var(--sur2);}
+.fw:hover{border-color:var(--acc);background:var(--al);}
+.fw i{font-size:1.5rem;color:var(--mut);margin-bottom:.4rem;display:block;}
+.fw p{font-size:.76rem;color:var(--mut);}
+input[type="file"]{display:none;}
+.bup{width:100%;padding:.82rem;background:linear-gradient(135deg,var(--acc),var(--ac2));color:#fff;border:none;border-radius:8px;font-size:.84rem;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all .25s;box-shadow:0 4px 14px rgba(79,70,229,.25);}
+.bup:hover:not(:disabled){transform:translateY(-1px);}
+.bup:disabled{opacity:.35;cursor:not-allowed;box-shadow:none;}
+.ust{font-size:.75rem;color:var(--mut);margin-top:.5rem;text-align:center;min-height:1rem;}
+.rit{display:flex;align-items:center;gap:.8rem;padding:.75rem 0;border-bottom:1px solid var(--bdr2);}
+.rit:last-child{border:none;}
+.rico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.82rem;flex-shrink:0;}
+.rt2{font-weight:700;font-size:.82rem;color:var(--ink);}
+.rm{font-size:.69rem;color:var(--mut);margin-top:.08rem;}
+.roa{padding:.3rem .7rem;background:var(--al);color:var(--acc);border:1px solid #c7d2fe;border-radius:6px;font-size:.71rem;font-weight:600;text-decoration:none;transition:all .18s;margin-left:auto;}
+.roa:hover{background:var(--acc);color:#fff;}
+.rdl{padding:.3rem .65rem;background:var(--rl);color:var(--red);border:1px solid #fecaca;border-radius:6px;font-size:.71rem;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .18s;margin-left:.35rem;}
+.rdl:hover{background:var(--red);color:#fff;}
+.mbg{position:fixed;inset:0;background:rgba(15,23,42,.4);backdrop-filter:blur(6px);z-index:1000;display:none;align-items:center;justify-content:center;}
+.mbg.open{display:flex;}
+.modal{background:var(--sur);border:1px solid var(--bdr);border-radius:16px;padding:2rem;width:90%;max-width:420px;box-shadow:var(--sh3);}
+.modal h3{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:.45rem;color:var(--ink);}
+.modal p{color:var(--mut);font-size:.84rem;line-height:1.65;margin-bottom:1.5rem;}
+.modal .inp{margin-bottom:.75rem;}
+.mbtns{display:flex;gap:.75rem;}
+.mc{flex:1;padding:.72rem;background:var(--sur2);border:1.5px solid var(--bdr);color:var(--ink2);border-radius:8px;font-size:.84rem;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+.md{flex:1;padding:.72rem;background:var(--red);color:#fff;border:none;border-radius:8px;font-size:.84rem;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+.md:hover{background:#b91c1c;}
+.mo{flex:1;padding:.72rem;background:var(--org);color:#fff;border:none;border-radius:8px;font-size:.84rem;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+.mo:hover{background:#c2410c;}
+.aw{padding:.9rem 1.2rem;border-radius:8px;font-size:.84rem;margin-bottom:1.25rem;background:var(--gl);color:#92400e;border:1px solid #fde68a;}
+.empty{text-align:center;padding:2.5rem 1rem;}
+.empty i{font-size:2.2rem;color:var(--bdr);margin-bottom:.75rem;display:block;}
+.empty p{font-size:.85rem;color:var(--mut);}
+#toast{position:fixed;bottom:2rem;right:2rem;color:#fff;padding:.85rem 1.4rem;border-radius:10px;font-size:.84rem;font-weight:600;z-index:9999;transform:translateY(5rem);opacity:0;transition:all .3s;pointer-events:none;box-shadow:var(--sh3);}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.s{background:var(--grn);}
+#toast.e{background:var(--red);}
+#toast.w{background:var(--org);}
+::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:3px;}
 
-    <!-- Firebase CDN (compat sürümleri) -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-    <script src="firebase-config.js"></script>
+/* ══ RESPONSIVE ══ */
+.mob-toggle{display:none;position:fixed;bottom:1.25rem;right:1.25rem;width:52px;height:52px;background:linear-gradient(135deg,var(--acc),var(--ac2));border-radius:50%;color:#fff;font-size:1.2rem;border:none;cursor:pointer;z-index:200;box-shadow:0 8px 24px rgba(79,70,229,.4);align-items:center;justify-content:center;}
+.mob-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:150;backdrop-filter:blur(3px);}
+.mob-overlay.open{display:block;}
+@media(max-width:1024px){
+  :root{--sw:220px;}
+  .srow{grid-template-columns:repeat(2,1fr);}
+  .ug{grid-template-columns:1fr;}
+  .cont{padding:1.25rem;}
+}
+@media(max-width:768px){
+  body{overflow-x:hidden;}
+  aside{position:fixed;left:0;top:0;height:100%;width:280px;z-index:160;transform:translateX(-100%);transition:transform .3s ease;}
+  aside.mob-open{transform:translateX(0);}
+  main{width:100%;height:100vh;overflow:hidden;}
+  .cont-wrap{overflow-y:auto;height:calc(100vh - 55px);}
+  .mob-toggle{display:flex;}
+  .tbar{padding:.85rem 1rem;flex-wrap:wrap;gap:.5rem;}
+  .cont{padding:1rem;}
+  .srow{grid-template-columns:1fr 1fr;}
+  .ug{grid-template-columns:1fr;}
+  .ac-top{flex-wrap:wrap;}
+  .acbt{flex-wrap:wrap;}
+  .zrow{flex-direction:column;}
+  .zsav{width:100%;}
+  table{font-size:.78rem;}
+  th,td{padding:.6rem .75rem;}
+  #toast{bottom:5rem;right:1rem;left:1rem;text-align:center;}
+  .np{width:260px;}
+}
+@media(max-width:480px){
+  .srow{grid-template-columns:1fr;}
+  th,td{padding:.5rem .6rem;font-size:.72rem;}
+}
+@media(min-width:1400px){:root{--sw:280px;}}
+</style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body>
+<aside>
+  <div>
+    <div class="sh">
+      <a href="index.html" class="logo">English<em>Pro</em></a>
+      <div class="lsub">⚡ Admin Paneli</div>
+    </div>
+    <div class="snav">
+      <div class="slbl">Yönetim</div>
+      <button class="nb active" onclick="go('ov',this)"><i class="fas fa-chart-line"></i> Genel Bakış</button>
+      <button class="nb" id="nav-req" onclick="go('reqs',this)"><i class="fas fa-inbox"></i> Randevu Talepleri <span class="nbadge" id="nbadge">0</span></button>
+      <button class="nb" onclick="go('all',this)"><i class="fas fa-calendar-check"></i> Tüm Randevular</button>
+      <button class="nb" onclick="go('users',this)"><i class="fas fa-users"></i> Kullanıcılar</button>
+      <button class="nb" onclick="go('cnt',this)"><i class="fas fa-cloud-upload-alt"></i> İçerik Yönetimi</button>
+    </div>
+  </div>
+  <div class="sf">
+    <div class="ausr"><div class="aav" id="aav">A</div><div><div class="aname" id="aeml">Admin</div><div class="arole">Yönetici</div></div></div>
+    <div class="slinks">
+      <a href="dashboard.html" class="sln">Öğrenci Paneli</a>
+      <button class="sln sln-d" onclick="doLogout()">Çıkış</button>
+    </div>
+  </div>
+</aside>
 
-    <nav class="bg-gray-900 text-white py-4 px-6 flex justify-between items-center shadow">
-        <div class="flex items-center gap-3">
-            <i class="fas fa-shield-alt text-xl text-blue-400"></i>
-            <div>
-                <p class="text-xs uppercase tracking-widest text-gray-400">EnglishPro</p>
-                <h1 class="font-bold text-lg">Admin Paneli</h1>
-            </div>
+<main>
+  <div class="tbar">
+    <div class="tbt" id="tb">Genel <em>Bakış</em></div>
+    <div class="tbr">
+      <div class="ibtn" id="bbell" onclick="toggleNP()">
+        <i class="fas fa-bell"></i><div class="adot" id="adot"></div>
+      </div>
+      <div class="np" id="np">
+        <div class="np-hd">Bildirimler<span class="np-clr" onclick="clearAN()">Tümünü Temizle</span></div>
+        <div class="np-lst" id="nplst"><div class="empty" style="padding:1.5rem;"><i class="fas fa-bell-slash"></i><p>Bildirim yok.</p></div></div>
+      </div>
+      <button class="bref" onclick="refresh()"><i class="fas fa-rotate-right"></i> Yenile</button>
+    </div>
+  </div>
+
+  <div class="cont-wrap"><div class="cont">
+    <div class="aw" id="warn" style="display:none;"></div>
+
+    <!-- OVERVIEW -->
+    <div id="ov" class="sec active">
+      <div class="srow">
+        <div class="sc"><div class="sic" style="background:#eef2ff;color:var(--acc);"><i class="fas fa-users"></i></div><div class="svl" id="ov-u">—</div><div class="slb">Kullanıcı</div></div>
+        <div class="sc"><div class="sic" style="background:var(--gl);color:#d97706;"><i class="fas fa-clock"></i></div><div class="svl" id="ov-p">—</div><div class="slb">Bekleyen Talep</div></div>
+        <div class="sc"><div class="sic" style="background:var(--grl);color:var(--grn);"><i class="fas fa-check-circle"></i></div><div class="svl" id="ov-ok">—</div><div class="slb">Onaylı Randevu</div></div>
+        <div class="sc"><div class="sic" style="background:var(--bl);color:var(--blu);"><i class="fas fa-video"></i></div><div class="svl" id="ov-z">—</div><div class="slb">Zoom Linki Verildi</div></div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ch-l"><h2><i class="fas fa-bell"></i> Bekleyen Talepler</h2><p>Onay bekleyen randevular.</p></div><button class="bref" onclick="loadOv()"><i class="fas fa-rotate-right"></i></button></div>
+        <div id="ov-lst" class="alist"><div class="empty" style="padding:1.5rem;"><i class="fas fa-spinner fa-spin"></i><p>Yükleniyor...</p></div></div>
+      </div>
+    </div>
+
+    <!-- REQUESTS -->
+    <div id="reqs" class="sec">
+      <div class="ftabs">
+        <button class="ftab active" onclick="fR('pending',this)">⏳ Bekleyenler</button>
+        <button class="ftab" onclick="fR('approved',this)">✓ Onaylananlar</button>
+        <button class="ftab" onclick="fR('rejected',this)">✕ Reddedilenler</button>
+        <button class="ftab" onclick="fR('completed',this)">✔ Tamamlananlar</button>
+        <button class="ftab" onclick="fR('all',this)">Tümü</button>
+      </div>
+      <div id="rlst"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Yükleniyor...</p></div></div>
+    </div>
+
+    <!-- ALL -->
+    <div id="all" class="sec">
+      <div class="card" style="overflow:hidden;">
+        <div class="ch"><div class="ch-l"><h2><i class="fas fa-calendar-check"></i> Tüm Randevular</h2></div><button class="bref" onclick="loadAll()"><i class="fas fa-rotate-right"></i></button></div>
+        <div style="overflow-x:auto;"><table><thead><tr><th>Öğrenci</th><th>Tarih & Saat</th><th>Durum</th><th>Zoom</th><th>Tarih</th></tr></thead><tbody id="altb"><tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--mut);">Yükleniyor...</td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div id="users" class="sec">
+      <div class="card" style="overflow:hidden;">
+        <div class="ch"><div class="ch-l"><h2><i class="fas fa-users"></i> Kullanıcı Yönetimi</h2><p>Kullanıcıları görüntüleyin, çıkarın veya silin.</p></div><button class="bref" onclick="loadUsers()"><i class="fas fa-rotate-right"></i></button></div>
+        <div style="overflow-x:auto;"><table><thead><tr><th>Kullanıcı</th><th>Durum</th><th>Randevu</th><th>Kayıt</th><th style="text-align:right;">İşlemler</th></tr></thead><tbody id="utb"><tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--mut);">Yükleniyor...</td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div id="cnt" class="sec">
+      <div class="ug">
+        <div class="ucrd">
+          <h2><i class="fas fa-cloud-upload-alt"></i> Yeni Kaynak Ekle</h2>
+          <form id="upf" onsubmit="doUp(event)">
+            <label class="lbl">Başlık</label>
+            <input type="text" class="inp" id="rtl" placeholder="Ör: İş İngilizcesi – Toplantı Kalıpları" required>
+            <label class="lbl">Tür</label>
+            <select class="inp" id="rtp" required><option value="pdf">📄 PDF</option><option value="video">🎬 Video</option></select>
+            <label class="lbl">Dosya</label>
+            <div class="fw" onclick="document.getElementById('rfl').click()"><i class="fas fa-cloud-upload-alt"></i><p id="flbl">Dosya seçmek için tıklayın · PDF veya MP4, maks. 15MB</p></div>
+            <input type="file" id="rfl" accept=".pdf,video/*" onchange="document.getElementById('flbl').textContent=this.files[0]?this.files[0].name:'Dosya seçmek için tıklayın'">
+            <button id="upbtn" type="submit" class="bup"><i class="fas fa-upload"></i> Yükle</button>
+            <div class="ust" id="ust"></div>
+          </form>
         </div>
-        <div class="flex items-center gap-4">
-            <span id="admin-email" class="text-sm text-gray-300"></span>
-            <a href="dashboard.html" class="text-xs bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-full font-semibold">Öğrenci Paneline Git</a>
-            <button onclick="logout()" class="text-xs bg-red-500 hover:bg-red-600 px-3 py-1 rounded-full font-semibold">Çıkış</button>
-        </div>
-    </nav>
+        <div class="ucrd"><h2><i class="fas fa-book-open"></i> Yüklü Kaynaklar</h2><div id="rlst2" style="max-height:460px;overflow-y:auto;"></div></div>
+      </div>
+    </div>
+  </div></div>
+</main>
 
-    <main class="max-w-6xl mx-auto py-8 px-4 space-y-8">
+<!-- REJECT MODAL -->
+<div class="mbg" id="rmod"><div class="modal"><h3>Talebi Reddet</h3><p>Öğrenciye red bildirimi gönderilecek.</p><label class="lbl">Açıklama (isteğe bağlı)</label><input type="text" class="inp" id="rnote" placeholder="Ör: O tarihte müsait değilim..."><div class="mbtns"><button class="mc" onclick="cm('rmod')">İptal</button><button class="md" onclick="doReject()"><i class="fas fa-times"></i> Reddet</button></div></div></div>
 
-        <!-- UYARI / YÜKLENİYOR -->
-        <div id="admin-warning" class="bg-yellow-50 text-yellow-800 border border-yellow-200 px-4 py-3 rounded-lg text-sm hidden"></div>
 
-        <!-- KISIM 1: Kullanıcı Listesi -->
-        <section class="bg-white rounded-2xl shadow border border-gray-100 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div>
-                    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <i class="fas fa-users-cog text-blue-600"></i>
-                        Kayıtlı Kullanıcılar
-                    </h2>
-                    <p class="text-sm text-gray-500">Firebase Auth ile oluşturulmuş kullanıcılar Firestore `users` koleksiyonundan listelenir.</p>
-                </div>
-                <button onclick="loadUsers()" class="text-xs bg-gray-900 text-white px-3 py-2 rounded-lg hover:bg-gray-800 flex items-center gap-1">
-                    <i class="fas fa-rotate-right"></i> Yenile
-                </button>
-            </div>
 
-            <div class="overflow-x-auto">
-                <table class="min-w-full text-sm">
-                    <thead>
-                        <tr class="bg-gray-50 text-gray-500 text-left">
-                            <th class="px-3 py-2">Ad Soyad</th>
-                            <th class="px-3 py-2">E-posta</th>
-                            <th class="px-3 py-2">Paket</th>
-                            <th class="px-3 py-2">Rol</th>
-                            <th class="px-3 py-2">Kayıt Tarihi</th>
-                            <th class="px-3 py-2 text-right">İşlemler</th>
-                        </tr>
-                    </thead>
-                    <tbody id="user-table-body">
-                        <tr>
-                            <td colspan="6" class="px-3 py-4 text-center text-gray-400">Yükleniyor...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+<!-- DELETE MODAL -->
+<div class="mbg" id="dmod"><div class="modal"><h3>Kullanıcıyı Sil</h3><p id="dmsg">Tüm verileri kalıcı olarak silinecek. Bu işlem geri alınamaz.</p><div class="mbtns"><button class="mc" onclick="cm('dmod')">İptal</button><button class="md" onclick="doDelUser()"><i class="fas fa-trash"></i> Kalıcı Sil</button></div></div></div>
 
-        <!-- KISIM 2: PDF / Video Yükleme -->
-        <section class="grid md:grid-cols-2 gap-6">
-            <div class="bg-white rounded-2xl shadow border border-gray-100 p-6">
-                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <i class="fas fa-cloud-upload-alt text-green-600"></i>
-                    PDF / Video Yükle
-                </h2>
-                <form id="upload-form" class="space-y-4" onsubmit="handleUpload(event)">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Başlık</label>
-                        <input type="text" id="resource-title" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Örn: İş İngilizcesi – Toplantı Kalıpları" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tür</label>
-                        <select id="resource-type" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
-                            <option value="pdf">PDF</option>
-                            <option value="video">Video</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Dosya</label>
-                        <input type="file" id="resource-file" class="w-full text-sm" accept=".pdf,video/*" required>
-                        <p class="text-xs text-gray-400 mt-1">PDF için `.pdf`, video için yaygın formatlar (`.mp4`, `.mov` vb.) yükleyebilirsiniz.</p>
-                    </div>
-                    <button id="upload-btn" type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 flex items-center justify-center gap-2">
-                        <i class="fas fa-upload"></i>
-                        <span>Yükle</span>
-                    </button>
-                    <p id="upload-status" class="text-xs text-gray-500 mt-1"></p>
-                </form>
-            </div>
+<div id="toast"></div>
 
-            <!-- KISIM 3: Mevcut Kaynaklar -->
-            <div class="bg-white rounded-2xl shadow border border-gray-100 p-6">
-                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <i class="fas fa-book-open text-purple-600"></i>
-                    Yüklü Kaynaklar
-                </h2>
-                <div id="resource-list" class="space-y-3 max-h-80 overflow-y-auto text-sm">
-                    <p class="text-gray-400 text-center py-4">Yükleniyor...</p>
-                </div>
-            </div>
-        </section>
+<script>
+let cu=null,rTid=null,rUid=null,cf='pending',allReqs=[],dUid=null,dNm=null;
+const titles={ov:'Genel <em>Bakış</em>',reqs:'Randevu <em>Talepleri</em>',all:'Tüm <em>Randevular</em>',users:'<em>Kullanıcılar</em>',cnt:'İçerik <em>Yönetimi</em>'};
 
-        <!-- KISIM 3: Randevular -->
-        <section class="bg-white rounded-2xl shadow border border-gray-100 p-6" id="appointments-section">
-            <div class="flex items-center justify-between mb-4">
-                <div>
-                    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <i class="fas fa-calendar-check text-emerald-600"></i>
-                        Öğrenci Randevuları
-                    </h2>
-                    <p class="text-sm text-gray-500">Öğrencilerin dashboard üzerinden oluşturduğu randevuları görüntüleyin.</p>
-                    <p id="appointment-filter-label" class="text-xs text-gray-500 mt-1"></p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="loadAppointments()" class="text-xs bg-gray-900 text-white px-3 py-2 rounded-lg hover:bg-gray-800 flex items-center gap-1">
-                        <i class="fas fa-rotate-right"></i> Yenile
-                    </button>
-                    <button onclick="clearAppointmentFilter()" class="text-xs bg-gray-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 border border-gray-200">
-                        Filtreyi Temizle
-                    </button>
-                </div>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full text-sm">
-                    <thead>
-                        <tr class="bg-gray-50 text-gray-500 text-left">
-                            <th class="px-3 py-2">Öğrenci</th>
-                            <th class="px-3 py-2">Tarih & Saat</th>
-                            <th class="px-3 py-2">Oluşturulma</th>
-                        </tr>
-                    </thead>
-                    <tbody id="appointment-table-body">
-                        <tr>
-                            <td colspan="3" class="px-3 py-3 text-center text-gray-400 text-sm">Henüz yüklenmedi.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+auth.onAuthStateChanged(async u=>{
+  if(!u){window.location.href='login.html';return;}
+  const isA=Array.isArray(window.ADMIN_EMAILS)&&window.ADMIN_EMAILS.includes(u.email);
+  if(!isA){const w=document.getElementById('warn');w.style.display='block';w.textContent='Erişim yetkiniz yok.';setTimeout(()=>window.location.href='dashboard.html',2500);return;}
+  cu=u;
+  document.getElementById('aeml').textContent=u.email||'';
+  document.getElementById('aav').textContent=(u.email||'A').charAt(0).toUpperCase();
+  loadOv();loadRList();listenPending();listenAN();
+  setTimeout(checkApproaching,2000);
+  setTimeout(autoDeleteCompleted,3000);
+});
 
-    </main>
+function doLogout(){auth.signOut().then(()=>window.location.href='index.html');}
 
-    <script>
-        // Auth durumu & admin kontrolü
-        auth.onAuthStateChanged(async (user) => {
-            const warningEl = document.getElementById('admin-warning');
-            if (!user) {
-                window.location.href = 'login.html';
-                return;
-            }
+function go(id,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.getElementById('tb').innerHTML=titles[id]||'Panel';
+  if(id==='reqs')loadReqs(cf);
+  if(id==='all')loadAll();
+  if(id==='users')loadUsers();
+}
+function refresh(){const a=document.querySelector('.sec.active');if(!a)return;switch(a.id){case'ov':loadOv();break;case'reqs':loadReqs(cf);break;case'all':loadAll();break;case'users':loadUsers();break;case'cnt':loadRList();break;}}
+function cs(arr){return arr.sort((a,b)=>(b.createdAt&&b.createdAt.seconds||0)-(a.createdAt&&a.createdAt.seconds||0));}
+function cm(id){document.getElementById(id).classList.remove('open');}
 
-            document.getElementById('admin-email').innerText = user.email || '';
+// ── PENDING BADGE ──
+function listenPending(){
+  db.collection('appointments').where('status','==','pending').onSnapshot(s=>{
+    const c=s.size,b=document.getElementById('nbadge');
+    if(c>0){b.style.display='inline-block';b.textContent=c;}else b.style.display='none';
+  });
+}
 
-            const isAdmin = Array.isArray(window.ADMIN_EMAILS) && window.ADMIN_EMAILS.includes(user.email);
-            if (!isAdmin) {
-                warningEl.classList.remove('hidden');
-                warningEl.innerText = 'Bu sayfaya erişim yetkiniz yok. Admin e-postasına sahip değilsiniz.';
-                setTimeout(() => window.location.href = 'dashboard.html', 2500);
-                return;
-            }
+// ── ADMIN NOTIFICATIONS ──
+function listenAN(){
+  db.collection('admin_notifications').onSnapshot(snap=>{
+    const ns=snap.docs.map(d=>({id:d.id,...d.data()}));
+    ns.sort((a,b)=>(b.createdAt&&b.createdAt.seconds||0)-(a.createdAt&&a.createdAt.seconds||0));
+    const un=ns.filter(n=>!n.read).length;
+    const dot=document.getElementById('adot');
+    if(un>0)dot.style.display='block';else dot.style.display='none';
+    const el=document.getElementById('nplst');
+    if(!ns.length){el.innerHTML=`<div class="empty" style="padding:1.5rem;"><i class="fas fa-bell-slash"></i><p>Bildirim yok.</p></div>`;return;}
+    el.innerHTML=ns.slice(0,20).map(n=>{
+      const t=n.createdAt&&n.createdAt.toDate?n.createdAt.toDate().toLocaleString('tr-TR'):'';
+      return `<div class="np-it ${n.read?'':'unread'}" onclick="mAN('${n.id}')">
+        <div class="np-dot ${n.read?'r':''}"></div>
+        <div><div class="np-tit">${n.title||''}</div><div class="np-bod">${n.body||''}</div><div class="np-tm">${t}</div></div>
+      </div>`;
+    }).join('');
+  });
+}
+async function mAN(id){try{await db.collection('admin_notifications').doc(id).update({read:true});}catch(e){}}
+function toggleNP(){document.getElementById('np').classList.toggle('open');}
+document.addEventListener('click',e=>{
+  const b=document.getElementById('bbell'),p=document.getElementById('np');
+  if(b&&p&&!b.contains(e.target)&&!p.contains(e.target))p.classList.remove('open');
+});
+async function clearAN(){
+  try{const s=await db.collection('admin_notifications').get();const b=db.batch();s.forEach(d=>b.update(d.ref,{read:true}));await b.commit();document.getElementById('np').classList.remove('open');}catch(e){}
+}
 
-            // Admin ise veri yükle
-            loadUsers();
-            loadResources();
-            loadAppointments();
-        });
+// ── APPROACHING APPOINTMENTS ──
+async function checkApproaching(){
+  try{
+    const snap=await db.collection('appointments').where('status','==','approved').get();
+    const now=new Date();
+    const MONTHS={'Ocak':0,'Şubat':1,'Mart':2,'Nisan':3,'Mayıs':4,'Haziran':5,'Temmuz':6,'Ağustos':7,'Eylül':8,'Ekim':9,'Kasım':10,'Aralık':11};
+    for(const doc of snap.docs){
+      const a={id:doc.id,...doc.data()};
+      if(!a.timeSlot)continue;
+      let dt=null;
+      try{const dp=a.timeSlot.split('|')[0].trim(),pp=dp.split(' ');if(pp.length>=3){const d=parseInt(pp[0]),m=MONTHS[pp[1]],y=parseInt(pp[2]);if(!isNaN(d)&&m!==undefined&&!isNaN(y))dt=new Date(y,m,d);}}catch(e){}
+      if(!dt)continue;
+      const diff=dt-now;
+      if(diff<0||diff>8*24*3600*1000)continue;
+      const days=Math.ceil(diff/86400000);
+      // Check if already notified
+      const key=`appr_${a.id}_${days<=1?'1d':days<=7?'7d':''}`;
+      if(!key.includes('1d')&&!key.includes('7d'))continue;
+      const ex=await db.collection('admin_notifications').where('key','==',key).get();
+      if(!ex.empty)continue;
+      const lbl=days<=1?'⏰ YARIN!':'🗓️ '+days+' GÜN KALDI';
+      await db.collection('admin_notifications').add({
+        title:`${lbl} — Yaklaşan Ders`,
+        body:`${a.displayName||a.email} · ${a.timeSlot}`,
+        key,apptId:a.id,read:false,
+        createdAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+  }catch(e){console.error(e);}
+}
 
-        function logout() {
-            auth.signOut().then(() => {
-                window.location.href = 'index.html';
-            });
-        }
+// ── OVERVIEW ──
+async function loadOv(){
+  try{
+    const[us,ap]=await Promise.all([db.collection('users').get(),db.collection('appointments').get()]);
+    const appts=ap.docs.map(d=>d.data());
+    document.getElementById('ov-u').textContent=us.size;
+    document.getElementById('ov-p').textContent=appts.filter(a=>a.status==='pending').length;
+    document.getElementById('ov-ok').textContent=appts.filter(a=>a.status==='approved').length;
+    document.getElementById('ov-z').textContent=appts.filter(a=>a.zoomLink&&a.zoomLink.length>3).length;
+    const pend=cs(ap.docs.filter(d=>d.data().status==='pending').map(d=>({id:d.id,...d.data()})));
+    const el=document.getElementById('ov-lst');
+    if(!pend.length){el.innerHTML=`<div class="empty" style="padding:1.5rem;"><i class="fas fa-check-circle" style="color:var(--grn);"></i><p>Bekleyen talep yok.</p></div>`;return;}
+    el.innerHTML=pend.slice(0,6).map(buildAC).join('');
+  }catch(e){console.error(e);}
+}
 
-        // Firestore: users koleksiyonunu listele
-        async function loadUsers() {
-            const tbody = document.getElementById('user-table-body');
-            tbody.innerHTML = '<tr><td colspan="6" class="px-3 py-4 text-center text-gray-400">Yükleniyor...</td></tr>';
-            try {
-                const snap = await db.collection('users').orderBy('createdAt', 'desc').get();
-                if (snap.empty) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="px-3 py-4 text-center text-gray-400">Kayıtlı kullanıcı bulunamadı.</td></tr>';
-                    return;
-                }
-                let html = '';
-                snap.forEach(doc => {
-                    const u = doc.data();
-                    const userId = doc.id;
-                    const date = u.createdAt && u.createdAt.toDate ? u.createdAt.toDate().toLocaleString('tr-TR') : '-';
-                    const currentPackage = u.currentPackage || 'Standart';
-                    html += `
-                        <tr class="border-t border-gray-100">
-                            <td class="px-3 py-2">${u.displayName || '-'}</td>
-                            <td class="px-3 py-2">${u.email || '-'}</td>
-                            <td class="px-3 py-2 text-xs text-gray-700">
-                                <select onchange="updateUserPackage('${userId}', this.value)" class="border border-gray-200 rounded-lg px-2 py-1 text-xs bg-white">
-                                    <option value="Standart Paket" ${currentPackage === 'Standart Paket' || currentPackage === 'Standart' ? 'selected' : ''}>Standart Paket</option>
-                                    <option value="Pro Master" ${currentPackage === 'Pro Master' ? 'selected' : ''}>Pro Master</option>
-                                    <option value="VIP Özel" ${currentPackage === 'VIP Özel' ? 'selected' : ''}>VIP Özel</option>
-                                </select>
-                            </td>
-                            <td class="px-3 py-2 text-xs">
-                                <span class="inline-flex items-center px-2 py-1 rounded-full ${u.role === 'admin' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}">
-                                    ${u.role || 'öğrenci'}
-                                </span>
-                            </td>
-                            <td class="px-3 py-2 text-xs text-gray-500">${date}</td>
-                            <td class="px-3 py-2 text-right text-xs">
-                                <button onclick="viewUserAppointments('${u.email || ''}')" class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-100">
-                                    Randevular
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                });
-                tbody.innerHTML = html;
-            } catch (err) {
-                console.error(err);
-                tbody.innerHTML = '<tr><td colspan="6" class="px-3 py-4 text-center text-red-500">Kullanıcılar yüklenirken hata oluştu.</td></tr>';
-            }
-        }
+// ── REQUESTS ──
+async function loadReqs(f='pending'){
+  cf=f;const el=document.getElementById('rlst');
+  el.innerHTML=`<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Yükleniyor...</p></div>`;
+  try{
+    const snap=await db.collection('appointments').get();
+    allReqs=cs(snap.docs.map(d=>({id:d.id,...d.data()})));
+    renderReqs(f);
+  }catch(e){el.innerHTML=`<div class="empty"><i class="fas fa-exclamation-triangle"></i><p>Hata: ${e.message}</p></div>`;}
+}
+function renderReqs(f){
+  const el=document.getElementById('rlst');
+  const list=f==='all'?allReqs:allReqs.filter(a=>a.status===f);
+  if(!list.length){el.innerHTML=`<div class="empty"><i class="fas fa-inbox"></i><p>Bu kategoride kayıt yok.</p></div>`;return;}
+  el.innerHTML=`<div style="display:flex;flex-direction:column;gap:.75rem;">${list.map(buildAC).join('')}</div>`;
+}
+function fR(f,btn){cf=f;document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderReqs(f);}
 
-        // Kaynak yükleme
-        async function handleUpload(e) {
-            e.preventDefault();
-            const titleInput = document.getElementById('resource-title');
-            const typeSelect = document.getElementById('resource-type');
-            const fileInput = document.getElementById('resource-file');
-            const statusEl = document.getElementById('upload-status');
-            const btn = document.getElementById('upload-btn');
+function buildAC(a){
+  const sm={pending:`<span class="badge bp">⏳ Beklemede</span>`,approved:`<span class="badge ba">✓ Onaylandı</span>`,rejected:`<span class="badge br">✕ Reddedildi</span>`,completed:`<span class="badge bc">✔ Tamamlandı</span>`};
+  const ini=(a.displayName||a.email||'?').charAt(0).toUpperCase();
+  const date=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().toLocaleDateString('tr-TR'):'—';
+  const note=a.note?`<div class="acnt">📝 ${a.note}</div>`:'';
+  const lvl=a.level?`<span class="aclv">${a.level}</span>`:'';
+  const esc=s=>(s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+  let btns='';
+  if(a.status==='pending'){
+    btns=`<button class="abtn ab-ok" onclick="doApprove('${a.id}','${a.userId||''}','${esc(a.displayName||'')}','${esc(a.timeSlot||'')}')"><i class="fas fa-check"></i> Onayla</button>
+          <button class="abtn ab-no" onclick="ormod('${a.id}','${a.userId||''}')"><i class="fas fa-times"></i> Reddet</button>`;
+  }else if(a.status==='approved'){
+    btns=`<button class="abtn ab-dn" onclick="doComplete('${a.id}','${a.userId||''}')"><i class="fas fa-check-double"></i> Tamamlandı</button>`;
+  }
+  // ✅ Always-visible zoom section for approved
+  const zs=a.status==='approved'?`
+    <div class="zs">
+      <div class="zslbl"><i class="fas fa-video"></i> Zoom Meeting Linki</div>
+      ${a.zoomLink?`<div class="zcur"><i class="fas fa-link"></i><a href="${a.zoomLink}" target="_blank">${a.zoomLink}</a></div>`:''}
+      <div class="zrow">
+        <input type="text" class="zinp" id="zi-${a.id}" placeholder="https://zoom.us/j/..." value="${a.zoomLink||''}">
+        <button class="zsav" onclick="saveZoom('${a.id}','${a.userId||''}')">
+          <i class="fas fa-paper-plane"></i> ${a.zoomLink?'Güncelle':'Gönder'}
+        </button>
+      </div>
+    </div>`:'';
+  return `<div class="ac ${a.status||'pending'}">
+    <div class="act">
+      <div class="acav">${ini}</div>
+      <div class="acin">
+        <div class="acnm">${a.displayName||'—'}</div>
+        <div class="acem">${a.email||''}</div>
+        <div class="actm"><i class="far fa-clock"></i>${a.timeSlot||'—'}</div>
+        ${note}${lvl}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.35rem;">${sm[a.status]||sm.pending}<span style="font-size:.68rem;color:var(--mut);">${date}</span></div>
+    </div>
+    ${zs}
+    ${btns?`<div class="acbt">${btns}</div>`:''}
+  </div>`;
+}
 
-            const file = fileInput.files[0];
-            if (!file) {
-                statusEl.innerText = 'Lütfen bir dosya seçin.';
-                return;
-            }
+// ── APPROVE ──
+async function doApprove(aid,uid,name,ts){
+  try{
+    await db.collection('appointments').doc(aid).update({status:'approved',updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    if(uid)await db.collection('notifications').add({userId:uid,title:'✅ Randevunuz Onaylandı!',body:`"${ts}" tarihli randevunuz onaylandı. Zoom linki ders öncesinde paylaşılacak.`,zoomLink:'',read:false,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    toast(`${name||'Öğrenci'} onaylandı.`,'s');
+    loadOv();renderReqs(cf);
+    setTimeout(checkApproaching,500);
+  }catch(e){toast('Hata.','e');}
+}
 
-            // 15 MB üzerindeki dosyaları reddet (çok uzun sürmesin)
-            const maxSizeBytes = 15 * 1024 * 1024;
-            if (file.size > maxSizeBytes) {
-                statusEl.innerText = 'Dosya boyutu çok büyük. Lütfen 15 MB\'dan küçük bir dosya yükleyin.';
-                return;
-            }
+// ── REJECT ──
+function ormod(id,uid){rTid=id;rUid=uid;document.getElementById('rnote').value='';document.getElementById('rmod').classList.add('open');}
+async function doReject(){
+  if(!rTid)return;
+  const note=document.getElementById('rnote').value.trim();
+  try{
+    await db.collection('appointments').doc(rTid).update({status:'rejected',updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    if(rUid)await db.collection('notifications').add({userId:rUid,title:'❌ Randevu Talebiniz Reddedildi',body:note?`Açıklama: ${note}`:'Bu tarih uygun değil. Farklı bir tarih deneyin.',read:false,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    toast('Talep reddedildi.','s');
+    cm('rmod');loadOv();renderReqs(cf);
+  }catch(e){toast('Hata.','e');}
+}
 
-            const type = typeSelect.value;
-            const title = titleInput.value.trim();
-            if (!title) {
-                statusEl.innerText = 'Başlık alanı boş olamaz.';
-                return;
-            }
+// ── ZOOM - inline, always visible ──
+async function saveZoom(aid,uid){
+  const inp=document.getElementById('zi-'+aid);
+  if(!inp){toast('Input bulunamadı.','e');return;}
+  const link=inp.value.trim();
+  if(!link){toast('Lütfen Zoom linki girin.','e');return;}
+  try{
+    await db.collection('appointments').doc(aid).update({zoomLink:link,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    if(uid)await db.collection('notifications').add({userId:uid,title:'📹 Zoom Linkiniz Hazır!',body:'Dersiniz için Zoom linki paylaşıldı. Panelinizden ulaşabilirsiniz.',zoomLink:link,read:false,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    toast('Zoom linki kaydedildi ve öğrenciye bildirim gönderildi!','s');
+    loadOv();renderReqs(cf);loadAll();
+  }catch(e){toast('Hata: '+e.message,'e');}
+}
 
-            btn.disabled = true;
-            btn.classList.add('opacity-60', 'cursor-not-allowed');
-            statusEl.innerText = 'Yükleniyor... (0%)';
+// ── COMPLETE ──
+async function doComplete(aid,uid){
+  try{
+    await db.collection('appointments').doc(aid).update({status:'completed',updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    if(uid)await db.collection('notifications').add({userId:uid,title:'🎉 Dersiniz Tamamlandı!',body:'Umarız verimli geçti!',read:false,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    toast('Tamamlandı.','s');renderReqs(cf);loadAll();
+  }catch(e){toast('Hata.','e');}
+}
 
-            try {
-                const user = auth.currentUser;
-                if (!user) {
-                    statusEl.innerText = 'Oturum süresi doldu, lütfen tekrar giriş yapın.';
-                    btn.disabled = false;
-                    btn.classList.remove('opacity-60', 'cursor-not-allowed');
-                    return;
-                }
+// ── ALL TABLE ──
+async function loadAll(){
+  const tb=document.getElementById('altb');
+  tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--mut);">Yükleniyor...</td></tr>';
+  try{
+    const snap=await db.collection('appointments').get();
+    if(snap.empty){tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--mut);">Kayıt yok.</td></tr>';return;}
+    const docs=cs(snap.docs.map(d=>({id:d.id,...d.data()})));
+    const sm={pending:`<span class="badge bp">⏳ Beklemede</span>`,approved:`<span class="badge ba">✓ Onaylandı</span>`,rejected:`<span class="badge br">✕ Reddedildi</span>`,completed:`<span class="badge bc">✔ Tamamlandı</span>`};
+    tb.innerHTML=docs.map(a=>{
+      const date=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().toLocaleDateString('tr-TR'):'—';
+      const ini=(a.displayName||'?').charAt(0).toUpperCase();
+      const zc=a.zoomLink?`<a href="${a.zoomLink}" target="_blank" style="font-size:.74rem;color:var(--blu);font-weight:600;text-decoration:none;"><i class="fas fa-video"></i> Var</a>`:`<span style="font-size:.74rem;color:var(--bdr);">—</span>`;
+      return `<tr><td><div class="uc"><div class="uav">${ini}</div><div><div class="un">${a.displayName||'—'}</div><div class="ue">${a.email||''}</div></div></div></td><td style="font-size:.82rem;font-weight:600;">${a.timeSlot||'—'}</td><td>${sm[a.status]||sm.pending}</td><td>${zc}</td><td style="font-size:.75rem;color:var(--mut);">${date}</td></tr>`;
+    }).join('');
+  }catch(e){tb.innerHTML=`<tr><td colspan="5" style="text-align:center;color:var(--red);padding:2rem;">Hata: ${e.message}</td></tr>`;}
+}
 
-                const timestamp = Date.now();
-                const safeName = file.name.replace(/\s+/g, '_');
-                const path = `resources/${type}/${timestamp}_${safeName}`;
+// ── USERS ──
+async function loadUsers(){
+  const tb=document.getElementById('utb');
+  tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--mut);">Yükleniyor...</td></tr>';
+  try{
+    const[us,ap]=await Promise.all([db.collection('users').get(),db.collection('appointments').get()]);
+    const cnt={};ap.forEach(d=>{const uid=d.data().userId;cnt[uid]=(cnt[uid]||0)+1;});
+    if(us.empty){tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--mut);">Kullanıcı yok.</td></tr>';return;}
+    const docs=cs(us.docs.map(d=>({id:d.id,...d.data()})));
+    tb.innerHTML=docs.map(u=>{
+      const date=u.createdAt&&u.createdAt.toDate?u.createdAt.toDate().toLocaleDateString('tr-TR'):'—';
+      const ini=(u.displayName||u.email||'?').charAt(0).toUpperCase();
+      const rb=u.role==='admin'?`<span class="badge bp">Admin</span>`:(u.role==='banned'?`<span class="badge br">Çıkarıldı</span>`:`<span class="badge ba">Öğrenci</span>`);
+      const isSelf=u.email===cu.email;
+      const acts=isSelf?`<span style="font-size:.75rem;color:var(--mut);">Kendi hesabınız</span>`:`
+        <div style="display:flex;gap:.4rem;justify-content:flex-end;flex-wrap:wrap;">
+          <button class="tbn tb-b" onclick="viewUA('${u.email||''}')"><i class="fas fa-calendar"></i> Randevular</button>
+          <button class="tbn tb-r" onclick="openDel('${u.id}','${(u.displayName||u.email||'').replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i> Sil</button>
+        </div>`;
+      return `<tr><td><div class="uc"><div class="uav">${ini}</div><div><div class="un">${u.displayName||'—'}</div><div class="ue">${u.email||''}</div></div></div></td><td>${rb}</td><td style="font-size:.85rem;font-weight:700;">${cnt[u.id]||0}</td><td style="font-size:.75rem;color:var(--mut);">${date}</td><td>${acts}</td></tr>`;
+    }).join('');
+  }catch(e){tb.innerHTML=`<tr><td colspan="5" style="text-align:center;color:var(--red);padding:2rem;">Hata: ${e.message}</td></tr>`;}
+}
 
-                const ref = storage.ref().child(path);
-                const uploadTask = ref.put(file);
+// ── AUTO-DELETE completed appointments after 1 day ──
+async function autoDeleteCompleted(){
+  try{
+    const snap=await db.collection('appointments').where('status','==','completed').get();
+    const oneDayAgo=Date.now()-86400000;
+    const batch=db.batch();
+    let count=0;
+    snap.forEach(doc=>{
+      const d=doc.data();
+      const ts=d.updatedAt&&d.updatedAt.seconds?d.updatedAt.seconds*1000:(d.createdAt&&d.createdAt.seconds?d.createdAt.seconds*1000:0);
+      if(ts>0&&ts<oneDayAgo){batch.delete(doc.ref);count++;}
+    });
+    if(count>0){await batch.commit();toast(count+' tamamlanmış ders otomatik silindi.','s');loadOv();loadAll();}
+  }catch(e){console.error('autoDelete:',e);}
+}
 
-                await new Promise((resolve, reject) => {
-                    uploadTask.on('state_changed',
-                        (snapshot) => {
-                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                            statusEl.innerText = `Yükleniyor... (%${Math.round(progress)})`;
-                        },
-                        (error) => {
-                            reject(error);
-                        },
-                        () => {
-                            resolve();
-                        }
-                    );
-                });
+function openDel(uid,nm){dUid=uid;dNm=nm;document.getElementById('dmsg').textContent=`"${nm}" adlı kullanıcının tüm verileri kalıcı olarak silinecek!`;document.getElementById('dmod').classList.add('open');}
+async function doDelUser(){
+  if(!dUid)return;
+  try{
+    await db.collection('users').doc(dUid).delete();
+    const[as,ns]=await Promise.all([db.collection('appointments').where('userId','==',dUid).get(),db.collection('notifications').where('userId','==',dUid).get()]);
+    const b=db.batch();as.forEach(d=>b.delete(d.ref));ns.forEach(d=>b.delete(d.ref));
+    await b.commit();
+    toast(`${dNm} ve tüm verileri silindi.`,'s');cm('dmod');dUid=null;dNm=null;loadUsers();loadOv();
+  }catch(e){toast('Hata: '+e.message,'e');}
+}
+async function viewUA(email){
+  go('all',document.querySelectorAll('.nb')[2]);
+  await new Promise(r=>setTimeout(r,100));
+  const tb=document.getElementById('altb');
+  tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--mut);">Yükleniyor...</td></tr>';
+  try{
+    const snap=await db.collection('appointments').where('email','==',email).get();
+    const sm={pending:`<span class="badge bp">⏳</span>`,approved:`<span class="badge ba">✓</span>`,rejected:`<span class="badge br">✕</span>`,completed:`<span class="badge bc">✔</span>`};
+    if(snap.empty){tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--mut);">Randevu yok.</td></tr>';return;}
+    const docs=cs(snap.docs.map(d=>({id:d.id,...d.data()})));
+    tb.innerHTML=docs.map(a=>{
+      const date=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().toLocaleDateString('tr-TR'):'—';
+      const zc=a.zoomLink?`<a href="${a.zoomLink}" target="_blank" style="font-size:.74rem;color:var(--blu);font-weight:600;text-decoration:none;"><i class="fas fa-video"></i> Var</a>`:`<span style="font-size:.74rem;color:var(--bdr);">—</span>`;
+      return `<tr><td><div class="uc"><div class="uav">${(a.displayName||'?').charAt(0).toUpperCase()}</div><div><div class="un">${a.displayName||'—'}</div><div class="ue">${a.email||''}</div></div></div></td><td style="font-size:.82rem;font-weight:600;">${a.timeSlot||'—'}</td><td>${sm[a.status]||sm.pending}</td><td>${zc}</td><td style="font-size:.75rem;color:var(--mut);">${date}</td></tr>`;
+    }).join('');
+  }catch(e){}
+}
 
-                const url = await ref.getDownloadURL();
+// ── CONTENT ──
+async function doUp(e){
+  e.preventDefault();
+  const tl=document.getElementById('rtl').value.trim(),tp=document.getElementById('rtp').value;
+  const fl=document.getElementById('rfl').files[0],btn=document.getElementById('upbtn'),st=document.getElementById('ust');
+  if(!fl){st.textContent='Dosya seçin.';return;}
+  if(fl.size>15*1024*1024){st.textContent='15MB limiti aşıldı.';return;}
+  btn.disabled=true;st.textContent='Yükleniyor... (0%)';
+  try{
+    const path=`resources/${tp}/${Date.now()}_${fl.name.replace(/\s+/g,'_')}`,ref=storage.ref().child(path),task=ref.put(fl);
+    await new Promise((res,rej)=>{task.on('state_changed',s=>{st.textContent=`Yükleniyor... (%${Math.round(s.bytesTransferred/s.totalBytes*100)})`;},rej,res);});
+    const url=await ref.getDownloadURL();
+    await db.collection('resources').add({title:tl,type:tp,storagePath:path,url,createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:cu.uid});
+    st.textContent='✅ Yüklendi!';document.getElementById('upf').reset();document.getElementById('flbl').textContent='Dosya seçmek için tıklayın';
+    loadRList();toast('Kaynak yüklendi.','s');
+  }catch(e){st.textContent='❌ Hata: '+(e.message||'');}
+  finally{btn.disabled=false;}
+}
+async function loadRList(){
+  const el=document.getElementById('rlst2');
+  el.innerHTML='<div class="empty" style="padding:1.5rem;"><i class="fas fa-spinner fa-spin"></i><p>Yükleniyor...</p></div>';
+  try{
+    const snap=await db.collection('resources').get();
+    if(snap.empty){el.innerHTML='<div class="empty" style="padding:1.5rem;"><i class="fas fa-inbox"></i><p>Kaynak yok.</p></div>';return;}
+    const docs=cs(snap.docs.map(d=>({id:d.id,...d.data()})));
+    el.innerHTML=docs.map(r=>{
+      const p=r.type==='pdf',date=r.createdAt&&r.createdAt.toDate?r.createdAt.toDate().toLocaleDateString('tr-TR'):'—';
+      const ic=p?'background:#dcfce7;color:#15803d;':'background:#ede9fe;color:#7c3aed;';
+      return `<div class="rit"><div class="rico" style="${ic}"><i class="fas fa-${p?'file-pdf':'video'}"></i></div><div style="flex:1;min-width:0;"><div class="rt2">${r.title||'—'}</div><div class="rm">${p?'PDF':'Video'} · ${date}</div></div><a href="${r.url}" target="_blank" class="roa"><i class="fas fa-external-link-alt"></i></a><button class="rdl" onclick="delR('${r.id}','${r.storagePath||''}')"><i class="fas fa-trash"></i></button></div>`;
+    }).join('');
+  }catch(e){el.innerHTML='<div class="empty" style="padding:1.5rem;"><i class="fas fa-exclamation-triangle"></i><p>Hata.</p></div>';}
+}
+async function delR(id,sp){
+  if(!confirm('Bu kaynağı silmek istiyor musunuz?'))return;
+  try{await db.collection('resources').doc(id).delete();if(sp){try{await storage.ref().child(sp).delete();}catch(e){}}toast('Silindi.','s');loadRList();}
+  catch(e){toast('Silinemedi.','e');}
+}
 
-                await db.collection('resources').add({
-                    title,
-                    type,
-                    storagePath: path,
-                    url,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    createdBy: user.uid
-                });
+function toast(msg,t=''){const el=document.getElementById('toast');el.textContent=msg;el.className='show '+(t||'');setTimeout(()=>el.className='',3500);}
+</script>
 
-                statusEl.innerText = 'Yükleme başarılı.';
-                titleInput.value = '';
-                fileInput.value = '';
-                loadResources();
-            } catch (err) {
-                console.error(err);
-                statusEl.innerText = 'Yükleme sırasında hata oluştu.';
-            } finally {
-                btn.disabled = false;
-                btn.classList.remove('opacity-60', 'cursor-not-allowed');
-            }
-        }
-
-        // Kaynakları Firestore'dan çek
-        async function loadResources() {
-            const listEl = document.getElementById('resource-list');
-            listEl.innerHTML = '<p class="text-gray-400 text-center py-4">Yükleniyor...</p>';
-            try {
-                const snap = await db.collection('resources')
-                    .orderBy('createdAt', 'desc')
-                    .limit(50)
-                    .get();
-                if (snap.empty) {
-                    listEl.innerHTML = '<p class="text-gray-400 text-center py-4">Henüz yüklenmiş kaynak yok.</p>';
-                    return;
-                }
-                let html = '';
-                snap.forEach(doc => {
-                    const r = doc.data();
-                    const date = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleString('tr-TR') : '-';
-                    html += `
-                        <div class="flex items-center justify-between border border-gray-100 rounded-lg px-3 py-2">
-                            <div>
-                                <p class="font-semibold text-gray-800 text-sm">${r.title || '-'}</p>
-                                <p class="text-xs text-gray-500">${r.type === 'video' ? 'Video' : 'PDF'} • ${date}</p>
-                            </div>
-                            <a href="${r.url}" target="_blank" class="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-full hover:bg-blue-100">
-                                <i class="fas fa-external-link-alt mr-1"></i> Aç
-                            </a>
-                        </div>
-                    `;
-                });
-                listEl.innerHTML = html;
-            } catch (err) {
-                console.error(err);
-                listEl.innerHTML = '<p class="text-red-500 text-center py-4 text-sm">Kaynaklar yüklenirken hata oluştu.</p>';
-            }
-        }
-
-        let currentAppointmentFilterEmail = null;
-
-        // Öğrenci randevularını listele
-        async function loadAppointments(filterEmail) {
-            const tbody = document.getElementById('appointment-table-body');
-            if (!tbody) return;
-            tbody.innerHTML = '<tr><td colspan="3" class="px-3 py-3 text-center text-gray-400 text-sm">Yükleniyor...</td></tr>';
-            currentAppointmentFilterEmail = filterEmail || null;
-            const labelEl = document.getElementById('appointment-filter-label');
-            if (labelEl) {
-                labelEl.textContent = currentAppointmentFilterEmail
-                    ? `Filtre: ${currentAppointmentFilterEmail} için randevular`
-                    : 'Filtre: Tüm öğrenciler';
-            }
-            try {
-                const snap = await db.collection('appointments')
-                    .orderBy('createdAt', 'desc')
-                    .limit(100)
-                    .get();
-                if (snap.empty) {
-                    tbody.innerHTML = '<tr><td colspan="3" class="px-3 py-3 text-center text-gray-400 text-sm">Henüz oluşturulmuş randevu yok.</td></tr>';
-                    return;
-                }
-                let html = '';
-                let count = 0;
-                snap.forEach(doc => {
-                    const a = doc.data();
-                    if (currentAppointmentFilterEmail && a.email !== currentAppointmentFilterEmail) return;
-                    count++;
-                    html += `
-                        <tr class="border-t border-gray-100">
-                            <td class="px-3 py-2 text-sm text-gray-800">${a.displayName || '-'}<br><span class="text-xs text-gray-500">${a.email || ''}</span></td>
-                            <td class="px-3 py-2 text-sm text-gray-800">${a.timeSlot || '-'}</td>
-                            <td class="px-3 py-2 text-xs text-gray-500">${a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().toLocaleString('tr-TR') : '-'}</td>
-                        </tr>
-                    `;
-                });
-                if (count === 0) {
-                    tbody.innerHTML = '<tr><td colspan="3" class="px-3 py-3 text-center text-gray-400 text-sm">Seçili filtre için randevu bulunamadı.</td></tr>';
-                } else {
-                    tbody.innerHTML = html;
-                }
-            } catch (err) {
-                console.error(err);
-                tbody.innerHTML = '<tr><td colspan="3" class="px-3 py-3 text-center text-red-500 text-sm">Randevular yüklenirken hata oluştu.</td></tr>';
-            }
-        }
-
-        function clearAppointmentFilter() {
-            loadAppointments();
-            const section = document.getElementById('appointments-section');
-            if (section) {
-                section.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        function viewUserAppointments(email) {
-            if (!email) return;
-            loadAppointments(email);
-            const section = document.getElementById('appointments-section');
-            if (section) {
-                section.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-    </script>
+<div class="mob-overlay" id="mob-overlay" onclick="closeSidebar()"></div>
+<button class="mob-toggle" id="mob-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+<script>
+function toggleSidebar(){const a=document.querySelector('aside'),o=document.getElementById('mob-overlay'),b=document.getElementById('mob-toggle');a.classList.toggle('mob-open');o.classList.toggle('open');b.innerHTML=a.classList.contains('mob-open')?'<i class="fas fa-times"></i>':'<i class="fas fa-bars"></i>';}
+function closeSidebar(){document.querySelector('aside').classList.remove('mob-open');document.getElementById('mob-overlay').classList.remove('open');document.getElementById('mob-toggle').innerHTML='<i class="fas fa-bars"></i>';}
+document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('.nb').forEach(b=>{b.addEventListener('click',()=>{if(window.innerWidth<=768)closeSidebar();});});});
+</script>
 </body>
 </html>
-
