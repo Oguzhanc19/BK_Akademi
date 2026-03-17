@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="favicon.png">
-<title>Öğrenci Paneli | EnglishPro</title>
+<title>Öğrenci Paneli | BKAkademi</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -65,7 +65,7 @@ main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
 .pts-chip:hover{background:#fef3c7;}
 .pts-chip i{color:var(--gld);}
 
-.content-wrap{flex:1;overflow-y:auto;display:flex;justify-content:center;}
+.content-wrap{flex:1;overflow-y:auto;display:flex;justify-content:center;min-height:0;}
 .content{flex:1;padding:1.75rem 2rem;min-height:0;max-width:1200px;width:100%;}
 .sec{display:none;}
 .sec.active{display:block;animation:fu .3s ease both;}
@@ -361,7 +361,7 @@ textarea.inp{resize:vertical;min-height:85px;}
 <aside>
   <div>
     <div class="s-head">
-      <a href="index.html" class="s-logo">English<em>Pro</em></a>
+      <a href="index.html" class="s-logo">BK<em>Akademi</em></a>
       <div class="s-sub">Öğrenci Paneli</div>
     </div>
     <div class="s-nav">
@@ -517,11 +517,14 @@ textarea.inp{resize:vertical;min-height:85px;}
     </div>
 
     <!-- WORD GAME -->
-    <div id="game" class="sec">
+    <div id="game" class="sec" style="padding-bottom:2rem;">
       <div style="max-width:520px;margin:0 auto;">
         <div class="card" style="margin-bottom:1.25rem;">
           <div class="ch">
-            <h3><i class="fas fa-gamepad"></i> Kelime Avı — İngilizce</h3>
+            <div style="display:flex;align-items:center;gap:.6rem;">
+              <h3 style="margin:0;"><i class="fas fa-gamepad"></i> Kelime Avı — İngilizce</h3>
+              <span id="wg-difficulty" style="display:none;"></span>
+            </div>
             <div class="wg-timer"><i class="far fa-clock"></i><span id="wg-timer">—</span></div>
           </div>
           <div class="cb">
@@ -650,12 +653,12 @@ document.addEventListener('DOMContentLoaded',()=>{
 //  CONSTANTS & STATE
 // ══════════════════════════════════════════
 const MOTIVATIONS = [
-  {text:'"Every day is a chance to learn something new."', author:'— EnglishPro', icon:'📚'},
+  {text:'"Every day is a chance to learn something new."', author:'— BKAkademi', icon:'📚'},
   {text:'"Believe you can and you\'re halfway there."', author:'— Theodore Roosevelt', icon:'💪'},
   {text:'"The secret of getting ahead is getting started."', author:'— Mark Twain', icon:'🚀'},
   {text:'"Success is not final, failure is not fatal."', author:'— Winston Churchill', icon:'🏆'},
   {text:'"A journey of a thousand miles begins with a single step."', author:'— Lao Tzu', icon:'👣'},
-  {text:'"Dream big, work hard, stay humble."', author:'— EnglishPro', icon:'✨'},
+  {text:'"Dream big, work hard, stay humble."', author:'— BKAkademi', icon:'✨'},
   {text:'"Your English is getting better every day."', author:'— Sarah Alkan', icon:'🌟'},
 ];
 
@@ -681,6 +684,21 @@ const WORD_BANK = [
   {word:'NERVE',type:'noun',def:'Cesaret; vücuttaki sinir lifi',ex:'It takes nerve to speak a foreign language.',tr:'Cesaret / Sinir'},
   {word:'OCEAN',type:'noun',def:'Dünya yüzeyinin büyük bir bölümünü kaplayan tuzlu su kütlesi',ex:'Learning English opens an ocean of opportunities.',tr:'Okyanus, deniz'},
   {word:'PEACE',type:'noun',def:'Çatışma veya savaş olmayan; sakinlik hali',ex:'Speaking English fluently gives me peace of mind.',tr:'Barış, huzur'},
+  // 6-letter words (medium)
+  {word:'BRIDGE',type:'noun/verb',def:'İki yer arasında bağlantı kurmak; köprü',ex:'Language is a bridge between cultures.',tr:'Köprü / Köprü kurmak',hard:false},
+  {word:'GROWTH',type:'noun',def:'Büyüme, gelişme süreci',ex:'Personal growth requires consistent effort.',tr:'Büyüme, gelişim',hard:false},
+  {word:'HUMBLE',type:'adjective',def:'Alçakgönüllü; kendini önemli görmemek',ex:'Stay humble and keep learning every day.',tr:'Alçakgönüllü, mütevazı',hard:false},
+  {word:'SIMPLE',type:'adjective',def:'Kolay anlaşılır; karmaşık olmayan',ex:'Keep your language simple and clear.',tr:'Basit, sade',hard:false},
+  {word:'WONDER',type:'noun/verb',def:'Hayranlık duymak; merak etmek',ex:'I wonder what tomorrow will bring.',tr:'Hayranlık / Merak etmek',hard:false},
+  {word:'FLUENT',type:'adjective',def:'Bir dili akıcı şekilde konuşabilmek',ex:'She became fluent in English after two years.',tr:'Akıcı, düzgün',hard:false},
+  // 7-letter words (hard)
+  {word:'ACHIEVE',type:'verb',def:'Çok çalışarak bir hedefe ulaşmak',ex:'You can achieve anything with determination.',tr:'Başarmak, elde etmek',hard:true},
+  {word:'BREATHE',type:'verb',def:'Nefes almak; rahatlamak',ex:'Breathe deeply and focus on the present.',tr:'Nefes almak',hard:true},
+  {word:'COURAGE',type:'noun',def:'Tehlikeli durumlara rağmen harekete geçebilmek',ex:'It takes courage to speak a new language.',tr:'Cesaret, yiğitlik',hard:true},
+  {word:'IMAGINE',type:'verb',def:'Zihninde bir şeyin resmini oluşturmak',ex:'Imagine the possibilities if you speak English.',tr:'Hayal etmek, tasavvur etmek',hard:true},
+  {word:'INSPIRE',type:'verb',def:'Birini harekete geçirecek duygu uyandırmak',ex:'Great teachers inspire students to love learning.',tr:'İlham vermek, esinlendirmek',hard:true},
+  {word:'PASSION',type:'noun',def:'Güçlü ve zor kontrol edilebilen bir duygu',ex:'Learning English with passion makes it easier.',tr:'Tutku, ihtiras',hard:true},
+  {word:'SUCCESS',type:'noun',def:'Bir amaç veya hedefin başarıyla gerçekleşmesi',ex:'Success comes to those who never give up.',tr:'Başarı',hard:true},
 ];
 
 let cu = null, cid = null, ss = null, allRes = [], allAppts = [];
@@ -1020,8 +1038,17 @@ function getTodayWord() {
 async function initWordGame() {
   const data = getTodayWord();
   wgCurrentData = data;
-  wgWord = data.word; // 4-5 letters
+  wgWord = data.word;
+  const isHard = data.hard === true || data.word.length >= 7;
+  const isMed = !isHard && data.word.length >= 6;
   wgGuesses = []; wgCurrentGuess = ''; wgDone = false;
+  // Show difficulty badge
+  const badge = document.getElementById('wg-difficulty');
+  if (badge) {
+    if (isHard) { badge.textContent = '🔥 ZOR'; badge.style.cssText = 'display:inline-flex;align-items:center;gap:.3rem;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:100px;padding:.2rem .7rem;font-size:.72rem;font-weight:700;'; }
+    else if (isMed) { badge.textContent = '⚡ ORTA'; badge.style.cssText = 'display:inline-flex;align-items:center;gap:.3rem;background:#fffbeb;color:#d97706;border:1px solid #fde68a;border-radius:100px;padding:.2rem .7rem;font-size:.72rem;font-weight:700;'; }
+    else { badge.textContent = '✅ KOLAY'; badge.style.cssText = 'display:inline-flex;align-items:center;gap:.3rem;background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;border-radius:100px;padding:.2rem .7rem;font-size:.72rem;font-weight:700;'; }
+  }
 
   // Check if already played today
   const uSnap = await db.collection('users').doc(cu.uid).get();
@@ -1065,13 +1092,31 @@ function buildBoard() {
   }
 }
 
+function getColors(guess, target) {
+  // Proper Wordle coloring: handle duplicate letters correctly
+  const g = guess.toUpperCase().split('');
+  const t = target.toUpperCase().split('');
+  const result = Array(g.length).fill('absent');
+  const tUsed = Array(t.length).fill(false);
+  const gUsed = Array(g.length).fill(false);
+  // First pass: exact matches (green)
+  for (let i = 0; i < g.length; i++) {
+    if (g[i] === t[i]) { result[i] = 'correct'; tUsed[i] = true; gUsed[i] = true; }
+  }
+  // Second pass: present but wrong position (yellow)
+  for (let i = 0; i < g.length; i++) {
+    if (gUsed[i]) continue;
+    for (let j = 0; j < t.length; j++) {
+      if (!tUsed[j] && g[i] === t[j]) { result[i] = 'present'; tUsed[j] = true; break; }
+    }
+  }
+  return result;
+}
+
 function applyColor(cell, rowIdx, colIdx) {
-  const guess = wgGuesses[rowIdx].toUpperCase();
-  const target = wgWord.toUpperCase();
-  const ch = guess[colIdx];
-  if (ch === target[colIdx]) cell.className = 'wg-cell correct';
-  else if (target.includes(ch)) cell.className = 'wg-cell present';
-  else cell.className = 'wg-cell absent';
+  const guess = wgGuesses[rowIdx];
+  const colors = getColors(guess, wgWord);
+  cell.className = 'wg-cell ' + colors[colIdx];
 }
 
 function buildKeyboard() {
@@ -1142,9 +1187,11 @@ async function submitGuess() {
       const ch = guess[c];
       const kEl = document.getElementById('key-' + ch);
       if (kEl) {
-        if (wgWord[c] === ch) kEl.className = 'k correct';
-        else if (wgWord.includes(ch) && !kEl.classList.contains('correct')) kEl.className = 'k present';
-        else if (!kEl.classList.contains('correct') && !kEl.classList.contains('present')) kEl.className = 'k absent';
+        const colors = getColors(guess, wgWord);
+        const col = colors[c];
+        if (col === 'correct') kEl.className = 'k correct';
+        else if (col === 'present' && !kEl.classList.contains('correct')) kEl.className = 'k present';
+        else if (col === 'absent' && !kEl.classList.contains('correct') && !kEl.classList.contains('present')) kEl.className = 'k absent';
       }
     }, c * 80);
   }
@@ -1155,8 +1202,11 @@ async function submitGuess() {
   if (guess === wgWord) {
     wgDone = true;
     clearInterval(wgTimer);
-    const bonusPts = Math.max(10, 60 - wgGuesses.length * 10);
-    document.getElementById('wg-status').textContent = `🎉 Tebrikler! "${wgWord}" doğru! +${bonusPts} puan`;
+    const isHard = wgCurrentData && (wgCurrentData.hard === true || wgWord.length >= 7);
+    const isMed = !isHard && wgWord.length >= 6;
+    const baseBonus = isHard ? 100 : isMed ? 70 : 50;
+    const bonusPts = Math.max(10, baseBonus - wgGuesses.length * 10);
+    document.getElementById('wg-status').textContent = `🎉 Tebrikler! "${wgWord}" doğru! +${bonusPts} puan${isHard?' 🔥 ZOR Bonus!':''}`;
     document.getElementById('wg-status').className = 'wg-status ok';
     document.getElementById('meaning-btn').style.display = 'inline-flex';
     for (let c=0; c < wgWord.length; c++) {

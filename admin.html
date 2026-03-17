@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="favicon.png">
-<title>Admin Paneli | EnglishPro</title>
+<title>Admin Paneli | BKAkademi</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -667,20 +667,43 @@ async function viewUA(email){
 }
 
 // ── CONTENT ──
+const CLOUDINARY_CLOUD = 'dwhybtfbj';
+const CLOUDINARY_PRESET = 'bkakademi';
+
 async function doUp(e){
   e.preventDefault();
   const tl=document.getElementById('rtl').value.trim(),tp=document.getElementById('rtp').value;
   const fl=document.getElementById('rfl').files[0],btn=document.getElementById('upbtn'),st=document.getElementById('ust');
   if(!fl){st.textContent='Dosya seçin.';return;}
-  if(fl.size>50*1024*1024){st.textContent='50MB limiti aşıldı.';return;}
+  if(fl.size>15*1024*1024){st.textContent='15MB limiti aşıldı.';return;}
   btn.disabled=true;st.textContent='Yükleniyor... (0%)';
   try{
-    const path=`resources/${tp}/${Date.now()}_${fl.name.replace(/\s+/g,'_')}`;
-    const ref=storage.ref().child(path);
-    const task=ref.put(fl);
-    await new Promise((res,rej)=>{task.on('state_changed',s=>{st.textContent=`Yükleniyor... (%${Math.round(s.bytesTransferred/s.totalBytes*100)})`;},rej,res);});
-    const url=await ref.getDownloadURL();
-    await db.collection('resources').add({title:tl,type:tp,storagePath:path,url,createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:cu.uid});
+    const fd=new FormData();
+    fd.append('file',fl);
+    fd.append('upload_preset',CLOUDINARY_PRESET);
+    fd.append('folder',`resources/${tp}`);
+
+    const resourceType=fl.type.startsWith('video/')?'video':'image';
+    const uploadUrl=`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${resourceType}/upload`;
+
+    const xhr=new XMLHttpRequest();
+    xhr.open('POST',uploadUrl);
+    xhr.upload.onprogress=s=>{
+      const pct=Math.round(s.loaded/s.total*100);
+      st.textContent=`Yükleniyor... (%${pct})`;
+    };
+    const result=await new Promise((res,rej)=>{
+      xhr.onload=()=>{
+        if(xhr.status===200){res(JSON.parse(xhr.responseText));}
+        else{rej(new Error('Cloudinary yükleme hatası: '+xhr.status));}
+      };
+      xhr.onerror=()=>rej(new Error('Ağ hatası.'));
+      xhr.send(fd);
+    });
+
+    const url=result.secure_url;
+    const storagePath=result.public_id;
+    await db.collection('resources').add({title:tl,type:tp,storagePath,url,createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:cu.uid});
     st.textContent='✅ Yüklendi!';document.getElementById('upf').reset();document.getElementById('flbl').textContent='Dosya seçmek için tıklayın';
     loadRList();toast('Kaynak yüklendi.','s');
   }catch(e){st.textContent='❌ Hata: '+(e.message||'');}
