@@ -89,6 +89,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .slb{font-size:.72rem;color:var(--mut);font-weight:500;}
 .card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:1.25rem;overflow:hidden;}
 .ch{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.4rem;border-bottom:1px solid var(--bdr2);}
+.ch-l{flex:1;min-width:0;margin-right:1rem;}
 .ch-l h2{font-size:.88rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:.45rem;}
 .ch-l h2 i{color:var(--acc);}
 .ch-l p{font-size:.73rem;color:var(--mut);margin-top:.1rem;}
@@ -234,8 +235,30 @@ input[type="file"]{display:none;}
 @media(max-width:480px){
   .srow{grid-template-columns:1fr;}
   th,td{padding:.5rem .6rem;font-size:.72rem;}
+  .msg-grid{grid-template-columns:100px 1fr;}
 }
 @media(min-width:1400px){:root{--sw:280px;}}
+
+/* MESSAGES */
+.msg-grid{display:grid;grid-template-columns:260px 1fr;gap:0;height:calc(100vh - 160px);background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;}
+.msg-users{border-right:1px solid var(--bdr);overflow-y:auto;background:var(--bg);}
+.msg-u-btn{display:flex;align-items:center;gap:.75rem;padding:1rem 1.2rem;border-bottom:1px solid var(--bdr2);cursor:pointer;transition:all .18s;text-align:left;width:100%;background:none;border-left:none;border-right:none;border-top:none;outline:none;}
+.msg-u-btn:hover{background:var(--al);}
+.msg-u-btn.active{background:linear-gradient(to right, #eff6ff, #fff);border-left:3px solid var(--blu);}
+.msg-u-btn .ndot-n{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0;margin-left:auto;display:none;}
+.msg-u-btn.unread .ndot-n{display:block;}
+.msg-chat-wrap{display:flex;flex-direction:column;height:100%;}
+.msg-chat-head{padding:.8rem 1.4rem;border-bottom:1px solid var(--bdr2);background:var(--sur2);display:flex;align-items:center;gap:.75rem;}
+.msg-chat-body{flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:.5rem;background:var(--bg);}
+.msg-chat-foot{padding:1rem 1.5rem;border-top:1px solid var(--bdr2);background:var(--sur);display:flex;gap:.75rem;}
+.chat-msg{display:flex;flex-direction:column;gap:.3rem;margin-bottom:.5rem;max-width:85%;}
+.chat-msg.me{align-self:flex-end;}
+.chat-bub{padding:.8rem 1.1rem;border-radius:12px;font-size:.84rem;line-height:1.5;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.chat-msg.me .chat-bub{background:linear-gradient(135deg,var(--ac2),var(--acc));color:#fff;border-bottom-right-radius:2px;}
+.chat-msg.other .chat-bub{background:var(--sur);border:1px solid var(--bdr);color:var(--ink);border-bottom-left-radius:2px;}
+.chat-time{font-size:.65rem;color:var(--mut);}
+.chat-msg.me .chat-time{text-align:right;}
+
 </style>
 </head>
 <body>
@@ -251,7 +274,9 @@ input[type="file"]{display:none;}
       <button class="nb" id="nav-req" onclick="go('reqs',this)"><i class="fas fa-inbox"></i> Randevu Talepleri <span class="nbadge" id="nbadge">0</span></button>
       <button class="nb" onclick="go('all',this)"><i class="fas fa-calendar-check"></i> Tüm Randevular</button>
       <button class="nb" onclick="go('users',this)"><i class="fas fa-users"></i> Kullanıcılar</button>
+      <button class="nb" onclick="go('msg',this)"><i class="fas fa-envelope"></i> Öğrenci Mesajları <span class="nbadge" id="admin-msg-badge" style="background:var(--org);display:none;">0</span></button>
       <button class="nb" onclick="go('cnt',this)"><i class="fas fa-cloud-upload-alt"></i> İçerik Yönetimi</button>
+      <button class="nb" onclick="go('slots',this)"><i class="fas fa-clock"></i> Saat Yönetimi</button>
     </div>
   </div>
   <div class="sf">
@@ -331,10 +356,12 @@ input[type="file"]{display:none;}
           <form id="upf" onsubmit="doUp(event)">
             <label class="lbl">Başlık</label>
             <input type="text" class="inp" id="rtl" placeholder="Ör: İş İngilizcesi – Toplantı Kalıpları" required>
+            <label class="lbl">Açıklama <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--mut)">(isteğe bağlı)</span></label>
+            <textarea class="inp" id="rdesc" placeholder="Bu kaynak hakkında kısa bir açıklama yazın..." style="min-height:70px;resize:vertical;"></textarea>
             <label class="lbl">Tür</label>
             <select class="inp" id="rtp" required><option value="pdf">📄 PDF</option><option value="video">🎬 Video</option></select>
             <label class="lbl">Dosya</label>
-            <div class="fw" onclick="document.getElementById('rfl').click()"><i class="fas fa-cloud-upload-alt"></i><p id="flbl">Dosya seçmek için tıklayın · PDF veya MP4, maks. 15MB</p></div>
+            <div class="fw" onclick="document.getElementById('rfl').click()"><i class="fas fa-cloud-upload-alt"></i><p id="flbl">Dosya seçmek için tıklayın · PDF veya Video (sınırsız)</p></div>
             <input type="file" id="rfl" accept=".pdf,video/*" onchange="document.getElementById('flbl').textContent=this.files[0]?this.files[0].name:'Dosya seçmek için tıklayın'">
             <button id="upbtn" type="submit" class="bup"><i class="fas fa-upload"></i> Yükle</button>
             <div class="ust" id="ust"></div>
@@ -343,6 +370,51 @@ input[type="file"]{display:none;}
         <div class="ucrd"><h2><i class="fas fa-book-open"></i> Yüklü Kaynaklar</h2><div id="rlst2" style="max-height:460px;overflow-y:auto;"></div></div>
       </div>
     </div>
+
+    <!-- SLOT MANAGEMENT - Haftalık Takvim -->
+    <div id="slots" class="sec">
+      <div class="card" style="margin-bottom:1.25rem;">
+        <div class="ch">
+          <div class="ch-l">
+            <h2><i class="fas fa-calendar-week"></i> Haftalık Müsaitlik Takvimi</h2>
+            <p>Müsait olduğunuz saatlere tıklayın (yeşil = açık, gri = kapalı, kırmızı = dolu randevu)</p>
+          </div>
+          <div style="display:flex;gap:.5rem;align-items:center;">
+            <button class="bref" onclick="slotWeekOffset--;buildSlotCalendar()"><i class="fas fa-chevron-left"></i></button>
+            <span id="slot-week-label" style="font-size:.85rem;font-weight:700;color:var(--ink);min-width:180px;text-align:center;"></span>
+            <button class="bref" onclick="slotWeekOffset++;buildSlotCalendar()"><i class="fas fa-chevron-right"></i></button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <div id="slot-cal-wrap" style="padding:1rem 1.4rem;min-width:700px;">
+            <div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Yükleniyor...</p></div>
+          </div>
+        </div>
+        <div style="padding:.85rem 1.4rem;border-top:1px solid var(--bdr2);display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+          <div style="display:flex;gap:.75rem;font-size:.75rem;color:var(--mut);">
+            <span style="display:flex;align-items:center;gap:.3rem;"><span style="width:14px;height:14px;background:var(--grl);border:1px solid #a7f3d0;border-radius:4px;display:inline-block;"></span>Seçili (açık)</span>
+            <span style="display:flex;align-items:center;gap:.3rem;"><span style="width:14px;height:14px;background:var(--sur2);border:1px solid var(--bdr);border-radius:4px;display:inline-block;"></span>Kapalı</span>
+            <span style="display:flex;align-items:center;gap:.3rem;"><span style="width:14px;height:14px;background:var(--rl);border:1px solid #fecaca;border-radius:4px;display:inline-block;"></span>Dolu randevu</span>
+          </div>
+          <button class="bup" onclick="saveSlotCalendar()" id="save-slots-btn" style="margin-left:auto;padding:.6rem 1.5rem;width:auto;"><i class="fas fa-save"></i> Değişiklikleri Kaydet</button>
+          <div id="slot-status" class="ust"></div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div id="msg" class="sec">
+      <div class="msg-grid">
+        <div class="msg-users" id="msg-users-list">
+          <div class="empty" style="padding:1.5rem;"><i class="fas fa-spinner fa-spin"></i><p>Yükleniyor...</p></div>
+        </div>
+        <div class="msg-chat-wrap" id="msg-chat-wrap">
+          <div class="empty" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;"><i class="fas fa-envelope-open" style="font-size:3rem;color:var(--bdr);margin-bottom:1rem;"></i><p>Sohbet başlatmak için soldan bir öğrenci seçin.</p></div>
+        </div>
+      </div>
+    </div>
+
   </div></div>
 </main>
 
@@ -357,8 +429,8 @@ input[type="file"]{display:none;}
 <div id="toast"></div>
 
 <script>
-let cu=null,rTid=null,rUid=null,cf='pending',allReqs=[],dUid=null,dNm=null;
-const titles={ov:'Genel <em>Bakış</em>',reqs:'Randevu <em>Talepleri</em>',all:'Tüm <em>Randevular</em>',users:'<em>Kullanıcılar</em>',cnt:'İçerik <em>Yönetimi</em>'};
+let cu=null,rTid=null,rUid=null,cf='pending',allReqs=[],dUid=null,dNm=null,pendingSlots=[];
+const titles={ov:'Genel <em>Bakış</em>',reqs:'Randevu <em>Talepleri</em>',all:'Tüm <em>Randevular</em>',users:'<em>Kullanıcılar</em>',cnt:'İçerik <em>Yönetimi</em>',slots:'Saat <em>Yönetimi</em>',msg:'Öğrenci <em>Mesajları</em>'};
 
 auth.onAuthStateChanged(async u=>{
   if(!u){window.location.href='login.html';return;}
@@ -367,7 +439,7 @@ auth.onAuthStateChanged(async u=>{
   cu=u;
   document.getElementById('aeml').textContent=u.email||'';
   document.getElementById('aav').textContent=(u.email||'A').charAt(0).toUpperCase();
-  loadOv();loadRList();listenPending();listenAN();
+  loadOv();loadRList();listenPending();listenAN();listenAdminMsg();
   setTimeout(checkApproaching,2000);
   setTimeout(autoDeleteCompleted,3000);
 });
@@ -383,8 +455,10 @@ function go(id,btn){
   if(id==='reqs')loadReqs(cf);
   if(id==='all')loadAll();
   if(id==='users')loadUsers();
+  if(id==='slots')buildSlotCalendar();
+  if(id==='msg' && adSelectedUser) selectMsgUser(adSelectedUser.userId, adSelectedUser.userName);
 }
-function refresh(){const a=document.querySelector('.sec.active');if(!a)return;switch(a.id){case'ov':loadOv();break;case'reqs':loadReqs(cf);break;case'all':loadAll();break;case'users':loadUsers();break;case'cnt':loadRList();break;}}
+function refresh(){const a=document.querySelector('.sec.active');if(!a)return;switch(a.id){case'ov':loadOv();break;case'reqs':loadReqs(cf);break;case'all':loadAll();break;case'users':loadUsers();break;case'cnt':loadRList();break;case'slots':buildSlotCalendar();break;case'msg':if(adSelectedUser)selectMsgUser(adSelectedUser.userId, adSelectedUser.userName);break;}}
 function cs(arr){return arr.sort((a,b)=>(b.createdAt&&b.createdAt.seconds||0)-(a.createdAt&&a.createdAt.seconds||0));}
 function cm(id){document.getElementById(id).classList.remove('open');}
 
@@ -494,12 +568,28 @@ function buildAC(a){
   const sm={pending:`<span class="badge bp">⏳ Beklemede</span>`,approved:`<span class="badge ba">✓ Onaylandı</span>`,rejected:`<span class="badge br">✕ Reddedildi</span>`,completed:`<span class="badge bc">✔ Tamamlandı</span>`};
   const ini=(a.displayName||a.email||'?').charAt(0).toUpperCase();
   const date=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().toLocaleDateString('tr-TR'):'—';
-  const note=a.note?`<div class="acnt">📝 ${a.note}</div>`:'';
-  const lvl=a.level?`<span class="aclv">${a.level}</span>`:'';
+  
+  const ts = a.timeSlot || '—';
+  let formattedTimeSlot = ts;
+  try {
+    const p = ts.split('|');
+    if (p.length > 0) {
+      const dStr = p[0].trim();
+      const dObj = new Date(dStr + 'T00:00:00');
+      if (!isNaN(dObj)) {
+        const dFull = dObj.toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        const time = p.length > 1 ? p[1].trim() : '';
+        formattedTimeSlot = `${dFull} — ${time}`;
+      }
+    }
+  } catch(e) {}
+
+  const note=a.note?`<div class="acnt" style="margin-top:.4rem;"><i class="fas fa-comment-dots" style="margin-right:.25rem;color:var(--mut);"></i><strong>Not:</strong> ${a.note}</div>`:'';
+  const lvl=a.level?`<span class="aclv" style="margin-top:.2rem;"><i class="fas fa-layer-group" style="margin-right:.25rem;"></i>${a.level}</span>`:'';
   const esc=s=>(s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
   let btns='';
   if(a.status==='pending'){
-    btns=`<button class="abtn ab-ok" onclick="doApprove('${a.id}','${a.userId||''}','${esc(a.displayName||'')}','${esc(a.timeSlot||'')}')"><i class="fas fa-check"></i> Onayla</button>
+    btns=`<button class="abtn ab-ok" onclick="doApprove('${a.id}','${a.userId||''}','${esc(a.displayName||'')}','${esc(formattedTimeSlot||'')}')"><i class="fas fa-check"></i> Onayla</button>
           <button class="abtn ab-no" onclick="ormod('${a.id}','${a.userId||''}')"><i class="fas fa-times"></i> Reddet</button>`;
   }else if(a.status==='approved'){
     btns=`<button class="abtn ab-dn" onclick="doComplete('${a.id}','${a.userId||''}')"><i class="fas fa-check-double"></i> Tamamlandı</button>`;
@@ -522,8 +612,8 @@ function buildAC(a){
       <div class="acin">
         <div class="acnm">${a.displayName||'—'}</div>
         <div class="acem">${a.email||''}</div>
-        <div class="actm"><i class="far fa-clock"></i>${a.timeSlot||'—'}</div>
-        ${note}${lvl}
+        <div class="actm"><i class="far fa-clock"></i>${formattedTimeSlot}</div>
+        ${lvl}${note}
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.35rem;">${sm[a.status]||sm.pending}<span style="font-size:.68rem;color:var(--mut);">${date}</span></div>
     </div>
@@ -673,9 +763,9 @@ const CLOUDINARY_PRESET = 'bkakademi';
 async function doUp(e){
   e.preventDefault();
   const tl=document.getElementById('rtl').value.trim(),tp=document.getElementById('rtp').value;
+  const desc=document.getElementById('rdesc').value.trim();
   const fl=document.getElementById('rfl').files[0],btn=document.getElementById('upbtn'),st=document.getElementById('ust');
   if(!fl){st.textContent='Dosya seçin.';return;}
-  if(fl.size>15*1024*1024){st.textContent='15MB limiti aşıldı.';return;}
   btn.disabled=true;st.textContent='Yükleniyor... (0%)';
   try{
     const fd=new FormData();
@@ -703,8 +793,8 @@ async function doUp(e){
 
     const url=result.secure_url;
     const storagePath=result.public_id;
-    await db.collection('resources').add({title:tl,type:tp,storagePath,url,createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:cu.uid});
-    st.textContent='✅ Yüklendi!';document.getElementById('upf').reset();document.getElementById('flbl').textContent='Dosya seçmek için tıklayın';
+    await db.collection('resources').add({title:tl,type:tp,description:desc,storagePath,url,createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:cu.uid});
+    st.textContent='✅ Yüklendi!';document.getElementById('upf').reset();document.getElementById('flbl').textContent='Dosya seçmek için tıklayın · PDF veya Video (sınırsız)';
     loadRList();toast('Kaynak yüklendi.','s');
   }catch(e){st.textContent='❌ Hata: '+(e.message||'');}
   finally{btn.disabled=false;}
@@ -733,6 +823,295 @@ async function delR(id,sp){
 }
 
 function toast(msg,t=''){const el=document.getElementById('toast');el.textContent=msg;el.className='show '+(t||'');setTimeout(()=>el.className='',3500);}
+
+// ── SLOT CALENDAR ──
+const SLOT_HOURS = ['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00'];
+const DAY_NAMES = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+const DAY_NAMES_FULL = ['Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Pazar'];
+let slotWeekOffset = 0;
+let slotCalData = {}; // {date: {time: {open,booked,docId,bookedBy}}}
+let slotDirty = {}; // {date+'|'+time: boolean} — changed selections
+
+function getWeekDates(offset) {
+  const today = new Date();
+  // Monday of current week
+  const dow = (today.getDay() + 6) % 7; // Mon=0
+  const mon = new Date(today);
+  mon.setDate(today.getDate() - dow + offset * 7);
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(mon);
+    d.setDate(mon.getDate() + i);
+    days.push(d.toISOString().slice(0, 10));
+  }
+  return days;
+}
+
+async function buildSlotCalendar() {
+  const wrap = document.getElementById('slot-cal-wrap');
+  const label = document.getElementById('slot-week-label');
+  wrap.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Yükleniyor...</p></div>';
+  slotDirty = {};
+
+  const days = getWeekDates(slotWeekOffset);
+  const startFmt = new Date(days[0]+'T00:00:00').toLocaleDateString('tr-TR',{day:'numeric',month:'long'});
+  const endFmt = new Date(days[6]+'T00:00:00').toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});
+  label.textContent = startFmt + ' – ' + endFmt;
+
+  // Load existing slots for this week
+  slotCalData = {};
+  try {
+    const snap = await db.collection('availableSlots')
+      .where('date','>=',days[0]).where('date','<=',days[6]).get();
+    snap.forEach(doc => {
+      const d = doc.data();
+      if (!slotCalData[d.date]) slotCalData[d.date] = {};
+      slotCalData[d.date][d.time] = {open:true, booked:d.booked||false, docId:doc.id, bookedBy:d.bookedBy||''};
+    });
+  } catch(e) { toast('Slotlar yüklenemedi: '+e.message,'e'); }
+
+  // Build grid
+  let html = `<table style="width:100%;border-collapse:collapse;">
+    <thead><tr><th style="padding:.5rem .6rem;text-align:left;font-size:.7rem;color:var(--mut);font-weight:700;text-transform:uppercase;border-bottom:2px solid var(--bdr);width:70px;">Saat</th>`;
+  days.forEach((date, i) => {
+    const d = new Date(date+'T00:00:00');
+    const dayLabel = DAY_NAMES[i];
+    const dateLabel = d.toLocaleDateString('tr-TR',{day:'numeric',month:'short'});
+    const isToday = date === new Date().toISOString().slice(0,10);
+    html += `<th style="padding:.5rem .4rem;text-align:center;font-size:.72rem;font-weight:700;border-bottom:2px solid var(--bdr);${isToday?'color:var(--acc);':'color:var(--ink2);'}">
+      <div>${dayLabel}</div><div style="font-size:.65rem;font-weight:500;color:var(--mut);">${dateLabel}</div>
+    </th>`;
+  });
+  html += '</tr></thead><tbody>';
+
+  SLOT_HOURS.forEach(hour => {
+    html += `<tr>
+      <td style="padding:.35rem .6rem;font-size:.75rem;font-weight:700;color:var(--mut);border-bottom:1px solid var(--bdr2);white-space:nowrap;">${hour}</td>`;
+    days.forEach(date => {
+      const slot = slotCalData[date] && slotCalData[date][hour];
+      const isOpen = slot && slot.open;
+      const isBooked = slot && slot.booked;
+      const key = date+'|'+hour;
+
+      let bg, cursor, title, icon;
+      if (isBooked) {
+        bg = 'background:var(--rl);border:1px solid #fecaca;color:var(--red);cursor:not-allowed;';
+        title = slot.bookedBy ? `Dolu: ${slot.bookedBy}` : 'Dolu randevu';
+        icon = '🔒';
+      } else if (isOpen) {
+        bg = 'background:var(--grl);border:1px solid #a7f3d0;color:var(--grn);cursor:pointer;';
+        title = 'Açık – kapat için tıkla';
+        icon = '✓';
+      } else {
+        bg = 'background:var(--sur2);border:1px solid var(--bdr2);color:var(--mut);cursor:pointer;';
+        title = 'Kapalı – açmak için tıkla';
+        icon = '';
+      }
+
+      const clickable = !isBooked;
+      html += `<td style="padding:.25rem .4rem;border-bottom:1px solid var(--bdr2);text-align:center;">
+        <div id="sc-${date}-${hour.replace(':','-')}" 
+          style="${bg}border-radius:6px;padding:.3rem .2rem;font-size:.7rem;font-weight:600;transition:all .15s;min-height:28px;display:flex;align-items:center;justify-content:center;"
+          title="${title}"
+          ${clickable ? `onclick="toggleSlotCell('${date}','${hour}')"` : ''}
+        >${icon}</div>
+      </td>`;
+    });
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+}
+
+function toggleSlotCell(date, hour) {
+  const slot = slotCalData[date] && slotCalData[date][hour];
+  const isOpen = slot && slot.open;
+  const key = date+'|'+hour;
+  const cellId = `sc-${date}-${hour.replace(':','-')}`;
+  const cell = document.getElementById(cellId);
+  if (!cell) return;
+
+  if (isOpen) {
+    // Close it
+    if (!slotCalData[date]) slotCalData[date] = {};
+    slotCalData[date][hour] = {...(slot||{}), open:false};
+    cell.style.cssText = 'background:var(--sur2);border:1px solid var(--bdr2);color:var(--mut);cursor:pointer;border-radius:6px;padding:.3rem .2rem;font-size:.7rem;font-weight:600;transition:all .15s;min-height:28px;display:flex;align-items:center;justify-content:center;';
+    cell.textContent = '';
+  } else {
+    // Open it
+    if (!slotCalData[date]) slotCalData[date] = {};
+    slotCalData[date][hour] = {...(slot||{}), open:true};
+    cell.style.cssText = 'background:var(--grl);border:1px solid #a7f3d0;color:var(--grn);cursor:pointer;border-radius:6px;padding:.3rem .2rem;font-size:.7rem;font-weight:600;transition:all .15s;min-height:28px;display:flex;align-items:center;justify-content:center;';
+    cell.textContent = '✓';
+  }
+  slotDirty[key] = true;
+}
+
+async function saveSlotCalendar() {
+  const statusEl = document.getElementById('slot-status');
+  const btn = document.getElementById('save-slots-btn');
+  btn.disabled = true;
+  statusEl.textContent = 'Kaydediliyor...';
+  try {
+    const batch = db.batch();
+    let count = 0;
+    const days = getWeekDates(slotWeekOffset);
+
+    for (const date of days) {
+      for (const hour of SLOT_HOURS) {
+        const key = date+'|'+hour;
+        if (!slotDirty[key]) continue; // only changed cells
+        const slot = slotCalData[date] && slotCalData[date][hour];
+        const isOpen = slot && slot.open;
+        const docId = slot && slot.docId;
+        const safeId = (date+'-'+hour).replace(':','-');
+
+        if (isOpen) {
+          // Add or set open
+          const ref = docId
+            ? db.collection('availableSlots').doc(docId)
+            : db.collection('availableSlots').doc(safeId);
+          batch.set(ref, {date, time:hour, key, booked:false, bookedBy:null,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()}, {merge:true});
+          if (!docId) { slotCalData[date][hour].docId = safeId; }
+        } else {
+          // Close — delete if exists and not booked
+          if (docId && !(slot && slot.booked)) {
+            batch.delete(db.collection('availableSlots').doc(docId));
+            if (slotCalData[date]) delete slotCalData[date][hour];
+          }
+        }
+        count++;
+      }
+    }
+
+    if (count === 0) { statusEl.textContent = 'Değişiklik yok.'; btn.disabled=false; return; }
+    await batch.commit();
+    slotDirty = {};
+    statusEl.textContent = `✅ ${count} değişiklik kaydedildi!`;
+    toast('Takvim güncellendi!','s');
+    setTimeout(() => { statusEl.textContent=''; }, 3000);
+  } catch(e) {
+    statusEl.textContent = '❌ Hata: '+e.message;
+    toast('Kayıt hatası.','e');
+  } finally { btn.disabled=false; }
+}
+
+// ── MESSAGES ──
+let adminMsgUnsub = null;
+let adMsgLocal = [];
+let adSelectedUser = null;
+
+function listenAdminMsg() {
+  if (adminMsgUnsub) adminMsgUnsub();
+  adminMsgUnsub = db.collection('messages').orderBy('createdAt', 'asc').onSnapshot(snap => {
+    adMsgLocal = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderMsgUsers();
+    if (adSelectedUser) renderMsgChat(adSelectedUser);
+  });
+}
+
+function renderMsgUsers() {
+  const usersDiv = document.getElementById('msg-users-list');
+  if(!usersDiv)return;
+  // Group by user
+  const grouped = {};
+  let totalUnread = 0;
+  adMsgLocal.forEach(m => {
+    if (!grouped[m.userId]) {
+      grouped[m.userId] = {userId: m.userId, userName: m.userName || 'Öğrenci', lastTime: 0, unread: 0};
+    }
+    const t = m.createdAt && m.createdAt.seconds ? m.createdAt.seconds : 0;
+    if (t > grouped[m.userId].lastTime) grouped[m.userId].lastTime = t;
+    if (m.sender === 'user' && !m.readByAdmin) {
+      grouped[m.userId].unread++;
+      totalUnread++;
+    }
+  });
+  
+  const badge = document.getElementById('admin-msg-badge');
+  if(badge) {
+    if(totalUnread>0){badge.style.display='inline-block';badge.textContent=totalUnread;}else{badge.style.display='none';}
+  }
+
+  const userList = Object.values(grouped).sort((a,b)=>b.lastTime - a.lastTime);
+  if(!userList.length) { usersDiv.innerHTML=`<div class="empty"><p>Mesaj yok.</p></div>`; return; }
+  
+  usersDiv.innerHTML = userList.map(u => {
+    const act = (adSelectedUser && adSelectedUser.userId === u.userId) ? 'active' : '';
+    const unrc = u.unread > 0 ? 'unread' : '';
+    return `<button class="msg-u-btn ${act} ${unrc}" onclick="selectMsgUser('${u.userId}', '${u.userName.replace(/'/g,"\\'")}')">
+      <div class="acav" style="flex-shrink:0;">${u.userName.charAt(0).toUpperCase()}</div>
+      <div style="font-weight:600;font-size:.85rem;color:var(--ink);">${u.userName}</div>
+      <div class="ndot-n"></div>
+    </button>`;
+  }).join('');
+}
+
+function selectMsgUser(userId, userName) {
+  adSelectedUser = {userId, userName};
+  renderMsgUsers(); // to update active state
+  renderMsgChat(adSelectedUser);
+  
+  // mark as read
+  const sec = document.getElementById('msg');
+  if(sec && sec.classList.contains('active')) {
+    const unreadMsgs = adMsgLocal.filter(m => m.userId === userId && m.sender === 'user' && !m.readByAdmin);
+    if (unreadMsgs.length > 0) {
+      const b = db.batch();
+      unreadMsgs.forEach(m => b.update(db.collection('messages').doc(m.id), {readByAdmin:true}));
+      b.commit().catch(e=>{});
+    }
+  }
+}
+
+function renderMsgChat(userObj) {
+  const wrap = document.getElementById('msg-chat-wrap');
+  if(!wrap)return;
+  
+  const msgs = adMsgLocal.filter(m => m.userId === userObj.userId);
+  let chatHtml = msgs.map(m => {
+    const isMe = m.sender === 'admin';
+    const time = m.createdAt && m.createdAt.toDate ? m.createdAt.toDate().toLocaleString('tr-TR',{hour:'2-digit',minute:'2-digit'}) : '';
+    return `<div class="chat-msg ${isMe?'me':'other'}"><div class="chat-bub">${m.text.replace(/\n/g,'<br>')}</div><div class="chat-time">${time}</div></div>`;
+  }).join('');
+  
+  if(!msgs.length) chatHtml = `<div class="empty"><p>Mesaj bulunamadı.</p></div>`;
+
+  wrap.innerHTML = `
+    <div class="msg-chat-head">
+      <div class="acav">${userObj.userName.charAt(0).toUpperCase()}</div>
+      <div><div style="font-weight:700;font-size:.9rem;color:var(--ink);">${userObj.userName}</div></div>
+    </div>
+    <div class="msg-chat-body" id="admin-chat-msgs">${chatHtml}</div>
+    <div class="msg-chat-foot">
+      <input type="text" id="admin-chat-inp" class="inp" style="margin:0;flex:1;" placeholder="Cevap yazın..." onkeydown="if(event.key==='Enter') sendAdminChatMsg()">
+      <button class="bup" style="width:auto;padding:.75rem 1.5rem;" onclick="sendAdminChatMsg()"><i class="fas fa-paper-plane"></i> Gönder</button>
+    </div>
+  `;
+  const clist = document.getElementById('admin-chat-msgs');
+  if(clist) clist.scrollTop = clist.scrollHeight;
+}
+
+async function sendAdminChatMsg() {
+  if(!adSelectedUser) return;
+  const inp = document.getElementById('admin-chat-inp');
+  const text = inp.value.trim();
+  if(!text) return;
+  inp.value = '';
+  try {
+    await db.collection('messages').add({
+      userId: adSelectedUser.userId,
+      userName: adSelectedUser.userName,
+      sender: 'admin',
+      text,
+      readByAdmin: true,
+      readByUser: false,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  } catch(e) { toast('Mesaj gönderilemedi.','e'); }
+}
 </script>
 
 <div class="mob-overlay" id="mob-overlay" onclick="closeSidebar()"></div>

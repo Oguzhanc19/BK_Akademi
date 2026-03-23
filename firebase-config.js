@@ -36,7 +36,8 @@ if (typeof firebase === 'undefined') {
   // Basit admin kontrolü için admin e-posta listesi.
   // BURAYA kendi admin hesabınızın e-postasını ekleyin.
   window.ADMIN_EMAILS = [
-    'oguzhan196060@gmail.com' // ÖRNEK – kendi admin mailinizi yazın
+    'oguzhan196060@gmail.com', // ÖRNEK – kendi admin mailinizi yazın
+    'mertsadikarakurt@gmail.com'
   ];
 }
 

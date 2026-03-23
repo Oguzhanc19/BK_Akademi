@@ -44,7 +44,8 @@ aside{width:var(--sw);background:var(--ink);display:flex;flex-direction:column;h
 .nbadge{margin-left:auto;background:#ef4444;color:#fff;font-size:.6rem;font-weight:700;padding:.1rem .4rem;border-radius:100px;display:none;}
 .s-foot{padding:1.25rem 1.5rem;border-top:1px solid rgba(255,255,255,.07);}
 .s-user{display:flex;align-items:center;gap:.75rem;margin-bottom:.9rem;}
-.s-av{width:36px;height:36px;background:linear-gradient(135deg,var(--ac),var(--ac2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:.95rem;color:#fff;flex-shrink:0;box-shadow:0 4px 12px rgba(79,70,229,.4);}
+.s-av{width:36px;height:36px;background:linear-gradient(135deg,var(--ac),var(--ac2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:.95rem;color:#fff;flex-shrink:0;box-shadow:0 4px 12px rgba(79,70,229,.4);overflow:hidden;}
+.s-av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
 .s-uname{font-size:.84rem;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .s-urole{font-size:.66rem;color:rgba(255,255,255,.35);}
 .logout-btn{display:flex;align-items:center;gap:.5rem;color:rgba(255,255,255,.28);font-size:.78rem;cursor:pointer;background:none;border:none;font-family:'Plus Jakarta Sans',sans-serif;transition:color .18s;}
@@ -59,7 +60,8 @@ main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
 .icon-btn{width:36px;height:36px;background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mu);transition:all .18s;position:relative;}
 .icon-btn:hover{border-color:var(--ac);color:var(--ac);background:var(--al);}
 .ndot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--red);border-radius:50%;border:1.5px solid var(--sur);display:none;}
-.av-top{width:36px;height:36px;background:linear-gradient(135deg,var(--ac),var(--ac2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;color:#fff;font-size:.88rem;cursor:pointer;}
+.av-top{width:36px;height:36px;background:linear-gradient(135deg,var(--ac),var(--ac2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;color:#fff;font-size:.88rem;cursor:pointer;overflow:hidden;}
+.av-top img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
 /* Points chip in topbar */
 .pts-chip{display:flex;align-items:center;gap:.4rem;background:var(--gl);border:1px solid #fde68a;border-radius:100px;padding:.3rem .85rem;font-size:.78rem;font-weight:700;color:#92400e;cursor:pointer;transition:all .18s;}
 .pts-chip:hover{background:#fef3c7;}
@@ -199,7 +201,30 @@ textarea.inp{resize:vertical;min-height:85px;}
 
 /* ── PROFILE ── */
 .pg2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
-.pav-lg{width:72px;height:72px;background:linear-gradient(135deg,var(--ac),var(--ac2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:#fff;box-shadow:0 8px 24px rgba(79,70,229,.3);}
+.pav-lg{width:88px;height:88px;background:linear-gradient(135deg,var(--ac),var(--ac2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:#fff;box-shadow:0 8px 24px rgba(79,70,229,.3);overflow:hidden;position:relative;cursor:pointer;}
+.pav-lg img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.pav-edit{position:absolute;inset:0;background:rgba(0,0,0,.45);border-radius:50%;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;color:#fff;font-size:.9rem;}
+.pav-lg:hover .pav-edit{opacity:1;}
+/* Comments */
+.cmt-section{margin-top:1rem;border-top:1px solid var(--bdr2);padding-top:1rem;}
+.cmt-list{display:flex;flex-direction:column;gap:.65rem;max-height:320px;overflow-y:auto;margin-bottom:.75rem;}
+.cmt-item{background:var(--sur2);border:1px solid var(--bdr);border-radius:10px;padding:.75rem 1rem;}
+.cmt-item.reply{margin-left:1.5rem;background:#fafbff;border-color:#e0e7ff;}
+.cmt-header{display:flex;align-items:center;gap:.55rem;margin-bottom:.35rem;}
+.cmt-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;}
+.cmt-av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.cmt-name{font-size:.78rem;font-weight:700;color:var(--ink);}
+.cmt-time{font-size:.65rem;color:var(--mu);margin-left:auto;}
+.cmt-text{font-size:.82rem;color:var(--ink2);line-height:1.55;}
+.cmt-actions{display:flex;align-items:center;gap:.6rem;margin-top:.35rem;}
+.cmt-reply-btn{font-size:.7rem;color:var(--ac);cursor:pointer;background:none;border:none;font-family:inherit;font-weight:600;padding:0;}
+.cmt-reply-btn:hover{text-decoration:underline;}
+.star-rating{display:flex;gap:.2rem;margin-bottom:.5rem;}
+.star-rating i{font-size:1.1rem;color:var(--bdr);cursor:pointer;transition:color .15s;}
+.star-rating i.active,.star-rating i:hover,.star-rating i.hover{color:var(--gld);}
+.cmt-stars{display:flex;gap:.15rem;}
+.cmt-stars i{font-size:.72rem;color:var(--gld);}
+.slot.booked{background:var(--rl);border-color:#fecaca;color:var(--red);cursor:not-allowed;opacity:.7;}
 .ir{display:flex;justify-content:space-between;align-items:center;padding:.8rem 0;border-bottom:1px solid var(--bdr2);}
 .ir:last-child{border:none;}
 .ik{font-size:.75rem;color:var(--mu);font-weight:500;}
@@ -249,7 +274,8 @@ textarea.inp{resize:vertical;min-height:85px;}
 .lb-rank.gold{color:#d97706;}
 .lb-rank.silver{color:#64748b;}
 .lb-rank.bronze{color:#92400e;}
-.lb-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;color:#fff;font-size:.85rem;flex-shrink:0;}
+.lb-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;color:#fff;font-size:.85rem;flex-shrink:0;overflow:hidden;}
+.lb-av img{width:100%;height:100%;object-fit:cover;}
 .lb-name{flex:1;font-weight:600;font-size:.85rem;color:var(--ink);}
 .lb-pts{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--gld);}
 .lb-pts-label{font-size:.65rem;color:var(--mu);text-align:right;}
@@ -288,6 +314,15 @@ textarea.inp{resize:vertical;min-height:85px;}
 #toast.s{background:var(--grn);}
 #toast.e{background:var(--red);}
 ::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:3px;}
+
+/* MESSAGES */
+.chat-msg{display:flex;flex-direction:column;gap:.3rem;margin-bottom:1rem;max-width:85%;}
+.chat-msg.me{align-self:flex-end;}
+.chat-bub{padding:.8rem 1.1rem;border-radius:12px;font-size:.84rem;line-height:1.5;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.chat-msg.me .chat-bub{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border-bottom-right-radius:2px;}
+.chat-msg.other .chat-bub{background:var(--sur);border:1px solid var(--bdr);color:var(--ink);border-bottom-left-radius:2px;}
+.chat-time{font-size:.65rem;color:var(--mu);}
+.chat-msg.me .chat-time{text-align:right;}
 
 /* ══ RESPONSIVE ══ */
 .mob-toggle{display:none;position:fixed;bottom:1.25rem;right:1.25rem;width:52px;height:52px;background:linear-gradient(135deg,var(--ac),var(--ac2));border-radius:50%;color:#fff;font-size:1.2rem;border:none;cursor:pointer;z-index:200;box-shadow:0 8px 24px rgba(79,70,229,.4);align-items:center;justify-content:center;transition:all .25s;}
@@ -369,6 +404,7 @@ textarea.inp{resize:vertical;min-height:85px;}
       <button class="nb active" onclick="go('home',this)"><i class="fas fa-home"></i> Genel Bakış</button>
       <button class="nb" onclick="go('book',this)"><i class="fas fa-calendar-plus"></i> Randevu Talebi</button>
       <button class="nb" id="nav-ma" onclick="go('myappts',this)"><i class="fas fa-calendar-check"></i> Randevularım</button>
+      <button class="nb" id="nav-msg" onclick="go('msg',this)"><i class="fas fa-envelope"></i> Mesajlar <span class="nbadge" id="msg-badge" style="background:var(--ac);display:none;">0</span></button>
       <button class="nb" onclick="go('res',this)"><i class="fas fa-book-open"></i> Kaynaklar</button>
       <button class="nb" onclick="go('game',this)"><i class="fas fa-gamepad"></i> Kelime Oyunu</button>
       <div class="s-lbl">Hesap</div>
@@ -488,7 +524,7 @@ textarea.inp{resize:vertical;min-height:85px;}
           <input type="date" class="inp" id="bdate" onchange="genSlots()">
           <label class="lbl">Müsait Saatler</label>
           <div class="tslots" id="tslots"><div style="grid-column:1/-1;text-align:center;padding:.9rem;font-size:.8rem;color:var(--mu);background:var(--sur2);border-radius:8px;"><i class="fas fa-arrow-up" style="margin-right:.4rem;"></i>Önce tarih seçin</div></div>
-          <div class="ibox"><i class="fas fa-info-circle"></i>Talebiniz admin onayına gönderilir. Onaylanınca Zoom linki iletilir.</div>
+          <div class="ibox"><i class="fas fa-info-circle"></i>Yalnızca admin'in açtığı saatler görünür. Dolu saatler seçilemez. Talebiniz onaylanınca Zoom linki iletilir.</div>
         </div>
         <div class="bcard">
           <h3><i class="fas fa-pencil-alt"></i> Detaylar</h3>
@@ -505,6 +541,25 @@ textarea.inp{resize:vertical;min-height:85px;}
     <!-- MY APPTS -->
     <div id="myappts" class="sec">
       <div id="mal"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Yükleniyor...</p></div></div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div id="msg" class="sec">
+      <div class="card" style="display:flex;flex-direction:column;height:calc(100vh - 160px);border:1px solid var(--bdr);overflow:hidden;">
+        <div class="ch" style="background:var(--sur2);">
+          <div>
+            <h3 style="margin:0;font-size:.95rem;color:var(--ink);"><i class="fas fa-user-tie" style="color:var(--ac);margin-right:.4rem;"></i> Eğitmen ile Sohbet</h3>
+            <p style="margin:0;font-size:.7rem;color:var(--mu);margin-top:.2rem;">Tüm soru ve sorunlarınızı buradan iletebilirsiniz.</p>
+          </div>
+        </div>
+        <div id="chat-msgs" style="flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:1.15rem;background:var(--bg);">
+          <div class="empty" style="padding:1rem;"><i class="fas fa-spinner fa-spin"></i><p>Yükleniyor...</p></div>
+        </div>
+        <div style="padding:1rem 1.5rem;border-top:1px solid var(--bdr2);background:var(--sur);display:flex;gap:.75rem;">
+          <input type="text" id="chat-inp" class="inp" style="margin:0;flex:1;" placeholder="Mesajınızı yazın..." onkeydown="if(event.key==='Enter') sendChatMsg()">
+          <button class="bup" style="width:auto;padding:.75rem 1.5rem;" onclick="sendChatMsg()"><i class="fas fa-paper-plane"></i> Gönder</button>
+        </div>
+      </div>
     </div>
 
     <!-- RESOURCES -->
@@ -573,8 +628,13 @@ textarea.inp{resize:vertical;min-height:85px;}
       <div class="pg2">
         <div class="card"><div class="cb">
           <div style="display:flex;align-items:center;gap:1.2rem;margin-bottom:1.5rem;">
-            <div class="pav-lg" id="pav">S</div>
-            <div><div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;" id="pname">—</div><div style="font-size:.8rem;color:var(--mu);" id="pemail">—</div></div>
+            <div class="pav-lg" id="pav" onclick="document.getElementById('photo-input').click()" title="Fotoğraf değiştirmek için tıkla">
+              <span id="pav-init">S</span>
+              <div class="pav-edit"><i class="fas fa-camera"></i></div>
+            </div>
+            <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="uploadProfilePhoto(this)">
+            <div><div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;" id="pname">—</div><div style="font-size:.8rem;color:var(--mu);" id="pemail">—</div>
+            <div style="font-size:.72rem;color:var(--mu);margin-top:.3rem;"><i class="fas fa-camera" style="margin-right:.3rem;"></i>Avatara tıklayarak fotoğraf ekle</div></div>
           </div>
           <div class="ir"><span class="ik">Ad Soyad</span><span class="iv" id="pn">—</span></div>
           <div class="ir"><span class="ik">E-posta</span><span class="iv" id="pe">—</span></div>
@@ -727,17 +787,24 @@ auth.onAuthStateChanged(async (user) => {
   cu = user;
   const n = user.displayName || user.email.split('@')[0];
   const ini = n.charAt(0).toUpperCase();
-  ['sav','av-top','pav'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = ini; });
+  ['sav','av-top'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = ini; });
+  const pavInit = document.getElementById('pav-init'); if(pavInit) pavInit.textContent = ini;
   document.getElementById('sname').textContent = n;
   document.getElementById('pname').textContent = n;
   document.getElementById('pemail').textContent = user.email;
   document.getElementById('pn').textContent = n;
   document.getElementById('pe').textContent = user.email;
 
+  // Load photo from Firestore
+  db.collection('users').doc(user.uid).get().then(snap => {
+    if(snap.exists && snap.data().photoURL) applyAvatar(snap.data().photoURL);
+  });
+
   await handleLogin(); // streak + points on login
   loadHome();
   loadRes();
   listenNotifs();
+  listenMsg();
   setMotivation();
   initWordGame();
 });
@@ -752,11 +819,16 @@ function go(id, btn) {
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.nb').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
-  const t = pageTitles[id] || ['Panel',''];
-  document.getElementById('tb-t').innerHTML = t[0];
-  document.getElementById('tb-s' || 'tb-s').textContent = t[1];
+
+  const titles = {home:'Genel <em>Bakış</em>', book:'Randevu <em>Al</em>', myappts:'Randevularım', res:'Kütüphane', game:'Kelime <em>Oyunu</em>', notifs:'Önemli <em>Bildirimler</em>', lb:'🏆 Liderlik Tablosu', profile:'Profil Bilgileri', msg:'Mesajlarımı <em>Görüntüle</em>'};
+  const subs = {home:'Panelinize hoşgeldiniz.', book:'Müsait saatlerden dilediğinizi seçin.', myappts:'Tüm randevu geçmişiniz.', res:'Faydalı PDF ve Videolar.', game:'Eğlenerek öğrenin.', notifs:'Hesabınızla ilgili güncellemeler.', lb:'En iyiler arasında yerinizi alın!', profile:'Kişisel bilgiler', msg:'Eğitmeninizle iletişime geçin.'};
+  const tt=document.getElementById('tb-t'), ts=document.getElementById('tb-s');
+  if(tt && titles[id]) tt.innerHTML=titles[id];
+  if(ts && subs[id]) ts.innerHTML=subs[id];
+
   if (id === 'myappts') loadMA();
   if (id === 'notifs') markRead();
+  if (id === 'msg') checkMsgRead();
   if (id === 'lb') loadLB();
 }
 
@@ -940,17 +1012,34 @@ async function loadHome() {
 function buildItem(a, big) {
   const sm = {pending:`<span class="badge bp">⏳ Beklemede</span>`,approved:`<span class="badge ba">✓ Onaylandı</span>`,rejected:`<span class="badge br">✕ Reddedildi</span>`,completed:`<span class="badge bc">✔ Tamamlandı</span>`};
   const ts = a.timeSlot || '—';
-  let dn='—',mn='—';
-  try { const p=ts.split('|'); if(p.length>0){const dp=p[0].trim().split(' ');if(dp.length>1){dn=dp[0];mn=dp[1].substring(0,3).toUpperCase();}}} catch(e){}
+  let dn='—',mn='—',dFull='—';
+  try {
+    const p = ts.split('|');
+    if(p.length > 0) {
+      const dStr = p[0].trim();
+      const dObj = new Date(dStr + 'T00:00:00');
+      if(!isNaN(dObj)) {
+        dn = dObj.getDate();
+        mn = dObj.toLocaleDateString('tr-TR', { month: 'short' }).toUpperCase();
+        dFull = dObj.toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      } else {
+        dn = dStr.split(' ')[0] || '—'; mn = (dStr.split(' ')[1] || '—').substring(0,3).toUpperCase();
+      }
+    }
+  } catch(e){}
+  
   const time = ts.includes('|') ? ts.split('|')[1].trim() : ts;
-  const note = a.note ? `<div class="ai-note">📝 ${a.note}</div>` : '';
+  const note = a.note ? `<div class="ai-note" style="margin-top:.4rem;"><i class="fas fa-comment-dots" style="margin-right:.25rem;color:var(--mu);"></i><strong>Not:</strong> ${a.note}</div>` : '';
+  const level = a.level ? `<div class="ai-note" style="margin-top:.2rem;"><i class="fas fa-layer-group" style="margin-right:.25rem;color:var(--mu);"></i><strong>Seviye:</strong> ${a.level}</div>` : '';
+  
   const canc = a.status==='pending' ? `<button class="cancel-sm" onclick="openCancel('${a.id}')">İptal</button>` : '';
   let zh = '';
   if (a.zoomLink && a.zoomLink.length > 3) {
     if (big) { zh = `<div class="zoom-pill"><i class="fas fa-video"></i><a href="${a.zoomLink}" target="_blank">${a.zoomLink}</a><button class="zcopy" onclick="copyLink('${a.zoomLink}')"><i class="fas fa-copy"></i> Kopyala</button></div>`; }
     else { zh = `<div style="margin-top:.35rem;"><a href="${a.zoomLink}" target="_blank" style="font-size:.75rem;color:var(--blu);font-weight:600;text-decoration:none;"><i class="fas fa-video" style="margin-right:.3rem;"></i>Zoom Linki</a></div>`; }
   } else if (a.status==='approved') { zh = `<div class="zoom-soon"><i class="fas fa-hourglass-half"></i>Zoom linki yakında paylaşılacak.</div>`; }
-  return `<div class="ai"><div class="ai-date"><div class="d">${dn}</div><div class="m">${mn}</div></div><div class="ai-body"><div class="ai-time">${time}</div>${note}${zh}</div><div class="ai-act">${sm[a.status]||sm.pending}${canc}</div></div>`;
+  
+  return `<div class="ai"><div class="ai-date"><div class="d">${dn}</div><div class="m">${mn}</div></div><div class="ai-body"><div class="ai-time">${dFull !== '—' ? dFull + ' — ' : ''}${time}</div>${level}${note}${zh}</div><div class="ai-act">${sm[a.status]||sm.pending}${canc}</div></div>`;
 }
 
 async function loadMA() {
@@ -966,16 +1055,33 @@ async function loadMA() {
 }
 
 // ══════════════════════════════════════════
-//  BOOKING
+//  BOOKING - admin slotlarından
 // ══════════════════════════════════════════
-function genSlots() {
+let selectedSlotDoc = null;
+async function genSlots() {
   const v = document.getElementById('bdate').value, c = document.getElementById('tslots');
-  if (!v) return; ss=null; document.getElementById('btn-sub').disabled=true; document.getElementById('bsummary').style.display='none';
-  const d = new Date(v), fmt = d.toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});
-  c.innerHTML = ['09:00 – 10:00','10:00 – 11:00','13:00 – 14:00','15:00 – 16:00','17:00 – 18:00','19:00 – 20:00'].map(s => `<button class="slot" onclick="pickSlot(this,'${fmt} | ${s}')">${s}</button>`).join('');
+  if (!v) return;
+  selectedSlotDoc = null; ss = null;
+  document.getElementById('btn-sub').disabled = true;
+  document.getElementById('bsummary').style.display = 'none';
+  c.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:.9rem;font-size:.8rem;color:var(--mu);background:var(--sur2);border-radius:8px;"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</div>`;
+  try {
+    const snap = await db.collection('availableSlots').where('date','==',v).get();
+    if (snap.empty) {
+      c.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:.9rem;font-size:.8rem;color:var(--mu);background:var(--sur2);border-radius:8px;"><i class="fas fa-calendar-times" style="margin-right:.4rem;"></i>Bu tarih için müsait saat yok.</div>`;
+      return;
+    }
+    const slots = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>a.time.localeCompare(b.time));
+    c.innerHTML = slots.map(s => {
+      const booked = s.booked;
+      return `<button class="slot${booked?' booked':''}" ${booked?'disabled':''} onclick="pickSlotDoc(this,'${s.id}','${s.date} | ${s.time}')">${s.time}${booked?' 🔒':''}</button>`;
+    }).join('');
+  } catch(e) {
+    c.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:.9rem;font-size:.8rem;color:var(--red);">Hata: ${e.message}</div>`;
+  }
 }
-function pickSlot(btn, val) {
-  document.querySelectorAll('.slot').forEach(b=>b.classList.remove('sel')); btn.classList.add('sel'); ss=val;
+function pickSlotDoc(btn, slotId, val) {
+  document.querySelectorAll('.slot').forEach(b=>b.classList.remove('sel')); btn.classList.add('sel'); ss=val; selectedSlotDoc=slotId;
   document.getElementById('bsummary').style.display='block'; document.getElementById('bsum').textContent=val;
   document.getElementById('btn-sub').disabled=false;
 }
@@ -983,11 +1089,15 @@ async function submitBooking() {
   if (!ss) return;
   const btn = document.getElementById('btn-sub'); btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...';
   try {
-    await db.collection('appointments').add({userId:cu.uid,email:cu.email,displayName:cu.displayName||cu.email.split('@')[0],timeSlot:ss,note:document.getElementById('bnote').value.trim(),level:document.getElementById('blevel').value,status:'pending',zoomLink:'',createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    await db.collection('appointments').add({userId:cu.uid,email:cu.email,displayName:cu.displayName||cu.email.split('@')[0],timeSlot:ss,note:document.getElementById('bnote').value.trim(),level:document.getElementById('blevel').value,status:'pending',zoomLink:'',slotDocId:selectedSlotDoc||null,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    // Mark slot as booked
+    if (selectedSlotDoc) {
+      await db.collection('availableSlots').doc(selectedSlotDoc).update({booked:true,bookedBy:cu.displayName||cu.email});
+    }
     showToast('Randevu talebiniz gönderildi!','s');
     document.getElementById('bdate').value=''; document.getElementById('bnote').value=''; document.getElementById('blevel').value='';
     document.getElementById('tslots').innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:.9rem;font-size:.8rem;color:var(--mu);background:var(--sur2);border-radius:8px;"><i class="fas fa-arrow-up" style="margin-right:.4rem;"></i>Önce tarih seçin</div>`;
-    document.getElementById('bsummary').style.display='none'; ss=null;
+    document.getElementById('bsummary').style.display='none'; ss=null; selectedSlotDoc=null;
     loadHome(); go('myappts', document.getElementById('nav-ma'));
   } catch(e) { showToast('Hata: '+e.message,'e'); }
   finally { btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i> Randevu Talebi Gönder'; }
@@ -1021,8 +1131,9 @@ function renderRes(list) {
   g.innerHTML = list.map(r => {
     const p=r.type==='pdf',ts=p?'background:#dcfce7;color:#15803d;':'background:#ede9fe;color:#7c3aed;';
     const img=p?'https://img.freepik.com/free-vector/english-book-illustration_1284-42354.jpg':'https://img.freepik.com/free-photo/english-british-england-language-education-concept_53876-123214.jpg';
-    const viewUrl=r.url;
-    return `<div class="rc"><div class="rth"><img src="${img}" alt="${r.title}"><div class="rth-ov"><i class="fas fa-${p?'file-pdf':'play-circle'}"></i></div><span class="rtag" style="${ts}">${p?'PDF':'Video'}</span></div><div class="rb"><div class="rt">${r.title||'Kaynak'}</div><div class="rd">${p?'İndirilebilir PDF.':'Video dersi.'}</div><div class="ract"><a href="${viewUrl}" target="_blank" class="rbn rbn-p">${p?'<i class="fas fa-file-pdf"></i> Aç':'<i class="fas fa-play"></i> İzle'}</a><a href="${viewUrl}" download class="rbn rbn-s"><i class="fas fa-download"></i> İndir</a></div></div></div>`;
+    const desc = r.description ? `<div class="rd" style="margin-bottom:.5rem;">${r.description}</div>` : `<div class="rd">${p?'İndirilebilir PDF.':'Video dersi.'}</div>`;
+    const avgStars = r.avgRating ? '⭐'.repeat(Math.round(r.avgRating)) : '';
+    return `<div class="rc" id="rc-${r.id}"><div class="rth"><img src="${img}" alt="${r.title}"><div class="rth-ov"><i class="fas fa-${p?'file-pdf':'play-circle'}"></i></div><span class="rtag" style="${ts}">${p?'PDF':'Video'}</span></div><div class="rb"><div class="rt">${r.title||'Kaynak'} <span style="font-size:.68rem;color:var(--gld);">${avgStars}</span></div>${desc}<div class="ract"><a href="${r.url}" target="_blank" class="rbn rbn-p">${p?'<i class="fas fa-file-pdf"></i> Aç':'<i class="fas fa-play"></i> İzle'}</a><a href="${r.url}" download class="rbn rbn-s"><i class="fas fa-download"></i> İndir</a></div><button onclick="toggleComments('${r.id}')" class="rbn rbn-s" style="width:100%;margin-top:.5rem;border:1px solid var(--bdr);"><i class="fas fa-comment"></i> Yorumlar</button><div class="cmt-section" id="cmt-${r.id}" style="display:none;"><div class="cmt-list" id="cmt-list-${r.id}"></div><div class="star-rating" id="stars-${r.id}" data-rid="${r.id}" data-val="0">${[1,2,3,4,5].map(n=>`<i class="far fa-star" onclick="setStar('${r.id}',${n})" onmouseover="hoverStar('${r.id}',${n})" onmouseout="unhoverStar('${r.id}')"></i>`).join('')}</div><div style="display:flex;gap:.5rem;margin-top:.35rem;"><input type="text" placeholder="Yorum yaz..." id="cmt-inp-${r.id}" class="inp" style="margin:0;flex:1;"><button onclick="submitComment('${r.id}')" class="btn-sm" style="white-space:nowrap;"><i class="fas fa-paper-plane"></i></button></div></div></div></div>`;
   }).join('');
 }
 function fRes(t,btn){document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderRes(t==='all'?allRes:allRes.filter(r=>r.type===t));}
@@ -1316,9 +1427,10 @@ async function loadLB() {
       const name = u.displayName || u.email?.split('@')[0] || 'Öğrenci';
       const pts = u.points || 0;
       const ini = name.charAt(0).toUpperCase();
+      const avatarHtml = u.photoURL ? `<img src="${u.photoURL}" alt="${name}">` : ini;
       return `<div class="lb-item ${isMe?'me':''}">
         <div class="lb-rank ${rankClass(i)}">${i<3?medals[i]:i+1}</div>
-        <div class="lb-av">${ini}</div>
+        <div class="lb-av">${avatarHtml}</div>
         <div class="lb-name">${name}${isMe?' <span style="font-size:.68rem;color:var(--ac);font-weight:700;">(Sen)</span>':''}</div>
         <div><div class="lb-pts">${pts}</div><div class="lb-pts-label">puan</div></div>
       </div>`;
@@ -1351,10 +1463,179 @@ async function markRead() {
 }
 
 // ══════════════════════════════════════════
+//  MESSAGES
+// ══════════════════════════════════════════
+let msgUnsub = null;
+let msgLocalData = [];
+function listenMsg() {
+  if (msgUnsub) msgUnsub();
+  msgUnsub = db.collection('messages').where('userId','==',cu.uid).orderBy('createdAt').onSnapshot(snap => {
+    const list = document.getElementById('chat-msgs');
+    if (!list) return;
+    const msgs = snap.docs.map(d=>({id:d.id,...d.data()}));
+    msgLocalData = msgs;
+    const unread = msgs.filter(m => m.sender==='admin' && !m.readByUser).length;
+    const badge = document.getElementById('msg-badge');
+    if (badge) {
+      if(unread>0) { badge.style.display='inline-block'; badge.textContent=unread; }
+      else { badge.style.display='none'; }
+    }
+    if (!msgs.length) { list.innerHTML=`<div class="empty"><i class="fas fa-comments"></i><p>Henüz mesajınız yok.</p></div>`; return; }
+    list.innerHTML = msgs.map(m => {
+      const isMe = m.sender === 'user';
+      const time = m.createdAt && m.createdAt.toDate ? m.createdAt.toDate().toLocaleString('tr-TR',{hour:'2-digit',minute:'2-digit'}) : '';
+      return `<div class="chat-msg ${isMe?'me':'other'}"><div class="chat-bub">${m.text.replace(/\\n/g,'<br>')}</div><div class="chat-time">${time}</div></div>`;
+    }).join('');
+    list.scrollTop = list.scrollHeight;
+    
+    // Auto-read if section open
+    checkMsgRead();
+  });
+}
+function checkMsgRead() {
+  const sec = document.getElementById('msg');
+  if (sec && sec.classList.contains('active')) {
+    const unread = msgLocalData.filter(m => m.sender==='admin' && !m.readByUser);
+    if(unread.length > 0) {
+      const b = db.batch();
+      unread.forEach(m => b.update(db.collection('messages').doc(m.id), {readByUser:true}));
+      b.commit().catch(e=>{});
+    }
+  }
+}
+async function sendChatMsg() {
+  const inp = document.getElementById('chat-inp');
+  const text = inp.value.trim();
+  if(!text) return;
+  inp.value = '';
+  try {
+    await db.collection('messages').add({
+      userId: cu.uid,
+      userName: cu.displayName || cu.email.split('@')[0],
+      sender: 'user',
+      text,
+      readByUser: true,
+      readByAdmin: false,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  } catch(e) { showToast('Mesaj gönderilirken hata oluştu.','e'); }
+}
+
+// ══════════════════════════════════════════
 //  TOAST
 // ══════════════════════════════════════════
 function showToast(msg, type='') {
   const t=document.getElementById('toast');t.textContent=msg;t.className='show '+(type||'');setTimeout(()=>t.className='',3500);
+}
+
+// ══════════════════════════════════════════
+//  PROFILE PHOTO
+// ══════════════════════════════════════════
+const CLOUD_NAME='dwhybtfbj', CLOUD_PRESET='bkakademi';
+async function uploadProfilePhoto(input) {
+  const file = input.files[0]; if(!file) return;
+  showToast('Fotoğraf yükleniyor...','');
+  try {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', CLOUD_PRESET);
+    fd.append('folder','avatars');
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {method:'POST',body:fd});
+    if(!res.ok) throw new Error('Cloudinary hatası');
+    const data = await res.json();
+    const url = data.secure_url;
+    await db.collection('users').doc(cu.uid).set({photoURL:url},{merge:true});
+    applyAvatar(url);
+    showToast('Profil fotoğrafı güncellendi!','s');
+  } catch(e) { showToast('Hata: '+e.message,'e'); }
+}
+function applyAvatar(url) {
+  const imgTag = url ? `<img src="${url}" alt="avatar">` : null;
+  ['sav','av-top'].forEach(id => {
+    const el = document.getElementById(id); if(!el) return;
+    if(imgTag) { el.innerHTML = imgTag; } 
+  });
+  const pav = document.getElementById('pav');
+  if(pav) { const init = document.getElementById('pav-init'); if(init && url) init.style.display='none'; if(url) { const img = document.createElement('img'); img.src=url; img.alt='avatar'; pav.insertBefore(img, pav.firstChild); } }
+}
+
+// ══════════════════════════════════════════
+//  COMMENTS & RATINGS
+// ══════════════════════════════════════════
+let cmtReplyTo = {}; // {rid: parentId}
+function toggleComments(rid) {
+  const el = document.getElementById('cmt-'+rid);
+  if (!el) return;
+  const show = el.style.display === 'none';
+  el.style.display = show ? 'block' : 'none';
+  if (show) loadComments(rid);
+}
+async function loadComments(rid) {
+  const listEl = document.getElementById('cmt-list-'+rid); if(!listEl) return;
+  listEl.innerHTML = '<div style="text-align:center;padding:.5rem;font-size:.78rem;color:var(--mu);"><i class="fas fa-spinner fa-spin"></i></div>';
+  try {
+    const snap = await db.collection('resources').doc(rid).collection('comments').orderBy('createdAt').get();
+    if(snap.empty){listEl.innerHTML='<div style="text-align:center;padding:.5rem;font-size:.78rem;color:var(--mu);">Henüz yorum yok.</div>';return;}
+    const docs = snap.docs.map(d=>({id:d.id,...d.data()}));
+    const top = docs.filter(c=>!c.parentId);
+    const replies = docs.filter(c=>c.parentId);
+    listEl.innerHTML = top.map(c => {
+      const t = c.createdAt&&c.createdAt.toDate ? c.createdAt.toDate().toLocaleDateString('tr-TR') : '';
+      const stars = c.rating ? Array(c.rating).fill('<i class="fas fa-star"></i>').join('') : '';
+      const photoEl = c.photoURL ? `<img src="${c.photoURL}" alt="">` : (c.displayName||'?').charAt(0).toUpperCase();
+      const reps = replies.filter(r=>r.parentId===c.id).map(r => {
+        const rp = r.photoURL ? `<img src="${r.photoURL}" alt="">` : (r.displayName||'?').charAt(0).toUpperCase();
+        return `<div class="cmt-item reply"><div class="cmt-header"><div class="cmt-av">${rp}</div><span class="cmt-name">${r.displayName||'Öğrenci'}</span><span class="cmt-time">${r.createdAt&&r.createdAt.toDate?r.createdAt.toDate().toLocaleDateString('tr-TR'):''}</span></div><div class="cmt-text">${r.text}</div></div>`;
+      }).join('');
+      return `<div class="cmt-item"><div class="cmt-header"><div class="cmt-av">${photoEl}</div><span class="cmt-name">${c.displayName||'Öğrenci'}</span><div class="cmt-stars">${stars}</div><span class="cmt-time">${t}</span></div><div class="cmt-text">${c.text}</div><div class="cmt-actions"><button class="cmt-reply-btn" onclick="setReply('${rid}','${c.id}','${c.displayName||'Öğrenci'}')"><i class="fas fa-reply"></i> Yanıtla</button></div>${reps}</div>`;
+    }).join('');
+  } catch(e) { listEl.innerHTML = '<div style="color:var(--red);font-size:.78rem;">Hata: '+e.message+'</div>'; }
+}
+function setReply(rid, cid, name) {
+  cmtReplyTo[rid] = cid;
+  const inp = document.getElementById('cmt-inp-'+rid);
+  if(inp) { inp.placeholder = `@${name} yanıtlıyorsunuz...`; inp.focus(); }
+}
+function setStar(rid, val) {
+  const el = document.getElementById('stars-'+rid); if(!el) return;
+  el.dataset.val = val;
+  el.querySelectorAll('i').forEach((s,i) => { s.className = i<val?'fas fa-star':'far fa-star'; });
+}
+function hoverStar(rid, val) {
+  document.getElementById('stars-'+rid)?.querySelectorAll('i').forEach((s,i)=>{ s.className = i<val?'fas fa-star hover':'far fa-star'; });
+}
+function unhoverStar(rid) {
+  const el=document.getElementById('stars-'+rid); if(!el) return;
+  const cur=parseInt(el.dataset.val||0);
+  el.querySelectorAll('i').forEach((s,i)=>{ s.className=i<cur?'fas fa-star active':'far fa-star'; });
+}
+async function submitComment(rid) {
+  const inp = document.getElementById('cmt-inp-'+rid); if(!inp) return;
+  const text = inp.value.trim(); if(!text) return;
+  const rating = parseInt(document.getElementById('stars-'+rid)?.dataset.val||0);
+  const parentId = cmtReplyTo[rid] || null;
+  const uSnap = await db.collection('users').doc(cu.uid).get();
+  const photoURL = uSnap.exists ? (uSnap.data().photoURL||'') : '';
+  try {
+    await db.collection('resources').doc(rid).collection('comments').add({
+      userId:cu.uid, displayName:cu.displayName||cu.email.split('@')[0],
+      photoURL, text, rating:parentId?0:rating, parentId,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    // Update avg rating on resource
+    if(!parentId && rating>0) {
+      const all = await db.collection('resources').doc(rid).collection('comments').where('parentId','==',null).get();
+      const ratings = all.docs.map(d=>d.data().rating).filter(r=>r>0);
+      const avg = ratings.reduce((a,b)=>a+b,0)/ratings.length;
+      await db.collection('resources').doc(rid).update({avgRating:avg});
+    }
+    inp.value=''; cmtReplyTo[rid]=null;
+    if(inp.placeholder.includes('yanıtlıyorsunuz')) inp.placeholder='Yorum yaz...';
+    document.getElementById('stars-'+rid).dataset.val=0;
+    document.getElementById('stars-'+rid)?.querySelectorAll('i').forEach(s=>s.className='far fa-star');
+    loadComments(rid);
+    showToast('Yorum gönderildi!','s');
+  } catch(e) { showToast('Hata: '+e.message,'e'); }
 }
 </script>
 </body>
