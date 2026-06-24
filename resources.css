@@ -1,0 +1,139 @@
+<style>
+/* BKAkademi Premium Dark Theme Override for Tailwind Resources Page */
+:root {
+  --bg-color: #0a0e27;
+  --surface-color: rgba(15, 23, 42, 0.7);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --accent-color: #6366f1;
+}
+
+body {
+  background-color: var(--bg-color) !important;
+  color: #f8fafc !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Background Effects */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+  z-index: -2;
+  pointer-events: none;
+}
+body::after {
+  content: '';
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  background: rgba(139, 92, 246, 0.1);
+  border-radius: 50%;
+  filter: blur(100px);
+  top: 10%;
+  right: -200px;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Nav override */
+nav {
+  background: rgba(10, 14, 39, 0.8) !important;
+  backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+}
+nav a.text-2xl {
+  color: #fff !important;
+  font-family: 'Playfair Display', serif !important;
+}
+nav a.text-2xl span {
+  color: var(--accent-color) !important;
+  font-style: italic !important;
+  text-shadow: 0 0 10px rgba(99,102,241,0.5) !important;
+}
+nav a.text-slate-600 {
+  color: #94a3b8 !important;
+}
+nav a.text-slate-600:hover {
+  color: #fff !important;
+  text-shadow: 0 0 8px rgba(255,255,255,0.4) !important;
+}
+
+/* Typography Overrides */
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif !important;
+  color: #fff !important;
+}
+.text-slate-600, .text-slate-500, .text-gray-600, .text-gray-500 {
+  color: #cbd5e1 !important;
+}
+.bg-slate-50, .bg-gray-50 {
+  background-color: transparent !important;
+}
+
+/* Resource Cards */
+.bg-white {
+  background: var(--surface-color) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+  transition: all 0.3s !important;
+}
+.bg-white:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 20px rgba(99,102,241,0.2) !important;
+  border-color: rgba(99,102,241,0.4) !important;
+}
+
+/* Tags/Badges */
+.bg-indigo-100 {
+  background: rgba(99,102,241,0.2) !important;
+  border: 1px solid rgba(99,102,241,0.3) !important;
+}
+.text-indigo-600 {
+  color: #a5b4fc !important;
+}
+
+/* Thumbnails */
+.bg-slate-200 {
+  background: rgba(0,0,0,0.3) !important;
+}
+
+/* Video Play Icons */
+.text-white i.fa-play-circle {
+  text-shadow: 0 0 15px rgba(255,255,255,0.8) !important;
+  transition: transform 0.3s !important;
+}
+.bg-white:hover i.fa-play-circle {
+  transform: scale(1.1) !important;
+}
+
+/* Links / Buttons */
+a.text-indigo-600 {
+  color: #a5b4fc !important;
+  background: rgba(99,102,241,0.1) !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(99,102,241,0.3) !important;
+  display: inline-block !important;
+  transition: all 0.3s !important;
+}
+a.text-indigo-600:hover {
+  background: #6366f1 !important;
+  color: #fff !important;
+  box-shadow: 0 0 15px rgba(99,102,241,0.5) !important;
+}
+
+/* Header Text Gradient */
+.text-center h1 {
+  background: linear-gradient(135deg, #fff, #cbd5e1) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+</style>

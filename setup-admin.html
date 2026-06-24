@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Admin Hesabı Oluşturuluyor...</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+</head>
+<body style="background: #0a0e27; color: white; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column;">
+
+    <h2 id="status">Hesap Oluşturuluyor, lütfen bekleyin...</h2>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const email = "admin2@gmail.com";
+            const password = "123456";
+            
+            try {
+                // Try to create the user
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                
+                // Add to Firestore database
+                await db.collection('users').doc(userCredential.user.uid).set({
+                    uid: userCredential.user.uid,
+                    email: userCredential.user.email,
+                    displayName: "Admin Oğuzhan",
+                    role: "admin",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                document.getElementById('status').innerText = "Hesap başarıyla oluşturuldu! Admin paneline yönlendiriliyorsunuz...";
+                
+                setTimeout(() => {
+                    window.location.href = "admin.html";
+                }, 2000);
+            } catch (error) {
+                // If account already exists
+                if(error.code === 'auth/email-already-in-use') {
+                    document.getElementById('status').innerText = "Bu hesap zaten var. Giriş yapılıyor...";
+                    try {
+                        await auth.signInWithEmailAndPassword(email, password);
+                        window.location.href = "admin.html";
+                    } catch (e) {
+                        document.getElementById('status').innerText = "Giriş hatası: Şifreniz farklı olabilir. Lütfen login.html sayfasına giderek manuel giriş yapın.";
+                    }
+                } else {
+                    document.getElementById('status').innerText = "Hata: " + error.message;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

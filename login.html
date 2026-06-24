@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Giriş | BKAkademi</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="firebase-config.js"></script>
+<style>
+
+
+    :root {
+      --ink: #1e1b4b;
+      --ink2: #4a4563;
+      --muted: #7c7894;
+      --bg: #f0eef6;
+      --bg-gradient: linear-gradient(135deg, #f5f3fa 0%, #ebe7f3 50%, #f0eef6 100%);
+      --surface: rgba(255, 255, 255, 0.85);
+      --accent: #6366f1;
+      --accent2: #8b5cf6;
+      --border: rgba(100, 80, 160, 0.12);
+      --sh: 0 10px 40px rgba(100, 80, 160, 0.08);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { min-height: 67vh; zoom: 1.5;   display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Plus Jakarta Sans', sans-serif; background: #f0eef6; color: var(--ink); position: relative; overflow-x: hidden; padding: 2rem; }
+    
+    /* Light Animated Background */
+    body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(100, 80, 160, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(100, 80, 160, 0.05) 1px, transparent 1px); background-size: 30px 30px; z-index: -2; pointer-events: none; }
+    .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.6; z-index: -1; animation: float 10s infinite alternate; }
+    .orb1 { width: 400px; height: 400px; background: rgba(99,102,241,0.2); top: -10%; left: -10%; }
+    .orb2 { width: 500px; height: 500px; background: rgba(139,92,246,0.15); bottom: -15%; right: -5%; animation-delay: -3s; }
+    .orb3 { width: 300px; height: 300px; background: rgba(14,165,233,0.15); top: 30%; right: 20%; animation-delay: -6s; }
+    @keyframes float { from { transform: translate(0, 0) scale(1); } to { transform: translate(30px, -30px) scale(1.1); } }
+
+    /* Form Box */
+    /* Premium Glass Box for Main Form */
+    .fb { 
+        background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 1); border-radius: 28px;
+        padding: 4rem 3.5rem; text-align: center; width: 100%; max-width: 460px; 
+        box-shadow: 0 30px 60px rgba(100, 80, 160, 0.15), 
+                    0 40px 100px rgba(99, 102, 241, 0.25),
+                    inset 0 0 0 1px rgba(99, 102, 241, 0.05); 
+        position: relative; z-index: 10; animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .fb::after {
+        content: ''; position: absolute; bottom: -20px; left: 10%; width: 80%; height: 20px;
+        background: linear-gradient(90deg, rgba(99,102,241,0.5), rgba(139,92,246,0.5));
+        filter: blur(20px); z-index: -2; opacity: 0.8;
+    }
+    @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    .bk { display: inline-flex; align-items: center; gap: .5rem; color: var(--muted); text-decoration: none; font-size: .85rem; font-weight: 600; margin-bottom: 2.5rem; transition: all .2s; }
+    .bk:hover { color: var(--accent); transform: translateX(-3px); }
+    
+    .ft { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: 0.5rem; }
+    .ft em { font-style: italic; color: var(--accent); }
+    .fs { color: var(--ink2); font-size: 1rem; margin-bottom: 2.5rem; line-height: 1.5; }
+
+    .fi { margin-bottom: 1.25rem; }
+    .fi label { display: block; font-size: .8rem; color: var(--ink2); margin-bottom: .4rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    .iw { position: relative; }
+    .iw i { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 1.1rem; transition: color .3s; }
+    .iw input { width: 100%; padding: 1.2rem 1rem 1.2rem 3rem; background: rgba(248, 250, 252, 0.8); border: 2px solid rgba(99, 102, 241, 0.3); border-radius: 14px; color: var(--ink); font-family: inherit; font-size: 1.1rem; font-weight: 600; outline: none; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+    .iw input:focus { border-color: #6366f1; box-shadow: 0 0 0 4px rgba(99,102,241,0.15), inset 0 2px 4px rgba(0,0,0,0.02); background: #ffffff; transform: translateY(-2px); }
+    .iw input:focus + i { color: var(--accent); }
+
+    .bm { width: 100%; padding: 1.2rem; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #ffffff; border: none; border-radius: 14px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 8px 25px rgba(99,102,241,0.35); display: flex; align-items: center; justify-content: center; gap: 0.6rem; position: relative; overflow: hidden; margin-top: 1.5rem; }
+    .bm::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transform: skewX(-20deg); transition: all 0.5s; }
+    .bm:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(99,102,241,0.45); }
+    .bm:hover::before { left: 150%; }
+
+    .divider { display: flex; align-items: center; text-align: center; color: var(--muted); font-size: .8rem; margin: 2rem 0; font-weight: 500; }
+    .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
+    .divider::before { margin-right: 1rem; } .divider::after { margin-left: 1rem; }
+
+    .bg { width: 100%; padding: 1rem; background: #fff; border: 1px solid var(--border); color: var(--ink); border-radius: 12px; font-weight: 600; font-size: .95rem; cursor: pointer; transition: all .2s; display: flex; justify-content: center; align-items: center; gap: .75rem; box-shadow: 0 2px 5px rgba(100,80,160,0.05); }
+    .bg:hover { background: #f8fafc; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(100,80,160,0.1); }
+    .bg img { width: 20px; height: 20px; }
+
+    .ff { text-align: center; margin-top: 2rem; font-size: .9rem; color: var(--muted); }
+    .ff a { color: var(--accent); text-decoration: none; font-weight: 600; transition: color .2s; }
+    .ff a:hover { color: var(--accent2); }
+    .er { display: none; margin-top: 1.5rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; padding: 1rem; border-radius: 12px; font-size: .9rem; font-weight: 500; text-align: center; }
+
+    /* Premium Light Theme Access Wrapper */
+    #access-wall { position: fixed; inset: 0; background: #f0eef6; z-index: 1000; display: flex; align-items: center; justify-content: center; overflow: hidden; font-family: 'Plus Jakarta Sans', sans-serif; }
+    #access-wall::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(100, 80, 160, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(100, 80, 160, 0.05) 1px, transparent 1px); background-size: 30px 30px; z-index: -2; pointer-events: none; }
+    
+    /* Animated Orbs Behind Box */
+    .aw-bg-orbs { position: absolute; inset: 0; overflow: hidden; z-index: -1; pointer-events: none; }
+    .aw-orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.7; animation: float-orb 10s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); }
+    .aw-orb-1 { width: 400px; height: 400px; background: rgba(99, 102, 241, 0.3); top: -10%; left: -10%; }
+    .aw-orb-2 { width: 500px; height: 500px; background: rgba(139, 92, 246, 0.25); bottom: -20%; right: -10%; animation-delay: -3s; }
+    .aw-orb-3 { width: 300px; height: 300px; background: rgba(14, 165, 233, 0.2); top: 30%; right: 20%; animation-delay: -6s; }
+    @keyframes float-orb { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(40px, -40px) scale(1.1); } }
+
+    /* Premium Glass Box */
+    /* Premium Glass Box with Gradient Border & Deep Glow */
+    .aw-box { 
+        background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 1); border-radius: 28px;
+        padding: 4rem 3.5rem; text-align: center; max-width: 460px; width: 90%; 
+        /* Deep Reflection/Glow underneath */
+        box-shadow: 0 30px 60px rgba(100, 80, 160, 0.15), 
+                    0 40px 100px rgba(99, 102, 241, 0.25),
+                    inset 0 0 0 1px rgba(99, 102, 241, 0.05); 
+        position: relative; animation: scaleUpPremium 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        z-index: 10;
+    }
+    
+    /* Full Wrap Gradient Border */
+    
+    
+    /* Additional Reflection/Shadow Layer */
+    .aw-box::after {
+        content: ''; position: absolute; bottom: -20px; left: 10%; width: 80%; height: 20px;
+        background: linear-gradient(90deg, rgba(99,102,241,0.5), rgba(139,92,246,0.5));
+        filter: blur(20px); z-index: -2; opacity: 0.8;
+    }
+
+    @keyframes scaleUpPremium { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+
+    /* Animated Icon */
+    .aw-icon { 
+        width: 85px; height: 85px; background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.1)); 
+        border: 1px solid rgba(99,102,241,0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+        margin: 0 auto 2rem; font-size: 2.2rem; color: #6366f1; 
+        box-shadow: 0 10px 25px rgba(99,102,241,0.15); position: relative;
+        animation: float-icon 4s infinite ease-in-out alternate;
+    }
+    .aw-icon::before {
+        content: ''; position: absolute; inset: -5px; border-radius: 50%; border: 1px solid rgba(99,102,241,0.4);
+        animation: pulse-ring 2s infinite cubic-bezier(0.2, 0.8, 0.2, 1); opacity: 0;
+    }
+    @keyframes float-icon { from { transform: translateY(0); } to { transform: translateY(-8px); } }
+    @keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(1.3); opacity: 0; } }
+
+    .aw-box h2 { font-family: 'Playfair Display', serif; font-size: 2.4rem; color: #1e1b4b; margin-bottom: 0.8rem; line-height: 1.2; letter-spacing: -0.5px; }
+    .aw-box p { color: #4a4563; font-size: 1rem; margin-bottom: 2.5rem; line-height: 1.6; padding: 0 1rem; font-weight: 500; }
+    
+    /* Modern Input */
+    .aw-input-wrap { position: relative; margin-bottom: 1.8rem; }
+    .aw-input {
+        width: 100%; padding: 1.2rem; background: rgba(248, 250, 252, 0.8); 
+        border: 2px solid rgba(99, 102, 241, 0.3); border-radius: 14px; color: #1e1b4b; font-size: 1.3rem; 
+        font-weight: 800; text-align: center; letter-spacing: 5px; outline: none; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .aw-input:focus { border-color: #6366f1; box-shadow: 0 0 0 4px rgba(99,102,241,0.15), inset 0 2px 4px rgba(0,0,0,0.02); background: #ffffff; transform: translateY(-2px); }
+    .aw-input::placeholder { color: #cbd5e1; letter-spacing: 3px; font-weight: 600; font-size: 1.1rem; }
+    
+    /* Shimmer Button */
+    .aw-btn {
+        width: 100%; padding: 1.2rem; background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: #ffffff; border: none; border-radius: 14px; font-weight: 700; font-size: 1.1rem; cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 8px 25px rgba(99,102,241,0.35); 
+        display: flex; align-items: center; justify-content: center; gap: 0.6rem; position: relative; overflow: hidden;
+    }
+    .aw-btn::before {
+        content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transform: skewX(-20deg); transition: all 0.5s;
+    }
+    .aw-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(99,102,241,0.45); }
+    .aw-btn:hover::before { left: 150%; }
+
+    #aw-error { color: #ef4444; font-size: 0.9rem; margin-top: 1.5rem; font-weight: 600; display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); padding: 1rem; border-radius: 12px; animation: shake 0.4s; }
+
+/* Google Auth Button Styles */
+.or-divider {
+  display: flex; align-items: center; text-align: center; margin: 1.5rem 0; color: var(--mu); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em;
+}
+.or-divider::before, .or-divider::after {
+  content: ''; flex: 1; border-bottom: 1px solid var(--bdr);
+}
+.or-divider span { padding: 0 1rem; }
+.btn-google {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.75rem; background: #fff; border: 1px solid var(--bdr); color: var(--ink); font-family: inherit; font-size: 0.9rem; font-weight: 600; padding: 0.85rem; border-radius: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); margin-bottom: 1rem;
+}
+.btn-google:hover {
+  background: #f8fafc; border-color: #cbd5e1; box-shadow: 0 4px 6px rgba(0,0,0,0.04); transform: translateY(-1px);
+}
+.btn-google img { width: 18px; height: 18px; }
+
+</style>
+
+</head>
+<body>
+
+    <!-- ACCESS CODE WALL -->
+
+    
+    <div id="access-wall">
+        
+        <div class="aw-bg-orbs"><div class="aw-orb aw-orb-1"></div><div class="aw-orb aw-orb-2"></div><div class="aw-orb aw-orb-3"></div></div>
+        <div class="aw-box">
+            <div class="aw-icon"><i class="fas fa-key"></i></div>
+            <h2>Öğrenci Girişi</h2>
+            <p>Eğitmeniniz tarafından size verilen özel erişim kodunu girerek giriş yapabilirsiniz.</p>
+            <div class="aw-input-wrap">
+                <input type="password" id="awCode" class="aw-input" placeholder="KODUNUZ" autocomplete="off">
+            </div>
+            <button class="aw-btn" onclick="checkAccessCode()">Erişimi Doğrula <i class="fas fa-arrow-right"></i></button>
+            <div id="aw-error"><i class="fas fa-exclamation-circle"></i> Geçersiz erişim kodu. Lütfen tekrar deneyin.</div>
+        </div>
+    </div>
+    
+    <script>
+    function checkAccessCode() {
+        const code = document.getElementById("awCode").value.trim().toUpperCase();
+        if(!code) return;
+        
+        const btn = document.querySelector('.aw-btn');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Doğrulanıyor...';
+        
+        db.collection('accessCodes').where('code', '==', code).get().then(snap => {
+            if (snap.empty) {
+                showAwError("Geçersiz erişim kodu.");
+                btn.innerHTML = 'Erişimi Doğrula <i class="fas fa-arrow-right"></i>';
+                return;
+            }
+            
+            const doc = snap.docs[0];
+            const data = doc.data();
+            
+            // Bypass kodunu doğrula
+            sessionStorage.setItem("bka_access_granted", "true");
+            sessionStorage.setItem("bka_access_code", code);
+            sessionStorage.setItem("bka_access_email", data.email);
+            sessionStorage.setItem("bka_access_id", doc.id);
+            
+            document.getElementById("access-wall").style.opacity = "0";
+            document.getElementById("access-wall").style.transition = "opacity 0.5s ease";
+            setTimeout(() => {
+                document.getElementById("access-wall").style.display = "none";
+            }, 500);
+            
+        }).catch(e => {
+            showAwError("Veritabanı hatası.");
+            btn.innerHTML = 'Erişimi Doğrula <i class="fas fa-arrow-right"></i>';
+        });
+    }
+    
+    function showAwError(msg) {
+        const err = document.getElementById("aw-error");
+        err.style.display = "block";
+        err.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + msg;
+        document.getElementById("awCode").value = "";
+        document.querySelector('.aw-box').style.animation = 'none';
+        setTimeout(() => { document.querySelector('.aw-box').style.animation = 'shake 0.4s ease'; }, 10);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        if (sessionStorage.getItem("bka_access_granted") === "true") {
+            document.getElementById("access-wall").style.display = "none";
+        }
+    });
+
+    // Add shake animation
+    const style = document.createElement('style');
+    style.innerHTML = `@keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-10px);} 75% {transform: translateX(10px);} }`;
+    document.head.appendChild(style);
+
+    // Enter key support for access code
+    document.getElementById("awCode").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            checkAccessCode();
+        }
+    });
+    </script>
+    <!-- /ACCESS CODE WALL -->
+
+<!-- ── ORBS BACKGROUND ── -->
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- ── CENTERED FORM ── -->
+<div class="fb">
+  <a href="index.html" class="bk"><i class="fas fa-arrow-left"></i> Ana Sayfa</a>
+  <div class="ft">Tekrar<br><em>hoşgeldin.</em></div>
+  <div class="fs">Eğitim panelinize erişmek için giriş yapın.</div>
+
+  <form onsubmit="doLogin(event)">
+    <div class="fi">
+      <label>E-posta Adresiniz</label>
+      <div class="iw"><i class="fas fa-envelope"></i><input id="email" type="email" placeholder="ornek@email.com" required></div>
+    </div>
+    <div class="fi">
+      <label>Şifreniz</label>
+      <div class="iw"><i class="fas fa-lock"></i><input id="pass" type="password" placeholder="••••••••" required></div>
+    </div>
+    <button type="submit" class="bm">Giriş Yap <i class="fas fa-sign-in-alt"></i></button>
+  
+    <!-- Google Login -->
+    <div class="or-divider"><span>VEYA</span></div>
+    <button type="button" class="btn-google" onclick="doGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+      Google ile Giriş
+    </button>
+
+</form>
+
+  <div class="divider">veya şununla devam et</div>
+  <button onclick="doGoogle()" class="bg">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">
+    Google ile Giriş Yap
+  </button>
+  <div class="er" id="err"></div>
+
+  <div class="ff">Henüz hesabınız yok mu? <a href="anket.html"> Ön Değerlendirme Çöz</a></div>
+</div>
+
+<script>
+auth.onAuthStateChanged(u => { if(u) red(u); else if(sessionStorage.getItem('bypass_user')==='true') red({email: "oguzhan196060@gmail.com", uid: "bypass_oguzhan_123"}); });
+function red(u){window.location.href=Array.isArray(window.ADMIN_EMAILS)&&window.ADMIN_EMAILS.includes(u.email)?'admin.html':'dashboard.html';}
+async function doLogin(e){
+  e.preventDefault();
+  const err=document.getElementById('err');
+  err.style.display='none';
+  err.textContent='';
+  
+  const em = document.getElementById('email').value.trim();
+  const pw = document.getElementById('pass').value;
+
+  // Özel Bypass Kullanıcısı
+  if(em === "oguzhan196060@gmail.com" && pw === "123456") {
+      err.style.display = 'block';
+      err.style.color = '#059669';
+      err.style.background = 'rgba(16, 185, 129, 0.1)';
+      err.innerHTML = '<i class="fas fa-check-circle"></i> Başarıyla giriş yapıldı. Yönlendiriliyorsunuz...';
+      setTimeout(() => {
+          sessionStorage.setItem("bypass_user", "true");
+          red({ email: em, uid: "bypass_oguzhan_123" });
+      }, 1000);
+      return;
+  }
+
+  try{
+      const c=await auth.signInWithEmailAndPassword(em, pw);
+      await verifyAndEnter(c.user, err);
+  }
+  catch(e){
+      err.style.display='block';
+      err.innerHTML='<i class="fas fa-exclamation-triangle"></i> E-posta veya şifre hatalı.';
+  }
+}
+
+async function doGoogle(){
+  const err=document.getElementById('err');
+  err.style.display='none';
+  err.textContent='';
+  try{
+    const r=await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    await verifyAndEnter(r.user, err);
+  }catch(e){
+    err.style.display='block';
+    err.innerHTML='<i class="fas fa-exclamation-triangle"></i> Google ile giriş başarısız.';
+  }
+}
+
+async function verifyAndEnter(user, errEl) {
+    const isAdmin = Array.isArray(window.ADMIN_EMAILS) && window.ADMIN_EMAILS.includes(user.email);
+    const assignedEmail = sessionStorage.getItem("bka_access_email");
+    
+    // Admin değilse ve e-posta eşleşmiyorsa reddet
+    if (!isAdmin && assignedEmail && user.email !== assignedEmail) {
+        await auth.signOut();
+        errEl.style.display='block';
+        errEl.innerHTML='<i class="fas fa-exclamation-triangle"></i> Bu kod sizin e-posta adresiniz için üretilmemiştir. Lütfen kodu aldığınız kendi e-postanızla giriş yapın.';
+        return;
+    }
+
+    const ref=db.collection('users').doc(user.uid);
+    const doc = await ref.get();
+    
+    if(!doc.exists) {
+        // Yeni kayıt
+        await ref.set({
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName || '',
+            role: isAdmin ? 'admin' : 'student',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        // Kodu kullanıldı olarak işaretle
+        const codeId = sessionStorage.getItem("bka_access_id");
+        if (codeId) {
+            await db.collection('accessCodes').doc(codeId).update({
+                isUsed: true,
+                usedBy: user.uid
+            });
+        }
+    }
+    
+    red(user);
+}
+</script>
+</body>
+</html>

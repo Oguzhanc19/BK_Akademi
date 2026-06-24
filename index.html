@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BKAkademi | Profesyonel İngilizce Akademisi</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+/* ══════════ LIGHT THEME VARIABLES ══════════ */
+:root {
+  --ink: #1e1b4b;
+  --ink2: #4a4563;
+  --muted: #7c7894;
+  --bg: #f0eef6;
+  --bg-gradient: linear-gradient(135deg, #f5f3fa 0%, #ebe7f3 50%, #f0eef6 100%);
+  --surface: rgba(255, 255, 255, 0.65);
+  --surface-hover: rgba(255, 255, 255, 0.85);
+  --accent: #6366f1;
+  --accent2: #8b5cf6;
+  --al: rgba(99, 102, 241, 0.08);
+  --gold: #f59e0b;
+  --border: rgba(100, 80, 160, 0.12);
+  --border-glow: rgba(99, 102, 241, 0.25);
+  --sh: 0 8px 32px rgba(100, 80, 160, 0.08);
+  --sh-glow: 0 8px 24px rgba(99, 102, 241, 0.15);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { min-height: 67vh; zoom: 1.5; display: flex; flex-direction: column;          font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-gradient); color: var(--ink); overflow-x: hidden;    position: relative; }
+
+/* ══════════ ANIMATED BACKGROUND & DECORATIONS ══════════ */
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(100, 80, 160, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 80, 160, 0.04) 1px, transparent 1px);
+  background-size: 30px 30px; z-index: -2; pointer-events: none;
+}
+.bg-orb {
+  position: absolute; border-radius: 50%; filter: blur(90px); z-index: -1; pointer-events: none; opacity: 0.6; animation: float-orb 15s ease-in-out infinite alternate;
+}
+.orb-1 { width: 500px; height: 500px; background: rgba(99, 102, 241, 0.08); top: -200px; right: -100px; }
+.orb-2 { width: 600px; height: 600px; background: rgba(139, 92, 246, 0.08); top: 35%; left: -200px; animation-delay: -5s; }
+.orb-3 { width: 450px; height: 450px; background: rgba(6, 182, 212, 0.05); bottom: 50px; right: 10%; animation-delay: -10s; }
+.orb-4 { width: 350px; height: 350px; background: rgba(99, 102, 241, 0.06); top: 60%; right: -150px; animation-delay: -2s; }
+@keyframes float-orb {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(40px, 40px) scale(1.05); }
+}
+
+/* ══════════ NAVIGATION ══════════ */
+nav { position: fixed; top: 0; width: 100%; z-index: 100; padding: 1.2rem 4rem; display: flex; justify-content: space-between; align-items: center; transition: all .4s cubic-bezier(0.16, 1, 0.3, 1); border-bottom: 1px solid transparent; }
+nav.sc { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 1rem 4rem; box-shadow: 0 4px 24px rgba(100, 80, 160, 0.06); }
+.nav-logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; text-decoration: none; color: var(--ink); display: inline-block; transition: all .3s; }
+.nav-logo em { font-style: italic; color: var(--accent); text-shadow: 0 0 12px rgba(99, 102, 241, 0.3); }
+.nav-links { display: flex; align-items: center; justify-content: center; gap: 3rem; width: 100%; }
+.nav-links a { color: var(--ink); text-decoration: none; font-size: 1rem; font-weight: 800; font-size: 1.05rem; transition: all .25s; position: relative; }
+.nav-links a::after { content: ''; position: absolute; width: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); left: 50%; bottom: -6px; transition: all .3s cubic-bezier(0.16, 1, 0.3, 1); transform: translateX(-50%); border-radius: 2px; }
+.nav-links a:hover { color: var(--ink); }
+.nav-links a:hover::after { width: 100%; }
+.btn-nav { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff !important; padding: .6rem 1.6rem; border-radius: 10px; font-size: .82rem; font-weight: 800; font-size: 1.05rem; text-decoration: none; transition: all .3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25); position: relative; overflow: hidden; border: none; white-space: nowrap; }
+.btn-nav::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent); transition: 0.6s; }
+.btn-nav:hover::before { left: 100%; }
+.btn-nav:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4); }
+
+/* ══════════ HERO ══════════ */
+.hero {  display: flex; align-items: center; padding: 9rem 3rem 4rem; position: relative; overflow: hidden; }
+.hero-inner { display: grid; grid-template-columns: 1.1fr 1fr; gap: 4rem; align-items: center; width: 100%; max-width: 1300px; margin: 0 auto; position: relative; z-index: 1; }
+.eyebrow { display: inline-flex; align-items: center; gap: .6rem; font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); background: rgba(255, 255, 255, 0.5); padding: .5rem 1.3rem; border-radius: 100px; margin-bottom: 1.5rem; border: 1px solid rgba(99, 102, 241, 0.15); backdrop-filter: blur(4px); box-shadow: 0 4px 10px rgba(99, 102, 241, 0.05); }
+.hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(3.2rem, 5vw, 5rem); font-weight: 700; line-height: 1.08; margin-bottom: 1.5rem; color: var(--ink); }
+.hero h1 em { font-style: italic; background: linear-gradient(135deg, #6366f1, #8b5cf6, #d946ef, #6366f1); background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradient-shift 5s ease infinite; position: relative; }
+.hero h1 em::after { content: ''; position: absolute; left: 0; bottom: 5px; width: 100%; height: 8px; background: rgba(139, 92, 246, 0.2); z-index: -1; border-radius: 4px; }
+.hero-desc { font-size: 1.1rem; line-height: 1.7; color: var(--ink2); max-width: 600px; margin-bottom: 2.5rem; font-weight: 400; }
+.hero-cta { display: flex; gap: 1.2rem; align-items: center; flex-wrap: wrap; }
+.btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; padding: 1rem 2.5rem; border-radius: 12px; font-size: .95rem; font-weight: 700; text-decoration: none; transition: all .3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3); border: none; cursor: pointer; position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: .6rem; }
+.btn-primary::after { content: ''; position: absolute; inset: 0; background: linear-gradient(rgba(255,255,255,0.15), transparent); border-radius: 12px; pointer-events: none; }
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(99, 102, 241, 0.4); }
+.btn-ghost { color: var(--ink); font-size: .95rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: .5rem; transition: all .25s; padding: 1rem 1.5rem; border-radius: 12px; background: rgba(255,255,255,0.4); border: 1px solid var(--border); }
+.btn-ghost:hover { background: rgba(255,255,255,0.8); color: var(--accent); box-shadow: 0 4px 15px rgba(100,80,160,0.05); }
+.hero-right { position: relative; z-index: 1; display: flex; justify-content: flex-end; padding-right: 2rem; }
+
+/* Yeni Organik Çerçeve Tasarımı */
+.hero-photo-wrap { position: relative; display: inline-block; }
+.hero-photo-wrap::before {
+    content: ''; position: absolute; inset: -20px;
+    border-radius: 50% 30% 60% 40% / 40% 60% 30% 50%;
+    background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.15));
+    z-index: -2; animation: morph 8s ease-in-out infinite alternate;
+    box-shadow: 0 0 40px rgba(99,102,241,0.1);
+}
+@keyframes morph {
+  0% { border-radius: 50% 30% 60% 40% / 40% 60% 30% 50%; transform: rotate(0deg); }
+  100% { border-radius: 30% 60% 40% 50% / 60% 40% 50% 30%; transform: rotate(15deg); }
+}
+
+.hero-photo { width: 100%; max-width: 550px; border-radius: 24px; box-shadow: 0 20px 50px rgba(100, 80, 160, 0.15); display: block; position: relative; z-index: 1; transition: all .5s cubic-bezier(0.16, 1, 0.3, 1); }
+
+.hero-badge { position: absolute; bottom: -2rem; left: -3rem; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 16px; padding: 1.2rem 1.6rem; box-shadow: 0 12px 30px rgba(100, 80, 160, 0.12); display: flex; align-items: center; gap: 1rem; border: 1px solid var(--border); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); animation: slideInBadge 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1s both; z-index: 5; }
+.hero-badge:hover { transform: translateY(-5px) scale(1.03); border-color: var(--border-glow); box-shadow: var(--sh-glow); }
+.hero-badge-num { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; }
+.hero-badge strong { display: block; font-size: .85rem; font-weight: 700; color: var(--ink); }
+.hero-badge span { font-size: .75rem; color: var(--muted); }
+
+/* ══════════ ENTRANCE ANIMATIONS ══════════ */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes slideInBadge { from { opacity: 0; transform: translate(-20px, 10px); } to { opacity: 1; transform: translate(0, 0); } }
+@keyframes gradient-shift { 0% { background-position: 0% center; } 50% { background-position: 100% center; } 100% { background-position: 0% center; } }
+@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
+@keyframes pulse-glow { 0%, 100% { box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3); } 50% { box-shadow: 0 12px 35px rgba(99, 102, 241, 0.5), 0 0 50px rgba(139, 92, 246, 0.15); } }
+.hero-inner > div:first-child { animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; }
+.hero-right { animation: fadeInRight 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both; }
+
+/* ══════════ MARQUEE (FIXED SEAMLESS) ══════════ */
+.marquee-wrap { width: 100vw; overflow: hidden; background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(10px); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 1.2rem 0; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; box-shadow: 0 4px 15px rgba(100, 80, 160, 0.03); }
+.marquee-inner { display: flex; width: max-content; animation: marquee-scroll 25s linear infinite; }
+.mtrack { display: flex; gap: 4rem; padding-right: 4rem; }
+.mitem { display: flex; align-items: center; gap: .7rem; font-size: .85rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; transition: color .3s; }
+.mitem:hover { color: var(--accent); }
+.mitem i { color: var(--accent); font-size: 1rem; }
+@keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+/* ══════════ SECTIONS ══════════ */
+section { padding: 4rem 2rem; position: relative; }
+.sec-inner { max-width: 1200px; margin: 0 auto; width: 100%; position: relative; z-index: 2; }
+.sec-label { display: inline-block; font-size: .75rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; background: rgba(255,255,255,0.6); padding: 0.4rem 1rem; border-radius: 100px; border: 1px solid var(--border); }
+.sec-title { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 700; line-height: 1.15; margin-bottom: 1.2rem; color: var(--ink); }
+.sec-title em { font-style: italic; background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.sec-sub { color: var(--ink2); font-size: 1rem; font-weight: 400; line-height: 1.7; max-width: 550px; margin-bottom: 3rem; }
+.container { max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; }
+
+/* ══════════ FEATURES ══════════ */
+.feat-bg { position: relative; }
+.feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 1rem; }
+.feat-card { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem 2rem; transition: all .4s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden; box-shadow: var(--sh); }
+.feat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(105deg, transparent 40%, rgba(99, 102, 241, 0.05) 45%, rgba(99, 102, 241, 0.08) 50%, rgba(99, 102, 241, 0.05) 55%, transparent 60%); transform: translateX(-100%); z-index: 0; pointer-events: none; }
+.feat-card:hover::before { animation: shimmer 0.8s ease-out; }
+.feat-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transform: scaleX(0); transition: transform .4s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: left; z-index: 1; }
+.feat-card:hover { box-shadow: var(--sh-glow); border-color: rgba(99,102,241,0.25); background: #fff; transform: translateY(-8px); }
+.feat-card:hover::after { transform: scaleX(1); }
+.feat-card:hover .feat-icon-wrap { background: rgba(99,102,241,0.15) !important; border-color: rgba(99,102,241,0.4); box-shadow: 0 0 20px rgba(99,102,241,0.2); transform: scale(1.1) rotate(5deg); }
+.feat-card:hover .feat-icon { color: var(--accent2); }
+.feat-card:hover .feat-title { color: var(--accent); }
+.feat-icon-wrap { width: 50px; height: 50px; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; transition: all .4s cubic-bezier(0.16, 1, 0.3, 1); position: relative; z-index: 1; }
+.feat-icon { color: var(--accent); font-size: 1.1rem; transition: all .3s; }
+.feat-title { font-size: 1.1rem; font-weight: 700; color: var(--ink); margin-bottom: .8rem; transition: color .3s; position: relative; z-index: 1; }
+.feat-desc { font-size: .9rem; line-height: 1.7; color: var(--ink2); transition: color .3s; position: relative; z-index: 1; }
+
+/* ══════════ HOW IT WORKS ══════════ */
+.how { background: rgba(255, 255, 255, 0.4); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); position: relative; padding: 6rem 2rem; margin: 2rem 0; border-radius: 40px; box-shadow: inset 0 0 40px rgba(100,80,160,0.03); }
+.how::before { content: ''; position: absolute; top: -10%; right: -5%; width: 40%; height: 120%; background: radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%); pointer-events: none; }
+.how-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+.step-item { display: flex; gap: 1.5rem; padding: 1.8rem 1.5rem; border-bottom: 1px solid var(--border); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 16px; background: transparent; }
+.step-item:hover { transform: translateX(10px); background: #fff; box-shadow: 0 10px 30px rgba(100,80,160,0.08); border-bottom-color: transparent; }
+.step-item:last-child { border: none; }
+.step-num { width: 44px; height: 44px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: .9rem; font-weight: 700;  box-shadow: 0 6px 20px rgba(99,102,241,0.3); }
+.step-tag { display: inline-block; background: rgba(99,102,241,0.08); color: var(--accent); font-size: .7rem; font-weight: 700; padding: .25rem .7rem; border-radius: 100px; margin-bottom: .5rem; border: 1px solid rgba(99,102,241,0.12); text-transform: uppercase; letter-spacing: 0.05em; }
+.step-title { font-size: 1.05rem; font-weight: 700; color: var(--ink); margin-bottom: .5rem; }
+.step-desc { font-size: .9rem; line-height: 1.7; color: var(--ink2); font-weight: 400; }
+.mock-cards { position: relative; height: 380px; perspective: 1000px; }
+.mock-card { position: absolute; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--border); border-radius: 20px; padding: 1.5rem 1.8rem; box-shadow: 0 15px 40px rgba(100, 80, 160, 0.1); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.mock-cards:hover .mc1 { transform: translate(-15px, -15px) rotate(-3deg) scale(1.03); border-color: rgba(99,102,241,0.4); box-shadow: 0 20px 50px rgba(99,102,241,0.15); }
+.mock-cards:hover .mc2 { transform: translate(15px, -8px) rotate(3deg); }
+.mock-cards:hover .mc3 { transform: translate(25px, 15px) rotate(5deg); }
+.mc1 { top: 0; left: 0; width: 300px; z-index: 3; }
+.mc2 { top: 90px; left: 40px; width: 280px; z-index: 2; opacity: .9; }
+.mc3 { top: 180px; left: 80px; width: 260px; z-index: 1; opacity: .7; }
+.mc-lbl { font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: .8rem; }
+.mc-title { font-size: .95rem; font-weight: 700; color: var(--ink); margin-bottom: .4rem; }
+.mc-sub { font-size: .8rem; color: var(--ink2); }
+.mc-badge { display: inline-flex; align-items: center; gap: .4rem; background: rgba(16, 185, 129, 0.08); color: #059669; font-size: .75rem; font-weight: 700; padding: .3rem .8rem; border-radius: 100px; margin-top: .8rem; border: 1px solid rgba(16, 185, 129, 0.2); }
+.mc-badge::before { content: ''; width: 8px; height: 8px; background: #059669; border-radius: 50%; box-shadow: 0 0 6px rgba(16, 185, 129, 0.5); }
+
+/* ══════════ STATS ══════════ */
+.stats-strip { background: linear-gradient(135deg, rgba(79, 70, 229, 0.95), rgba(124, 58, 237, 0.95)); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 4rem 2rem; border-radius: 30px; position: relative; overflow: hidden; margin: 2rem auto; max-width: 1300px; box-shadow: 0 20px 40px rgba(99,102,241,0.2); }
+.stats-strip::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px); background-size: 24px 24px; opacity: 0.6; }
+.stats-strip::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.1), transparent); animation: rotate-bg 15s linear infinite; }
+@keyframes rotate-bg { 100% { transform: rotate(360deg); } }
+.stats-inner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5rem; text-align: center; position: relative; z-index: 1; }
+.stat-n { font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 700; color: #fff; line-height: 1; text-shadow: 0 0 25px rgba(255,255,255,0.3); }
+.stat-l { font-size: .85rem; font-weight: 800; font-size: 1.05rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.9); margin-top: .6rem; }
+
+/* ══════════ TESTIMONIALS ══════════ */
+.testi { background: transparent; position: relative; padding-top: 5rem; }
+.tg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 2.5rem; }
+.tc { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem; transition: all .4s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden; box-shadow: var(--sh); }
+.tc::before { content: '"'; position: absolute; top: 1rem; right: 1.5rem; font-family: 'Playfair Display', serif; font-size: 5rem; color: rgba(99, 102, 241, 0.08); line-height: 1; }
+.tc:hover { transform: translateY(-8px); box-shadow: var(--sh-glow); border-color: rgba(99,102,241,0.3); background: #fff; }
+.tc-stars { display: flex; gap: .3rem; margin-bottom: 1.2rem; }
+.tc-stars i { color: var(--gold); font-size: .85rem; }
+.tc-text { font-size: .95rem; line-height: 1.8; color: var(--ink2); font-style: italic; margin-bottom: 2rem; font-weight: 400; }
+.tc-auth { display: flex; align-items: center; gap: 1rem; border-top: 1px solid var(--border); padding-top: 1.5rem; }
+.tc-av { width: 46px; height: 46px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: .9rem; box-shadow: 0 4px 15px rgba(99,102,241,0.3); }
+.tc-name { font-weight: 700; font-size: .95rem; color: var(--ink); }
+.tc-role { font-size: .75rem; color: var(--muted); }
+
+/* ══════════ CTA ══════════ */
+.cta { background: transparent; text-align: center; position: relative; overflow: hidden; border-top: 1px solid var(--border); padding: 6rem 2rem; margin-top: 4rem; }
+.cta::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50rem; height: 50rem; background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 60%); pointer-events: none; }
+.cta h2 { font-family: 'Playfair Display', serif; font-size: clamp(2.8rem, 5vw, 4.5rem); font-weight: 700; margin-bottom: 1.2rem; line-height: 1.1; position: relative; color: var(--ink); }
+.cta h2 em { font-style: italic; background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.cta p { color: var(--ink2); font-size: 1.1rem; max-width: 500px; margin: 0 auto 3rem; font-weight: 400; position: relative; }
+.cta .btn-primary { animation: pulse-glow 3s ease-in-out infinite; padding: 1.2rem 3rem; font-size: 1rem; border-radius: 14px; }
+
+/* ══════════ FOOTER ══════════ */
+footer { margin-top: auto; flex-shrink: 0; width: 100%; z-index: 10; border-top: 1px solid var(--border); padding: 2.5rem 4rem; display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);  font-weight: 700; }
+.f-logo { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; text-decoration: none; color: var(--ink); }
+.f-logo em { font-style: italic; color: var(--accent); text-shadow: 0 0 10px rgba(99,102,241,0.3); }
+footer p { font-weight: 800; font-size: .95rem; color: var(--ink); }
+.f-links { display: flex; gap: 2rem; }
+.f-links a { font-size: .95rem; color: var(--ink); text-decoration: none; transition: all .25s; font-weight: 800; font-size: 1.05rem; }
+.f-links a:hover { color: var(--accent); }
+
+/* ══════════ REVEAL ANIMATIONS ══════════ */
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+.reveal.v { opacity: 1; transform: translateY(0); }
+.rd1 { transition-delay: .15s; } .rd2 { transition-delay: .3s; } .rd3 { transition-delay: .45s; }
+
+/* ══════════ RESPONSIVE ══════════ */
+@media(max-width:1024px){
+  .hero{gap:3rem;padding:9rem 2rem 5rem;}
+  .feat-grid{grid-template-columns:1fr 1fr;}
+  .how-grid{grid-template-columns:1fr;}
+  .mock-cards{display:none;}
+  .tg{grid-template-columns:1fr 1fr;}
+  .stats-inner{grid-template-columns:repeat(2,1fr);}
+  .how { margin: 2rem; padding: 4rem 2rem; }
+}
+@media(max-width:768px){
+  nav,nav.sc{padding:1rem 1.5rem;}
+  .hero{padding:8rem 1.5rem 4rem;}.hero-inner{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+  .hero h1{font-size:2.8rem;}
+  .hero-desc{font-size:1rem;}
+  .feat-grid{grid-template-columns:1fr;}
+  .how-grid{grid-template-columns:1fr;}
+  .tg{grid-template-columns:1fr;}
+  .stats-inner{grid-template-columns:1fr 1fr;gap:2rem;}
+  .stat-n{font-size:3rem;}
+  section{padding:4rem 1.5rem;}
+  .stats-strip{padding:3rem 1.5rem; border-radius: 20px; margin: 1rem;}
+  .how { margin: 1rem; padding: 3rem 1.5rem; border-radius: 20px; }
+  footer{flex-direction:column;gap:1.5rem;text-align:center;padding:2rem 1.5rem;}
+  .f-links{justify-content:center;}
+  .marquee-wrap{display:none;}
+  .cta{padding:5rem 1.5rem; margin-top: 2rem;}
+  .nav-links a:not(.btn-nav){display:none;}
+}
+@media(max-width:480px){
+  .hero h1{font-size:2.4rem;}
+  .hero-cta{flex-direction:column;gap:.75rem;}
+  .btn-primary,.btn-ghost{width:100%;text-align:center;justify-content:center;}
+  .stats-inner{grid-template-columns:1fr 1fr;}
+  .stat-n{font-size:2.2rem;}
+  .cta h2{font-size:2.2rem;}
+}
+@media(min-width:1400px){
+  .hero{padding:9rem 4rem 5rem;max-width:100%;}
+  .container{max-width:1300px;}
+}
+@media(min-width:1800px){
+  .hero{padding:10rem 5rem 6rem;}
+  .container{max-width:1500px;}
+  .feat-grid{grid-template-columns:repeat(3,1fr);}
+}
+
+/* ══════════ MOBILE MENU ══════════ */
+.mob-menu-btn{display:none;background:rgba(99, 102, 241, 0.08);border:1px solid rgba(99, 102, 241, 0.15);border-radius:10px;padding:.5rem .8rem;cursor:pointer;color:var(--ink);font-size:1rem;transition:all .3s;}
+.mob-menu-btn:hover{background:rgba(99, 102, 241, 0.15);}
+.mob-menu-open .nav-links {display:flex!important;flex-direction:column;position:absolute;top:100%;left:0;width:100%;background:rgba(255,255,255,0.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:1.5rem;border-bottom:1px solid var(--border);box-shadow:0 10px 30px rgba(100,80,160,0.1); gap: 1.5rem;}
+@media(max-width:768px){.mob-menu-btn{display:block;} .nav-links {display:none!important;}}
+
+/* Performance optimizations */
+nav, footer { will-change: transform; }
+.hero-photo-wrap { will-change: auto; }
+* { -webkit-font-smoothing: antialiased; }
+
+</style>
+
+</head>
+<body>
+
+<div class="bg-orb orb-1"></div>
+<div class="bg-orb orb-2"></div>
+<div class="bg-orb orb-3"></div>
+<div class="bg-orb orb-4"></div>
+
+<nav id="nb">
+  <div style="flex: 0 0 auto;"><a href="index.html" class="nav-logo">BK<em>Akademi</em></a></div>
+  <div class="nav-links">
+    <a href="about.html">Hakkında</a>
+    <a href="#features">Özellikler</a>
+    <a href="iletisim.html">İletişim</a>
+    <a href="login.html">Giriş</a>
+  </div>
+  <div style="flex: 0 0 auto; display: flex; justify-content: flex-end; align-items: center; gap: 1rem;">
+    <div class="mob-menu-btn" onclick="document.getElementById('nb').classList.toggle('mob-menu-open')"><i class="fas fa-bars"></i></div>
+    <a href="anket.html" class="btn-nav">Başla →</a></a>
+  </div>
+</nav>
+
+<main style="flex: 1 0 auto; width: 100%; display: flex; flex-direction: column;">
+<header class="hero">
+  <div class="hero-inner">
+  <div style="position:relative;z-index:1;">
+    <div class="eyebrow"><i class="fas fa-graduation-cap"></i> Profesyonel Akademi</div>
+    <h1>İngilizceyi<br><em>Hayatına</em><br>Entegre Et.</h1>
+    <p class="hero-desc">Sadece bir ders değil, yeni bir yaşam biçimi. Birebir mentorluk, özel içerikler ve akıllı randevu sistemiyle İngilizceyi gerçekten yaşayarak öğrenin.</p>
+    <div class="hero-cta">
+      <a href="anket.html" class="btn-primary">Hemen Başla <i class="fas fa-arrow-right"></i></a>
+      <a href="about.html" class="btn-ghost">Bizi Tanıyın</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-photo-wrap">
+      <img src="photo1.jpg" class="hero-photo" alt="Bengü Karakurt">
+      <div class="hero-badge">
+        <div class="hero-badge-num">2K+</div>
+        <div><strong>Başarılı Öğrenci</strong><span>10 yıllık deneyim</span></div>
+      </div>
+    </div>
+  </div></div>
+</header>
+
+<div class="marquee-wrap">
+  <div class="marquee-inner">
+    <div class="mtrack">
+      <span class="mitem"><i class="fas fa-star"></i> İş İngilizcesi</span>
+      <span class="mitem"><i class="fas fa-microphone"></i> Telaffuz Eğitimi</span>
+      <span class="mitem"><i class="fas fa-briefcase"></i> Mülakat Hazırlığı</span>
+      <span class="mitem"><i class="fas fa-video"></i> Zoom Dersleri</span>
+      <span class="mitem"><i class="fas fa-file-pdf"></i> Özel PDF Materyaller</span>
+      <span class="mitem"><i class="fas fa-calendar-check"></i> Akıllı Randevu</span>
+      <span class="mitem"><i class="fas fa-bell"></i> Anlık Bildirimler</span>
+      <span class="mitem"><i class="fas fa-globe"></i> Online Dersler</span>
+    </div>
+    <div class="mtrack">
+      <span class="mitem"><i class="fas fa-star"></i> İş İngilizcesi</span>
+      <span class="mitem"><i class="fas fa-microphone"></i> Telaffuz Eğitimi</span>
+      <span class="mitem"><i class="fas fa-briefcase"></i> Mülakat Hazırlığı</span>
+      <span class="mitem"><i class="fas fa-video"></i> Zoom Dersleri</span>
+      <span class="mitem"><i class="fas fa-file-pdf"></i> Özel PDF Materyaller</span>
+      <span class="mitem"><i class="fas fa-calendar-check"></i> Akıllı Randevu</span>
+      <span class="mitem"><i class="fas fa-bell"></i> Anlık Bildirimler</span>
+      <span class="mitem"><i class="fas fa-globe"></i> Online Dersler</span>
+    </div>
+  </div>
+</div>
+
+<section class="feat-bg" id="features">
+  <div class="container">
+    <div class="reveal"><div class="sec-label">Ne Sunuyoruz?</div></div>
+    <div class="reveal rd1"><h2 class="sec-title">Tam kapsamlı bir<br><em>öğrenme deneyimi.</em></h2></div>
+    <div class="reveal rd2"><p class="sec-sub">Klasik kursların sıkıcılığından uzak, tamamen size özel olarak tasarlanmış modern araçlarla dolu bir eğitim süreci.</p></div>
+    <div class="feat-grid">
+      <div class="feat-card reveal"><div class="feat-icon-wrap"><i class="fas fa-fire feat-icon"></i></div><div class="feat-title">Birebir Dil Koçluğu</div><div class="feat-desc">Sadece bir ders değil; kişiselleştirilmiş öğrenme planı ve haftalık mentorluk desteği ile sürekli yanınızdayız.</div></div>
+      <div class="feat-card reveal rd1"><div class="feat-icon-wrap"><i class="fas fa-video feat-icon"></i></div><div class="feat-title">Video Ders Serisi</div><div class="feat-desc">Konuları pekiştirmek için profesyonelce hazırlanmış video içeriklerine sınırsız erişim.</div></div>
+      <div class="feat-card reveal rd2"><div class="feat-icon-wrap"><i class="fas fa-calendar-check feat-icon"></i></div><div class="feat-title">Akıllı Randevu Sistemi</div><div class="feat-desc">Talebinizi gönderin, admin onaylasın, Zoom linkiniz direkt bildiriminize gelsin.</div></div>
+      <div class="feat-card reveal"><div class="feat-icon-wrap"><i class="fas fa-bell feat-icon"></i></div><div class="feat-title">Anlık Bildirimler</div><div class="feat-desc">Randevu onayı ve Zoom linki paylaşımını anında panelinizde görün.</div></div>
+      <div class="feat-card reveal rd1"><div class="feat-icon-wrap"><i class="fas fa-user-graduate feat-icon"></i></div><div class="feat-title">Kişisel Profil</div><div class="feat-desc">Ders geçmişinizi ve materyallerinizi tek panelden yönetin.</div></div>
+      <div class="feat-card reveal rd2"><div class="feat-icon-wrap"><i class="fas fa-headset feat-icon"></i></div><div class="feat-title">Doğrudan İletişim</div><div class="feat-desc">Sorularınızı panel üzerinden iletin. Her kanaldan ulaşabilirsiniz.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="how">
+  <div class="container">
+    <div class="how-grid">
+      <div>
+        <div class="reveal"><div class="sec-label">Süreç</div></div>
+        <div class="reveal rd1"><h2 class="sec-title">Üç adımda<br><em>derse hazır ol.</em></h2></div>
+        <div style="margin-top:3rem;">
+          <div class="step-item reveal"><div class="step-num">1</div><div><div class="step-tag">Kayıt</div><div class="step-title"> Hesap Oluştur</div><div class="step-desc">Saniyeler içinde hesabınızı açın ve sürece katılın.</div></div></div>
+          <div class="step-item reveal rd1"><div class="step-num">2</div><div><div class="step-tag">Talep</div><div class="step-title">Randevu Gönder</div><div class="step-desc">Müsait olduğunuz saati seçip takvime talebinizi düşün.</div></div></div>
+          <div class="step-item reveal rd2"><div class="step-num">3</div><div><div class="step-tag">Ders</div><div class="step-title">Zoom Linki Geldi!</div><div class="step-desc">Onay geldiğinde bildirim alırsınız ve ders başlar.</div></div></div>
+        </div>
+      </div>
+      <div class="reveal rd1">
+        <div class="mock-cards">
+          <div class="mock-card mc1"><div class="mc-lbl">Randevu Talebi</div><div class="mc-title">15 Nisan 2025 · 10:00–11:00</div><div class="mc-sub">İş İngilizcesi · Orta Seviye</div><div class="mc-badge">Onaylandı</div></div>
+          <div class="mock-card mc2"><div class="mc-lbl">Zoom Linki</div><div class="mc-title">zoom.us/j/98765432</div><div class="mc-sub">Dersiniz için link hazır!</div></div>
+          <div class="mock-card mc3"><div class="mc-lbl">Bildirim</div><div class="mc-title">Randevunuz Onaylandı ✓</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="reveal"><div class="stat-n">2K+</div><div class="stat-l">Mezun Öğrenci</div></div>
+    <div class="reveal rd1"><div class="stat-n">10+</div><div class="stat-l">Yıl Deneyim</div></div>
+    <div class="reveal rd2"><div class="stat-n">98%</div><div class="stat-l">Memnuniyet</div></div>
+    <div class="reveal rd3"><div class="stat-n">500+</div><div class="stat-l">Materyal</div></div>
+  </div>
+</div>
+
+<section class="testi">
+  <div class="container">
+    <div class="reveal"><div class="sec-label">Öğrenci Görüşleri</div></div>
+    <div class="reveal rd1"><h2 class="sec-title">Hayatları <em>değişti.</em></h2></div>
+    <div class="tg">
+      <div class="tc reveal"><div class="tc-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="tc-text">"Bengü Hoca'nın materyalleri piyasadaki hiçbir kitapta yok. İş İngilizcesi PDF'leri sayesinde terfi aldım."</p><div class="tc-auth"><div class="tc-av">MK</div><div><div class="tc-name">Mehmet K.</div><div class="tc-role">Yazılım Mühendisi</div></div></div></div>
+      <div class="tc reveal rd1"><div class="tc-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="tc-text">"Randevu sistemi inanılmaz pratik. Talep gönderiyorum, onaylanıyor, Zoom linki geliyor. Hiç bu kadar kolay olmamıştı."</p><div class="tc-auth"><div class="tc-av">EA</div><div><div class="tc-name">Elif A.</div><div class="tc-role">Üniversite Öğrencisi</div></div></div></div>
+      <div class="tc reveal rd2"><div class="tc-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="tc-text">"Utangaçlığımı yenmemi sağlayan tek platform. Dersler çok verimli, her seferinde gerçekten ilerliyorum."</p><div class="tc-auth"><div class="tc-av">AY</div><div><div class="tc-name">Ahmet Y.</div><div class="tc-role">Finans Uzmanı</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="container">
+    <div class="reveal"><div class="sec-label">Hazır mısın?</div></div>
+    <h2 class="reveal rd1">Başlamak için<br>doğru an <em>şimdi.</em></h2>
+    <p class="reveal rd2">Hemen üye ol, seviye tespit anketini doldur ve ilk ders talebini bugün gönder.</p>
+    <a href="anket.html" class="btn-primary reveal rd3">Talebi Oluştur <i class="fas fa-arrow-right"></i></a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <a href="index.html" class="f-logo">BK<em>Akademi</em></a>
+  <p>© 2026 BKAkademi · Bengü Karakurt | <i class="fas fa-envelope"></i> bkakademi@gmail.com</p>
+  <div class="f-links">
+    <a href="about.html">Hakkında</a>
+    <a href="iletisim.html">İletişim</a>
+  </div>
+</footer>
+
+<script>
+/* ══════════ UNIFIED SCROLL HANDLER ══════════ */
+let raf = false;
+window.addEventListener('scroll', () => {
+  if (!raf) {
+    requestAnimationFrame(() => {
+      const s = window.scrollY;
+      document.getElementById('nb').classList.toggle('sc', s > 60);
+      const pw = document.querySelector('.hero-photo-wrap');
+      if (pw && s < window.innerHeight) {
+        // parallax disabled to prevent overlap
+      }
+      raf = false;
+    });
+    raf = true;
+  }
+});
+
+/* ══════════ REVEAL ON SCROLL ══════════ */
+const obs = new IntersectionObserver(e => {
+  e.forEach(en => { if (en.isIntersecting) en.target.classList.add('v'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+/* ══════════ COUNTER ANIMATION ══════════ */
+const counterObs = new IntersectionObserver(entries => {
+  entries.forEach(en => {
+    if (en.isIntersecting && !en.target.dataset.counted) {
+      en.target.dataset.counted = 'true';
+      const text = en.target.innerText;
+      const match = text.match(/(\d+)/);
+      if (!match) return;
+      const target = parseInt(match[1]);
+      const suffix = text.replace(/\d+/, '');
+      const duration = 2000;
+      const start = performance.now();
+      function step(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 4);
+        en.target.innerText = Math.floor(eased * target) + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat-n').forEach(el => counterObs.observe(el));
+
+/* ══════════ 3D TILT ON FEATURE CARDS ══════════ */
+document.querySelectorAll('.feat-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    const rx = -(y - cy) / 20;
+    const ry = (x - cx) / 20;
+    card.style.transform = 'perspective(1000px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) translateY(-8px)';
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
+
+/* ══════════ MAGNETIC CTA BUTTON ══════════ */
+document.querySelectorAll('.cta .btn-primary').forEach(btn => {
+  btn.addEventListener('mousemove', e => {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    btn.style.transform = 'translate(' + (x * 0.15) + 'px, ' + (y * 0.15) + 'px) scale(1.05)';
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform = '';
+  });
+});
+
+/* ══════════ MOBILE MENU ══════════ */
+document.querySelector('.mob-menu-btn').addEventListener('click', () => {
+  document.getElementById('nb').classList.toggle('mob-menu-open');
+});
+</script>
+</body>
+</html>
