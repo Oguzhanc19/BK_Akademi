@@ -60,6 +60,23 @@
                     document.getElementById('status').innerText = "Bu hesap zaten var. Giriş yapılıyor...";
                     try {
                         await auth.signInWithEmailAndPassword(email, password);
+
+                        // Ensure master code is created even if account exists
+                        try {
+                            const codeRef = db.collection('accessCodes').doc('ADMIN_MASTER_CODE');
+                            await codeRef.set({
+                                code: "BKA2026",
+                                email: "admin@bkakademi.com",
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                used: false,
+                                createdBy: auth.currentUser ? auth.currentUser.uid : "setup_script",
+                                type: "master"
+                            });
+                            console.log("Master kod BKA2026 başarıyla doğrulandı.");
+                        } catch(err) {
+                            console.error("Kod oluşturma hatası: ", err);
+                        }
+
                         window.location.href = "admin.html";
                     } catch (e) {
                         document.getElementById('status').innerText = "Giriş hatası: Şifreniz farklı olabilir. Lütfen login.html sayfasına giderek manuel giriş yapın.";
