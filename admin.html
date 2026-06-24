@@ -365,6 +365,73 @@ textarea.inp{resize:vertical;min-height:100px;}
 @media(min-width:1400px){ :root{--sw:280px;} .wg-cell{width:64px;height:64px;font-size:1.5rem;} .content{max-width:1300px;padding:2.5rem 3rem;} }
 @media(min-width:1800px){ :root{--sw:300px;} .content{max-width:1500px;padding:3rem 4rem;} }
 
+
+/* YENI EKLENEN ADMIN PANELI STİLLERİ (Eksik Stiller Tamamlandı) */
+.nav-it {
+  display: flex; align-items: center; gap: 1rem; padding: 1rem 1.5rem;
+  color: var(--ink2); text-decoration: none; font-weight: 600; font-size: 0.95rem;
+  border-left: 3px solid transparent; transition: all 0.3s ease;
+}
+.nav-it i { font-size: 1.1rem; width: 24px; text-align: center; color: var(--mu); transition: color 0.3s; }
+.nav-it:hover { background: var(--al); color: var(--ac); }
+.nav-it:hover i { color: var(--ac); }
+.nav-it.active { background: linear-gradient(90deg, var(--al) 0%, transparent 100%); border-left-color: var(--ac); color: var(--ac); }
+.nav-it.active i { color: var(--ac); }
+
+.sc {
+  background: var(--sur); border: 1px solid var(--bdr); border-radius: 16px;
+  padding: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;
+  box-shadow: var(--sh); transition: transform 0.3s, box-shadow 0.3s;
+}
+.sc:hover { transform: translateY(-4px); box-shadow: var(--sh2); }
+.sic {
+  width: 48px; height: 48px; border-radius: 12px; display: flex;
+  align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 0.5rem;
+}
+.svl { font-size: 1.8rem; font-weight: 700; color: var(--ink); font-family: 'Playfair Display', serif; line-height: 1; }
+.slb { font-size: 0.85rem; color: var(--mu); font-weight: 600; }
+
+.ch { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; }
+.ch-l h2 { font-size: 1.3rem; font-weight: 700; color: var(--ink); display: flex; align-items: center; gap: 0.5rem; }
+.ch-l p { font-size: 0.85rem; color: var(--mu); margin-top: 0.2rem; }
+.bref { background: var(--sur); border: 1px solid var(--bdr); width: 36px; height: 36px; border-radius: 8px; color: var(--ink2); cursor: pointer; transition: all 0.2s; }
+.bref:hover { background: var(--al); color: var(--ac); transform: rotate(90deg); }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+
+.empty { text-align: center; color: var(--mu); font-size: 0.95rem; }
+.empty i { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.5; display: block; }
+
+table.tb { width: 100%; border-collapse: collapse; background: var(--sur); border-radius: 16px; overflow: hidden; box-shadow: var(--sh); }
+table.tb th { background: rgba(100,80,160,0.04); padding: 1rem 1.5rem; text-align: left; font-size: 0.8rem; font-weight: 700; color: var(--mu); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--bdr); }
+table.tb td { padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--bdr2); font-size: 0.9rem; color: var(--ink2); font-weight: 500; }
+table.tb tr:last-child td { border-bottom: none; }
+table.tb tr:hover td { background: rgba(100,80,160,0.02); }
+
+.b1 { background: var(--ac); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: opacity 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; }
+.b1:hover { opacity: 0.9; }
+
+.inp { width: 100%; padding: 0.8rem 1.2rem; border: 1px solid var(--bdr); border-radius: 8px; background: rgba(255,255,255,0.5); font-family: inherit; font-size: 0.95rem; color: var(--ink); outline: none; transition: border-color 0.3s, background 0.3s; }
+.inp:focus { border-color: var(--ac); background: #fff; box-shadow: 0 0 0 3px var(--al); }
+
+.form-group { margin-bottom: 1.2rem; }
+.form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--ink2); margin-bottom: 0.4rem; }
+
+.rit { display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--sur); border: 1px solid var(--bdr); border-radius: 12px; margin-bottom: 1rem; box-shadow: var(--sh); }
+.rico { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+.rt2 { font-weight: 600; color: var(--ink); }
+.rm { font-size: 0.8rem; color: var(--mu); }
+.roa { background: var(--al); color: var(--ac); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: background 0.2s; }
+.roa:hover { background: var(--ac); color: white; }
+.rdl { background: var(--rl); color: var(--red); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: background 0.2s; }
+.rdl:hover { background: var(--red); color: white; }
+
+#toast { position: fixed; bottom: 20px; right: 20px; background: #333; color: white; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-size: 0.9rem; font-weight: 600; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); transform: translateY(20px); z-index: 1000; }
+#toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+#toast.s { background: var(--grn); }
+#toast.e { background: var(--red); }
+#toast.w { background: var(--gld); }
+
 </style>
 
 </head>
