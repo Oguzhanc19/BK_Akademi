@@ -344,18 +344,16 @@ input[type="file"]{display:none;}
         <div class="ucrd"><h2><i class="fas fa-book-open"></i> Yüklü Kaynaklar</h2><div id="rlst2" style="max-height:460px;overflow-y:auto;"></div></div>
       </div>
     </div>
-  </div></div>
-
-    <div id="codes" class="sec">
+  <div id="codes" class="sec">
       <div class="ucrd">
         <div class="ch">
           <div class="ch-l"><h2><i class="fas fa-key"></i> Erişim Kodu Üretici</h2><p>Öğrencilere özel erişim kodu üretin ve yönetin.</p></div>
           <button class="bref" onclick="loadCodes()"><i class="fas fa-rotate-right"></i></button>
         </div>
         
-        <div style="padding: 1.5rem; background: var(--gl); border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.2); display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
-          <input type="email" id="newCodeEmail" placeholder="Öğrencinin E-posta Adresi (Örn: ogrenci@gmail.com)" style="flex: 1; padding: 0.8rem 1rem; border: 1px solid var(--bdr); border-radius: 8px; font-size: 1rem; outline: none; min-width: 250px;" required>
-          <button onclick="generateAccessCode()" style="background: var(--acc); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-magic"></i> Kod Üret</button>
+        <div style="padding: 1.5rem; background: var(--sur2); border-radius: 12px; border: 1px solid var(--bdr); display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
+          <input type="email" id="newCodeEmail" placeholder="Öğrencinin E-posta Adresi (Örn: ogrenci@gmail.com)" style="flex: 1; padding: 0.8rem 1rem; border: 1px solid var(--bdr); border-radius: 12px; font-size: 1rem; outline: none; min-width: 250px;" required>
+          <button onclick="generateAccessCode()" style="background: var(--acc); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-magic"></i> Kod Üret</button>
         </div>
         
         <div style="overflow-x:auto;">
@@ -367,6 +365,9 @@ input[type="file"]{display:none;}
       </div>
     </div>
 
+  </div></div>
+
+    
 </main>
 
 <!-- REJECT MODAL -->
@@ -381,7 +382,7 @@ input[type="file"]{display:none;}
 
 <script>
 let cu=null,rTid=null,rUid=null,cf='pending',allReqs=[],dUid=null,dNm=null;
-const titles={ov:'Genel <em>Bakış</em>',reqs:'Randevu <em>Talepleri</em>',all:'Tüm <em>Randevular</em>',users:'<em>Kullanıcılar</em>',cnt:'İçerik <em>Yönetimi</em>'};
+const titles={ov:'Genel <em>Bakış</em>',reqs:'Randevu <em>Talepleri</em>',all:'Tüm <em>Randevular</em>',users:'<em>Kullanıcılar</em>',cnt:'İçerik <em>Yönetimi</em>',codes:'Kod <em>Üretici</em>'};
 
 auth.onAuthStateChanged(async u=>{
   if(!u){window.location.href='login.html';return;}
