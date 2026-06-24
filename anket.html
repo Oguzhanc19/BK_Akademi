@@ -156,6 +156,18 @@
         .btn { width: 100%; }
     }
     
+
+    @media (max-width: 768px) {
+        .survey-card { padding: 1.5rem; margin: 1rem; width: auto; border-radius: 16px; }
+        h1 { font-size: 1.5rem; }
+        .options-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .btn-group { flex-wrap: wrap; gap: 1rem; justify-content: center; }
+        .btn { flex: 1; min-width: 120px; text-align: center; }
+    }
+    @media (max-width: 480px) {
+        .options-grid { grid-template-columns: 1fr; }
+    }
+    
 </style>
 </head>
 <body>
