@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="favicon.png">
@@ -540,6 +540,18 @@ p {
         justify-content: center !important;
         flex-wrap: wrap !important;
     }
+}
+
+
+/* Input Zoom Fixes */
+input, select, textarea {
+    font-size: 16px !important; /* Prevents iOS auto-zoom */
+}
+.fb, .aw-box, .survey-card {
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    overflow-x: hidden !important;
 }
 
 </style>

@@ -3,7 +3,7 @@
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>İletişim - BKAkademi</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -313,6 +313,18 @@ p {
     }
 }
 
+
+/* Input Zoom Fixes */
+input, select, textarea {
+    font-size: 16px !important; /* Prevents iOS auto-zoom */
+}
+.fb, .aw-box, .survey-card {
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    overflow-x: hidden !important;
+}
+
 </style>
 </head>
 <body>
@@ -328,7 +340,7 @@ p {
             <a href="login.html">Giriş</a>
         </div>
         <div style="flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 1rem;">
-            <div class="mob-menu-btn" onclick="document.getElementById('nb').classList.toggle('mob-menu-open')"><i class="fas fa-bars"></i></div>
+            <div class="mob-menu-btn" onclick="document.querySelector(\'nav\').classList.toggle(\'mob-menu-open\')" onclick="document.getElementById('nb').classList.toggle('mob-menu-open')"><i class="fas fa-bars"></i></div>
             <a href="anket.html" class="btn-nav">Başla →</a></a>
         </div>
     </nav>
