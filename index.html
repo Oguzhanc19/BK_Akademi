@@ -278,6 +278,17 @@ nav, footer { will-change: transform; }
 .hero-photo-wrap { will-change: auto; }
 * { -webkit-font-smoothing: antialiased; }
 
+
+    @media (max-width: 768px) {
+        .hero h1 { font-size: 2.5rem; }
+        .hero p { font-size: 1rem; }
+        .feature-grid { grid-template-columns: 1fr; }
+        .nav-links { display: none; }
+        .mobile-menu-btn { display: block; }
+        .about-section { padding: 2rem 1rem; }
+        .pricing-cards { flex-direction: column; }
+    }
+    
 </style>
 
 </head>
