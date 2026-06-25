@@ -337,6 +337,35 @@ input, select, textarea {
     overflow-x: hidden !important;
 }
 
+
+    /* --- ABOUT PAGE SPECIFIC MOBILE FIXES --- */
+    @media (max-width: 768px) {
+        .photo-section { position: relative; padding-bottom: 4rem; } /* Room for absolute stats */
+        .stats-grid {
+            position: relative !important;
+            bottom: 0 !important; right: 0 !important;
+            margin: 2rem auto 0 auto !important;
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important; /* Keep 2 columns on mobile so it looks nice */
+            gap: 1px !important;
+            background: rgba(100, 80, 160, 0.1) !important;
+            border-radius: 16px !important;
+            overflow: hidden !important;
+            max-width: 320px !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05) !important;
+        }
+        .stat-box {
+            background: rgba(255,255,255,0.9) !important;
+            padding: 1.5rem 1rem !important;
+            text-align: center !important;
+        }
+        .stat-box strong { font-size: 1.5rem !important; }
+        .stat-box span { font-size: 0.8rem !important; }
+        
+        /* Stop the generic overwrite from breaking the stats-grid */
+        .stats-grid { flex-direction: row !important; }
+    }
+    
 </style>
 </head><body>
 <nav id="nb">
@@ -348,7 +377,7 @@ input, select, textarea {
     <a href="login.html">Giriş</a>
   </div>
   <div style="flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 1rem;">
-    <div class="mob-menu-btn" onclick="document.querySelector(\'nav\').classList.toggle(\'mob-menu-open\')" onclick="document.getElementById('nb').classList.toggle('mob-menu-open')"><i class="fas fa-bars"></i></div>
+    <div class="mob-menu-btn" onclick="document.querySelector(\'nav\').classList.toggle(\'mob-menu-open\')"><i class="fas fa-bars"></i></div>
     <a href="anket.html" class="btn-nav">Başla →</a></a>
   </div>
 </nav>
