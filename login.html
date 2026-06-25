@@ -382,21 +382,6 @@ input, select, textarea {
         const btn = document.querySelector('.aw-btn');
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Doğrulanıyor...';
         
-        
-        if(code === "BKA2026") {
-            sessionStorage.setItem("bka_access_granted", "true");
-            sessionStorage.setItem("bka_access_code", "BKA2026");
-            sessionStorage.setItem("bka_access_email", "admin@bkakademi.com");
-            sessionStorage.setItem("bka_access_id", "admin_bypass");
-            
-            document.getElementById("access-wall").style.opacity = "0";
-            document.getElementById("access-wall").style.transition = "opacity 0.5s ease";
-            setTimeout(() => {
-                document.getElementById("access-wall").style.display = "none";
-            }, 500);
-            return;
-        }
-        
         db.collection('accessCodes').where('code', '==', code).get().then(snap => {
             if (snap.empty) {
                 showAwError("Geçersiz erişim kodu.");
@@ -566,22 +551,7 @@ async function verifyAndEnter(user, errEl) {
         // Kodu kullanıldı olarak işaretle
         const codeId = sessionStorage.getItem("bka_access_id");
         if (codeId) {
-            await 
-        if(code === "BKA2026") {
-            sessionStorage.setItem("bka_access_granted", "true");
-            sessionStorage.setItem("bka_access_code", "BKA2026");
-            sessionStorage.setItem("bka_access_email", "admin@bkakademi.com");
-            sessionStorage.setItem("bka_access_id", "admin_bypass");
-            
-            document.getElementById("access-wall").style.opacity = "0";
-            document.getElementById("access-wall").style.transition = "opacity 0.5s ease";
-            setTimeout(() => {
-                document.getElementById("access-wall").style.display = "none";
-            }, 500);
-            return;
-        }
-        
-        db.collection('accessCodes').doc(codeId).update({
+            await db.collection('accessCodes').doc(codeId).update({
                 isUsed: true,
                 usedBy: user.uid
             });
