@@ -36,7 +36,7 @@ if (typeof firebase === 'undefined') {
   // Basit admin kontrolü için admin e-posta listesi.
   // BURAYA kendi admin hesabınızın e-postasını ekleyin.
   window.ADMIN_EMAILS = [
-    'oguzhan606019@gmail.com',
+    'oguzhan196060@gmail.com',
     'admin@bkakademi.com',
     'admin2@gmail.com'
   ];
