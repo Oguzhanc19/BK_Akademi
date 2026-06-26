@@ -1040,13 +1040,40 @@ async function submitBooking() {
   if (!ss) return;
   const btn = document.getElementById('btn-sub'); btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...';
   try {
-    await db.collection('appointments').add({userId:cu.uid,email:cu.email,displayName:cu.displayName||cu.email.split('@')[0],timeSlot:ss,note:document.getElementById('bnote').value.trim(),level:document.getElementById('blevel').value,status:'pending',zoomLink:'',createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-    showToast('Randevu talebiniz gönderildi!','s');
+    const studentName = cu.displayName || cu.email.split('@')[0];
+    // Randevuyu kaydet
+    const docRef = await db.collection('appointments').add({
+      userId: cu.uid,
+      email: cu.email,
+      displayName: studentName,
+      timeSlot: ss,
+      note: document.getElementById('bnote').value.trim(),
+      level: document.getElementById('blevel').value,
+      status: 'pending',
+      zoomLink: '',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    
+    // Admin'e bildirim gönder
+    try {
+      await db.collection('admin_notifications').add({
+        type: 'new_appointment',
+        message: studentName + ' yeni bir randevu talebi gönderdi: ' + ss,
+        appointmentId: docRef.id,
+        read: false,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } catch(notifErr) { console.warn('Admin bildirimi gönderilemedi:', notifErr); }
+
+    showToast('Randevu talebiniz başarıyla gönderildi! ✅','s');
     document.getElementById('bdate').value=''; document.getElementById('bnote').value=''; document.getElementById('blevel').value='';
     document.getElementById('tslots').innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:.9rem;font-size:.8rem;color:var(--mu);background:var(--sur2);border-radius:8px;"><i class="fas fa-arrow-up" style="margin-right:.4rem;"></i>Önce tarih seçin</div>`;
     document.getElementById('bsummary').style.display='none'; ss=null;
     loadHome(); go('myappts', document.getElementById('nav-ma'));
-  } catch(e) { showToast('Hata: '+e.message,'e'); }
+  } catch(e) { 
+    console.error('Randevu hatası:', e);
+    showToast('Randevu gönderilemedi: ' + e.message, 'e'); 
+  }
   finally { btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane"></i> Randevu Talebi Gönder'; }
 }
 
@@ -1416,7 +1443,6 @@ async function markRead() {
 //  TOAST
 // ══════════════════════════════════════════
 function showToast(msg, type='') {
-  if (msg.includes('Missing or insufficient') && cu && cu.uid === 'bypass_oguzhan_123') return;
   const t=document.getElementById('toast');t.textContent=msg;t.className='show '+(type||'');setTimeout(()=>t.className='',3500);
 }
 </script>
