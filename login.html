@@ -216,89 +216,7 @@
 </head>
 <body>
 
-    <!-- ACCESS CODE WALL -->
-
-    
-    <div id="access-wall">
-        
-        <div class="aw-bg-orbs"><div class="aw-orb aw-orb-1"></div><div class="aw-orb aw-orb-2"></div><div class="aw-orb aw-orb-3"></div></div>
-        <div class="aw-box">
-            <div class="aw-icon"><i class="fas fa-key"></i></div>
-            <h2>Öğrenci Girişi</h2>
-            <p>Eğitmeniniz tarafından size verilen özel erişim kodunu girerek giriş yapabilirsiniz.</p>
-            <div class="aw-input-wrap">
-                <input type="password" id="awCode" class="aw-input" placeholder="KODUNUZ" autocomplete="off">
-            </div>
-            <button class="aw-btn" onclick="checkAccessCode()">Erişimi Doğrula <i class="fas fa-arrow-right"></i></button>
-            <div id="aw-error"><i class="fas fa-exclamation-circle"></i> Geçersiz erişim kodu. Lütfen tekrar deneyin.</div>
-        </div>
-    </div>
-    
-    <script>
-    function checkAccessCode() {
-        const code = document.getElementById("awCode").value.trim().toUpperCase();
-        if(!code) return;
-        
-        const btn = document.querySelector('.aw-btn');
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Doğrulanıyor...';
-        
-        db.collection('accessCodes').where('code', '==', code).get().then(snap => {
-            if (snap.empty) {
-                showAwError("Geçersiz erişim kodu.");
-                btn.innerHTML = 'Erişimi Doğrula <i class="fas fa-arrow-right"></i>';
-                return;
-            }
-            
-            const doc = snap.docs[0];
-            const data = doc.data();
-            
-            // Bypass kodunu doğrula
-            sessionStorage.setItem("bka_access_granted", "true");
-            sessionStorage.setItem("bka_access_code", code);
-            sessionStorage.setItem("bka_access_email", data.email);
-            sessionStorage.setItem("bka_access_id", doc.id);
-            
-            document.getElementById("access-wall").style.opacity = "0";
-            document.getElementById("access-wall").style.transition = "opacity 0.5s ease";
-            setTimeout(() => {
-                document.getElementById("access-wall").style.display = "none";
-            }, 500);
-            
-        }).catch(e => {
-            showAwError("Veritabanı hatası: " + e.message); console.error("Firebase Hatası:", e);
-            btn.innerHTML = 'Erişimi Doğrula <i class="fas fa-arrow-right"></i>';
-        });
-    }
-    
-    function showAwError(msg) {
-        const err = document.getElementById("aw-error");
-        err.style.display = "block";
-        err.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + msg;
-        document.getElementById("awCode").value = "";
-        document.querySelector('.aw-box').style.animation = 'none';
-        setTimeout(() => { document.querySelector('.aw-box').style.animation = 'shake 0.4s ease'; }, 10);
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        if (sessionStorage.getItem("bka_access_granted") === "true") {
-            document.getElementById("access-wall").style.display = "none";
-        }
-    });
-
-    // Add shake animation
-    const style = document.createElement('style');
-    style.innerHTML = `@keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-10px);} 75% {transform: translateX(10px);} }`;
-    document.head.appendChild(style);
-
-    // Enter key support for access code
-    document.getElementById("awCode").addEventListener("keypress", function(event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            checkAccessCode();
-        }
-    });
-    </script>
-    <!-- /ACCESS CODE WALL -->
+    <!-- ACCESS CODE WALL REMOVED -->
 
 <!-- ── ORBS BACKGROUND ── -->
 <div class="orb orb1"></div>
@@ -357,6 +275,10 @@
       <div class="fi">
         <label>Şifre Tekrar</label>
         <div class="iw"><i class="fas fa-lock"></i><input id="reg-pass2" type="password" placeholder="Şifrenizi tekrar girin" required minlength="6"></div>
+      </div>
+      <div class="fi">
+        <label>Erişim Kodu</label>
+        <div class="iw"><i class="fas fa-key"></i><input id="reg-code" type="text" placeholder="Eğitmeninizin verdiği kod" required></div>
       </div>
       <button type="submit" class="bm" style="background:linear-gradient(135deg, #10b981, #059669);">Kayıt Ol <i class="fas fa-user-plus"></i></button>
       <div class="or-divider"><span>VEYA</span></div>
@@ -446,6 +368,7 @@ async function doRegister(e){
   const em = document.getElementById('reg-email').value.trim();
   const pw = document.getElementById('reg-pass').value;
   const pw2 = document.getElementById('reg-pass2').value;
+  const code = document.getElementById('reg-code').value.trim().toUpperCase();
 
   if(pw !== pw2) {
     err.style.display='block';
@@ -459,34 +382,37 @@ async function doRegister(e){
   }
 
   try {
-    const cred = await auth.createUserWithEmailAndPassword(em, pw);
-    // Kullanıcı adını güncelle
-    await cred.user.updateProfile({ displayName: name });
-    
-    // Firestore'a kaydet
-    const isAdmin = Array.isArray(window.ADMIN_EMAILS) && window.ADMIN_EMAILS.includes(em);
-    await db.collection('users').doc(cred.user.uid).set({
-      uid: cred.user.uid,
-      email: em,
-      displayName: name,
-      role: isAdmin ? 'admin' : 'student',
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    const codeSnap = await db.collection('accessCodes').where('code', '==', code).get();
+    if(codeSnap.empty){
+      err.style.display='block';
+      err.innerHTML='<i class="fas fa-exclamation-triangle"></i> Geçersiz erişim kodu.';
+      return;
+    }
+    const codeDoc = codeSnap.docs[0];
+    const codeData = codeDoc.data();
 
-    // Erişim kodunu kullanıldı olarak işaretle
-    const codeId = sessionStorage.getItem("bka_access_id");
-    if (codeId && codeId !== "admin_bypass") {
-      await db.collection('accessCodes').doc(codeId).update({
-        isUsed: true,
-        usedBy: cred.user.uid
-      });
+    if(codeData.isUsed){
+      err.style.display='block';
+      err.innerHTML='<i class="fas fa-exclamation-triangle"></i> Bu erişim kodu daha önce kullanılmış.';
+      return;
     }
 
+    if(codeData.email && codeData.email.toLowerCase() !== em.toLowerCase()){
+      err.style.display='block';
+      err.innerHTML='<i class="fas fa-exclamation-triangle"></i> Bu erişim kodu bu e-posta adresi için geçerli değil.';
+      return;
+    }
+
+    const cred = await auth.createUserWithEmailAndPassword(em, pw);
+    await cred.user.updateProfile({ displayName: name });
+    
     err.style.display='block';
     err.style.color='#059669';
     err.style.background='rgba(16, 185, 129, 0.1)';
     err.innerHTML='<i class="fas fa-check-circle"></i> Kayıt başarılı! Yönlendiriliyorsunuz...';
-    setTimeout(() => red(cred.user), 1200);
+    
+    setTimeout(() => verifyAndEnter(cred.user, err, codeDoc.id), 1200);
+
   } catch(e) {
     err.style.display='block';
     if(e.code === 'auth/email-already-in-use') {
@@ -502,9 +428,53 @@ async function doGoogle(mode){
   const err = document.getElementById(mode === 'register' ? 'err-reg' : 'err');
   err.style.display='none';
   err.textContent='';
+  let codeDocId = null;
+
+  if (mode === 'register') {
+    const code = document.getElementById('reg-code').value.trim().toUpperCase();
+    if(!code){
+      err.style.display='block';
+      err.innerHTML='<i class="fas fa-exclamation-triangle"></i> Google ile kayıt olmadan önce lütfen erişim kodunuzu girin.';
+      return;
+    }
+    
+    try {
+      const codeSnap = await db.collection('accessCodes').where('code', '==', code).get();
+      if(codeSnap.empty){
+        err.style.display='block';
+        err.innerHTML='<i class="fas fa-exclamation-triangle"></i> Geçersiz erişim kodu.';
+        return;
+      }
+      const codeDoc = codeSnap.docs[0];
+      const codeData = codeDoc.data();
+
+      if(codeData.isUsed){
+        err.style.display='block';
+        err.innerHTML='<i class="fas fa-exclamation-triangle"></i> Bu erişim kodu daha önce kullanılmış.';
+        return;
+      }
+      codeDocId = codeDoc.id;
+    } catch(e) {
+      err.style.display='block';
+      err.innerHTML='<i class="fas fa-exclamation-triangle"></i> Kod kontrolü yapılamadı.';
+      return;
+    }
+  }
+
   try {
     const r = await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-    await verifyAndEnter(r.user, err);
+    
+    if (mode === 'register' && codeDocId) {
+      const codeDoc = await db.collection('accessCodes').doc(codeDocId).get();
+      const codeData = codeDoc.data();
+      if(codeData.email && codeData.email.toLowerCase() !== r.user.email.toLowerCase()){
+        await auth.signOut();
+        err.style.display='block';
+        err.innerHTML='<i class="fas fa-exclamation-triangle"></i> Bu erişim kodu bu e-posta adresi için geçerli değil.';
+        return;
+      }
+    }
+    await verifyAndEnter(r.user, err, codeDocId);
   } catch(e) {
     err.style.display='block';
     err.innerHTML='<i class="fas fa-exclamation-triangle"></i> Google ile işlem başarısız.';
@@ -512,19 +482,10 @@ async function doGoogle(mode){
 }
 
 // Verify and enter (shared for login/register/Google)
-async function verifyAndEnter(user, errEl) {
+async function verifyAndEnter(user, errEl, codeDocId) {
   try {
     const isAdmin = Array.isArray(window.ADMIN_EMAILS) && window.ADMIN_EMAILS.includes(user.email);
-    const assignedEmail = sessionStorage.getItem("bka_access_email");
     
-    // Admin ise veya erişim kodu yoksa direkt geç
-    if (!isAdmin && assignedEmail && assignedEmail !== "admin@bkakademi.com" && user.email !== assignedEmail) {
-      await auth.signOut();
-      errEl.style.display='block';
-      errEl.innerHTML='<i class="fas fa-exclamation-triangle"></i> Bu kod sizin e-posta adresiniz için üretilmemiştir.';
-      return;
-    }
-
     const ref = db.collection('users').doc(user.uid);
     const doc = await ref.get();
     
@@ -537,9 +498,8 @@ async function verifyAndEnter(user, errEl) {
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       
-      const codeId = sessionStorage.getItem("bka_access_id");
-      if (codeId && codeId !== "admin_bypass") {
-        await db.collection('accessCodes').doc(codeId).update({
+      if (codeDocId) {
+        await db.collection('accessCodes').doc(codeDocId).update({
           isUsed: true,
           usedBy: user.uid
         });
