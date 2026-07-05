@@ -401,11 +401,7 @@ const titles={ov:'Genel <em>Bakış</em>',reqs:'Randevu <em>Talepleri</em>',all:
 
 auth.onAuthStateChanged(async u=>{
   if(!u){
-    if(sessionStorage.getItem('bypass_user') === 'true') {
-      u = { uid: "bypass_oguzhan_123", email: "oguzhan196060@gmail.com", displayName: "Oğuzhan" };
-    } else {
-      window.location.href='login.html';return;
-    }
+    window.location.href='login.html';return;
   }
   const isA=Array.isArray(window.ADMIN_EMAILS)&&window.ADMIN_EMAILS.includes(u.email);
   if(!isA){const w=document.getElementById('warn');w.style.display='block';w.textContent='Erişim yetkiniz yok.';setTimeout(()=>window.location.href='dashboard.html',2500);return;}

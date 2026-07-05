@@ -775,11 +775,7 @@ const pageTitles = {
 // ══════════════════════════════════════════
 auth.onAuthStateChanged(async (user) => {
   if (!user) {
-    if (sessionStorage.getItem('bypass_user') === 'true') {
-      user = { uid: "bypass_oguzhan_123", email: "oguzhan196060@gmail.com", displayName: "Oğuzhan" };
-    } else {
-      window.location.href = 'login.html'; return;
-    }
+    window.location.href = 'login.html'; return;
   }
   cu = user;
   const n = user.displayName || user.email.split('@')[0];

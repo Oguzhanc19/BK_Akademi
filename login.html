@@ -319,7 +319,6 @@ function switchTab(tab) {
 // Auth state - redirect if already logged in
 auth.onAuthStateChanged(u => { 
   if(u) red(u); 
-  else if(sessionStorage.getItem('bypass_user')==='true') red({email: "oguzhan196060@gmail.com", uid: "bypass_oguzhan_123"}); 
 });
 
 function red(u){
@@ -335,19 +334,6 @@ async function doLogin(e){
   
   const em = document.getElementById('email').value.trim();
   const pw = document.getElementById('pass').value;
-
-  // Özel Bypass Kullanıcısı
-  if(em === "oguzhan196060@gmail.com" && pw === "123456") {
-    err.style.display = 'block';
-    err.style.color = '#059669';
-    err.style.background = 'rgba(16, 185, 129, 0.1)';
-    err.innerHTML = '<i class="fas fa-check-circle"></i> Başarıyla giriş yapıldı. Yönlendiriliyorsunuz...';
-    setTimeout(() => {
-      sessionStorage.setItem("bypass_user", "true");
-      red({ email: em, uid: "bypass_oguzhan_123" });
-    }, 1000);
-    return;
-  }
 
   try {
     const c = await auth.signInWithEmailAndPassword(em, pw);
