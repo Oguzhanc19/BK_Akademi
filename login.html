@@ -216,7 +216,72 @@
 </head>
 <body>
 
-    <!-- ACCESS CODE WALL REMOVED -->
+    <!-- ACCESS CODE WALL -->
+<div id="access-wall">
+  <div class="aw-bg-orbs">
+    <div class="aw-orb aw-orb-1"></div>
+    <div class="aw-orb aw-orb-2"></div>
+    <div class="aw-orb aw-orb-3"></div>
+  </div>
+  <div class="aw-box">
+    <div class="aw-icon"><i class="fas fa-shield-alt"></i></div>
+    <h2>Erişim Kodu</h2>
+    <p>Devam etmek için eğitmeninizden aldığınız erişim kodunu girin.</p>
+    <div class="aw-input-wrap">
+      <input type="text" class="aw-input" id="aw-code" placeholder="BK-XXXXXX" maxlength="12" autocomplete="off">
+    </div>
+    <button class="aw-btn" onclick="checkAccessCode()">
+      <i class="fas fa-arrow-right"></i> Doğrula ve Devam Et
+    </button>
+    <div id="aw-error"></div>
+  </div>
+</div>
+
+<script>
+// Erişim kodu kontrolü - kod doğrulanınca login formu açılır
+async function checkAccessCode() {
+  const code = document.getElementById('aw-code').value.trim().toUpperCase();
+  const errEl = document.getElementById('aw-error');
+  errEl.style.display = 'none';
+
+  if (!code) {
+    errEl.style.display = 'block';
+    errEl.textContent = 'Lütfen erişim kodunu girin.';
+    return;
+  }
+
+  try {
+    const snap = await db.collection('accessCodes').where('code', '==', code).get();
+    if (snap.empty) {
+      errEl.style.display = 'block';
+      errEl.textContent = 'Geçersiz erişim kodu. Lütfen tekrar deneyin.';
+      return;
+    }
+
+    // Kod geçerli - access wall'u kaldır, login formunu göster
+    document.getElementById('access-wall').style.display = 'none';
+    sessionStorage.setItem('access_verified', 'true');
+  } catch (e) {
+    errEl.style.display = 'block';
+    errEl.textContent = 'Bağlantı hatası. Tekrar deneyin.';
+  }
+}
+
+// Enter tuşu ile doğrulama
+document.addEventListener('DOMContentLoaded', function() {
+  const awInput = document.getElementById('aw-code');
+  if (awInput) {
+    awInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') checkAccessCode();
+    });
+  }
+  // Daha önce doğrulanmışsa access wall'u atla
+  if (sessionStorage.getItem('access_verified') === 'true') {
+    const wall = document.getElementById('access-wall');
+    if (wall) wall.style.display = 'none';
+  }
+});
+</script>
 
 <!-- ── ORBS BACKGROUND ── -->
 <div class="orb orb1"></div>
@@ -473,30 +538,40 @@ async function verifyAndEnter(user, errEl, codeDocId) {
     const isAdmin = Array.isArray(window.ADMIN_EMAILS) && window.ADMIN_EMAILS.includes(user.email);
     
     const ref = db.collection('users').doc(user.uid);
-    const doc = await ref.get();
     
-    if(!doc.exists) {
-      await ref.set({
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName || '',
-        role: isAdmin ? 'admin' : 'student',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
+    try {
+      const doc = await ref.get();
       
-      if (codeDocId) {
-        await db.collection('accessCodes').doc(codeDocId).update({
-          isUsed: true,
-          usedBy: user.uid
+      if(!doc.exists) {
+        await ref.set({
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName || '',
+          role: isAdmin ? 'admin' : 'student',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
       }
+      
+      if (codeDocId) {
+        try {
+          await db.collection('accessCodes').doc(codeDocId).update({
+            isUsed: true,
+            usedBy: user.uid
+          });
+        } catch(codeErr) {
+          console.warn('Erişim kodu güncellenemedi:', codeErr);
+        }
+      }
+    } catch(dbErr) {
+      console.warn('Kullanıcı profili yazılamadı, giriş devam ediyor:', dbErr);
     }
     
+    // Firestore yazma hatası olsa bile girişe devam et
     red(user);
   } catch(error) {
     console.error("Giriş hatası:", error);
-    errEl.style.display='block';
-    errEl.innerHTML='<i class="fas fa-exclamation-triangle"></i> Giriş sırasında bir hata oluştu. Tekrar deneyin.';
+    // Yine de girişe devam et
+    red(user);
   }
 }
 </script>

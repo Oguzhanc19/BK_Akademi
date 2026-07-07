@@ -787,12 +787,12 @@ auth.onAuthStateChanged(async (user) => {
   document.getElementById('pn').textContent = n;
   document.getElementById('pe').textContent = user.email;
 
-  await handleLogin(); // streak + points on login
-  loadHome();
-  loadRes();
-  listenNotifs();
-  setMotivation();
-  initWordGame();
+  try { await handleLogin(); } catch(e) { console.warn('handleLogin hatası:', e); } // streak + points on login
+  try { loadHome(); } catch(e) { console.warn('loadHome hatası:', e); }
+  try { loadRes(); } catch(e) { console.warn('loadRes hatası:', e); }
+  try { listenNotifs(); } catch(e) { console.warn('listenNotifs hatası:', e); }
+  try { setMotivation(); } catch(e) { console.warn('setMotivation hatası:', e); }
+  try { initWordGame(); } catch(e) { console.warn('initWordGame hatası:', e); }
 });
 
 function doLogout() { sessionStorage.clear(); auth.signOut().then(() => window.location.href = 'index.html'); }

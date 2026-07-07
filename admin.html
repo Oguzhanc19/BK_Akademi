@@ -253,7 +253,7 @@ input[type="file"]{display:none;}
 <aside>
   <div>
     <div class="sh">
-      <a href="index.html" class="logo">English<em>Pro</em></a>
+      <a href="index.html" class="logo">BK<em>Akademi</em></a>
       <div class="lsub">⚡ Admin Paneli</div>
     </div>
     <div class="snav">
@@ -408,9 +408,12 @@ auth.onAuthStateChanged(async u=>{
   cu=u;
   document.getElementById('aeml').textContent=u.email||'';
   document.getElementById('aav').textContent=(u.email||'A').charAt(0).toUpperCase();
-  loadOv();loadRList();listenPending();listenAN();
-  setTimeout(checkApproaching,2000);
-  setTimeout(autoDeleteCompleted,3000);
+  try{loadOv();}catch(e){console.warn('loadOv:',e);}
+  try{loadRList();}catch(e){console.warn('loadRList:',e);}
+  try{listenPending();}catch(e){console.warn('listenPending:',e);}
+  try{listenAN();}catch(e){console.warn('listenAN:',e);}
+  setTimeout(()=>{try{checkApproaching();}catch(e){console.warn('checkApproaching:',e);}},2000);
+  setTimeout(()=>{try{autoDeleteCompleted();}catch(e){console.warn('autoDeleteCompleted:',e);}},3000);
 });
 
 function doLogout(){sessionStorage.clear();auth.signOut().then(()=>window.location.href='index.html');}
