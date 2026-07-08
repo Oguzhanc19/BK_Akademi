@@ -475,6 +475,7 @@ async function doRegister(e){
 }
 
 // GOOGLE (both login & register)
+const googleProvider = new firebase.auth.GoogleAuthProvider();
 async function doGoogle(mode){
   const err = document.getElementById(mode === 'register' ? 'err-reg' : 'err');
   err.style.display='none';
@@ -512,23 +513,36 @@ async function doGoogle(mode){
     }
   }
 
+  // Loading göstergesi
+  err.style.display='block';
+  err.style.color='var(--accent)';
+  err.style.background='rgba(99, 102, 241, 0.1)';
+  err.style.border='1px solid rgba(99, 102, 241, 0.2)';
+  err.innerHTML='<i class="fas fa-spinner fa-spin"></i> Google hesabınıza bağlanılıyor...';
+
   try {
-    const r = await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    const r = await auth.signInWithPopup(googleProvider);
     
+    err.innerHTML='<i class="fas fa-spinner fa-spin"></i> Giriş yapılıyor...';
+
     if (mode === 'register' && codeDocId) {
       const codeDoc = await db.collection('accessCodes').doc(codeDocId).get();
       const codeData = codeDoc.data();
       if(codeData.email && codeData.email.toLowerCase() !== r.user.email.toLowerCase()){
         await auth.signOut();
-        err.style.display='block';
+        err.style.color='#ef4444';
+        err.style.background='rgba(239, 68, 68, 0.1)';
+        err.style.border='1px solid rgba(239, 68, 68, 0.2)';
         err.innerHTML='<i class="fas fa-exclamation-triangle"></i> Bu erişim kodu bu e-posta adresi için geçerli değil.';
         return;
       }
     }
     await verifyAndEnter(r.user, err, codeDocId);
   } catch(e) {
-    err.style.display='block';
-    err.innerHTML='<i class="fas fa-exclamation-triangle"></i> Google ile işlem başarısız.';
+    err.style.color='#ef4444';
+    err.style.background='rgba(239, 68, 68, 0.1)';
+    err.style.border='1px solid rgba(239, 68, 68, 0.2)';
+    err.innerHTML='<i class="fas fa-exclamation-triangle"></i> Google ile işlem başarısız. Popup engellenmiş olabilir.';
   }
 }
 

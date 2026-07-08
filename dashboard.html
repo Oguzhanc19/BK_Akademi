@@ -999,9 +999,11 @@ function buildItem(a, big) {
   const note = a.note ? `<div class="ai-note">📝 ${escapeHTML(a.note)}</div>` : '';
   const canc = a.status==='pending' ? `<button class="cancel-sm" onclick="openCancel('${a.id}')">İptal</button>` : '';
   let zh = '';
-  if (a.zoomLink && a.zoomLink.length > 3) {
-    if (big) { zh = `<div class="zoom-pill"><i class="fas fa-video"></i><a href="${a.zoomLink}" target="_blank">${a.zoomLink}</a><button class="zcopy" onclick="copyLink('${a.zoomLink}')"><i class="fas fa-copy"></i> Kopyala</button></div>`; }
-    else { zh = `<div style="margin-top:.35rem;"><a href="${a.zoomLink}" target="_blank" style="font-size:.75rem;color:var(--blu);font-weight:600;text-decoration:none;"><i class="fas fa-video" style="margin-right:.3rem;"></i>Zoom Linki</a></div>`; }
+  // Zoom linkine https:// ekle (yoksa tarayıcı site içi yol olarak algılar)
+  const zl = a.zoomLink && a.zoomLink.length > 3 ? (a.zoomLink.match(/^https?:\/\//) ? a.zoomLink : 'https://' + a.zoomLink) : '';
+  if (zl) {
+    if (big) { zh = `<div class="zoom-pill"><i class="fas fa-video"></i><a href="${zl}" target="_blank" rel="noopener">${a.zoomLink}</a><button class="zcopy" onclick="copyLink('${zl}')"><i class="fas fa-copy"></i> Kopyala</button></div>`; }
+    else { zh = `<div style="margin-top:.35rem;"><a href="${zl}" target="_blank" rel="noopener" style="font-size:.75rem;color:var(--blu);font-weight:600;text-decoration:none;"><i class="fas fa-video" style="margin-right:.3rem;"></i>Zoom Linki</a></div>`; }
   } else if (a.status==='approved') { zh = `<div class="zoom-soon"><i class="fas fa-hourglass-half"></i>Zoom linki yakında paylaşılacak.</div>`; }
   return `<div class="ai"><div class="ai-date"><div class="d">${dn}</div><div class="m">${mn}</div></div><div class="ai-body"><div class="ai-time">${time}</div>${note}${zh}</div><div class="ai-act">${sm[a.status]||sm.pending}${canc}</div></div>`;
 }

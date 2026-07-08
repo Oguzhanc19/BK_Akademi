@@ -534,6 +534,9 @@ function renderReqs(f){
 }
 function fR(f,btn){cf=f;document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderReqs(f);}
 
+// URL'ye https:// ekle (yoksa tarayıcı site içi yol olarak algılar)
+function fixUrl(u){if(!u)return '';return u.match(/^https?:\/\//)?u:'https://'+u;}
+
 function buildAC(a){
   const sm={pending:`<span class="badge bp">⏳ Beklemede</span>`,approved:`<span class="badge ba">✓ Onaylandı</span>`,rejected:`<span class="badge br">✕ Reddedildi</span>`,completed:`<span class="badge bc">✔ Tamamlandı</span>`};
   const ini=(a.displayName||a.email||'?').charAt(0).toUpperCase();
@@ -552,7 +555,7 @@ function buildAC(a){
   const zs=a.status==='approved'?`
     <div class="zs">
       <div class="zslbl"><i class="fas fa-video"></i> Zoom Meeting Linki</div>
-      ${a.zoomLink?`<div class="zcur"><i class="fas fa-link"></i><a href="${a.zoomLink}" target="_blank">${a.zoomLink}</a></div>`:''}
+      ${a.zoomLink?`<div class="zcur"><i class="fas fa-link"></i><a href="${fixUrl(a.zoomLink)}" target="_blank" rel="noopener">${a.zoomLink}</a></div>`:''}
       <div class="zrow">
         <input type="text" class="zinp" id="zi-${a.id}" placeholder="https://zoom.us/j/..." value="${a.zoomLink||''}">
         <button class="zsav" onclick="saveZoom('${a.id}','${a.userId||''}')">
@@ -604,8 +607,9 @@ async function doReject(){
 async function saveZoom(aid,uid){
   const inp=document.getElementById('zi-'+aid);
   if(!inp){toast('Input bulunamadı.','e');return;}
-  const link=inp.value.trim();
+  let link=inp.value.trim();
   if(!link){toast('Lütfen Zoom linki girin.','e');return;}
+  if(!link.match(/^https?:\/\//))link='https://'+link;
   try{
     await db.collection('appointments').doc(aid).update({zoomLink:link,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
     if(uid)await db.collection('notifications').add({userId:uid,title:'📹 Zoom Linkiniz Hazır!',body:'Dersiniz için Zoom linki paylaşıldı. Panelinizden ulaşabilirsiniz.',zoomLink:link,read:false,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
@@ -635,7 +639,7 @@ async function loadAll(){
     tb.innerHTML=docs.map(a=>{
       const date=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().toLocaleDateString('tr-TR'):'—';
       const ini=(a.displayName||'?').charAt(0).toUpperCase();
-      const zc=a.zoomLink?`<a href="${a.zoomLink}" target="_blank" style="font-size:.74rem;color:var(--blu);font-weight:600;text-decoration:none;"><i class="fas fa-video"></i> Var</a>`:`<span style="font-size:.74rem;color:var(--bdr);">—</span>`;
+      const zc=a.zoomLink?`<a href="${fixUrl(a.zoomLink)}" target="_blank" rel="noopener" style="font-size:.74rem;color:var(--blu);font-weight:600;text-decoration:none;"><i class="fas fa-video"></i> Var</a>`:`<span style="font-size:.74rem;color:var(--bdr);">—</span>`;
       return `<tr><td><div class="uc"><div class="uav">${ini}</div><div><div class="un">${a.displayName||'—'}</div><div class="ue">${a.email||''}</div></div></div></td><td style="font-size:.82rem;font-weight:600;">${a.timeSlot||'—'}</td><td>${sm[a.status]||sm.pending}</td><td>${zc}</td><td style="font-size:.75rem;color:var(--mut);">${date}</td></tr>`;
     }).join('');
   }catch(e){tb.innerHTML=`<tr><td colspan="5" style="text-align:center;color:var(--red);padding:2rem;">Hata: ${e.message}</td></tr>`;}
@@ -704,7 +708,7 @@ async function viewUA(email){
     const docs=cs(snap.docs.map(d=>({id:d.id,...d.data()})));
     tb.innerHTML=docs.map(a=>{
       const date=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().toLocaleDateString('tr-TR'):'—';
-      const zc=a.zoomLink?`<a href="${a.zoomLink}" target="_blank" style="font-size:.74rem;color:var(--blu);font-weight:600;text-decoration:none;"><i class="fas fa-video"></i> Var</a>`:`<span style="font-size:.74rem;color:var(--bdr);">—</span>`;
+      const zc=a.zoomLink?`<a href="${fixUrl(a.zoomLink)}" target="_blank" rel="noopener" style="font-size:.74rem;color:var(--blu);font-weight:600;text-decoration:none;"><i class="fas fa-video"></i> Var</a>`:`<span style="font-size:.74rem;color:var(--bdr);">—</span>`;
       return `<tr><td><div class="uc"><div class="uav">${(a.displayName||'?').charAt(0).toUpperCase()}</div><div><div class="un">${a.displayName||'—'}</div><div class="ue">${a.email||''}</div></div></div></td><td style="font-size:.82rem;font-weight:600;">${a.timeSlot||'—'}</td><td>${sm[a.status]||sm.pending}</td><td>${zc}</td><td style="font-size:.75rem;color:var(--mut);">${date}</td></tr>`;
     }).join('');
   }catch(e){}
@@ -727,7 +731,7 @@ async function doUp(e){
     fd.append('upload_preset',CLOUDINARY_PRESET);
     fd.append('folder',`resources/${tp}`);
 
-    const resourceType=fl.type.startsWith('video/')?'video':'image';
+    const resourceType=fl.type.startsWith('video/')?'video':(fl.type.startsWith('image/')?'image':'raw');
     const uploadUrl=`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${resourceType}/upload`;
 
     const xhr=new XMLHttpRequest();
