@@ -11,8 +11,8 @@
   --ink: #1e1b4b;
   --ink2: #4a4563;
   --muted: #7c7894;
-  --bg: #f0eef6;
-  --bg-gradient: linear-gradient(135deg, #f5f3fa 0%, #ebe7f3 50%, #f0eef6 100%);
+  --bg: #ffffff;
+  --bg-gradient: #ffffff;
   --surface: rgba(255, 255, 255, 0.65);
   --surface-hover: rgba(255, 255, 255, 0.85);
   --accent: #6366f1;
@@ -25,16 +25,9 @@
   --sh-glow: 0 8px 24px rgba(99, 102, 241, 0.15);
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { min-height: 67vh; display: flex; flex-direction: column;          font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-gradient); color: var(--ink);  position: relative; ;   }
+body { min-height: 67vh; display: flex; flex-direction: column;          font-family: 'Plus Jakarta Sans', sans-serif; background: #ffffff; color: var(--ink);  position: relative; ;   }
 
 /* ANIMATED BACKGROUND */
-body::before {
-  content: ''; position: fixed; inset: 0;
-  background-image: 
-    linear-gradient(rgba(100, 80, 160, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(100, 80, 160, 0.045) 1px, transparent 1px);
-  background-size: 40px 40px; z-index: -2; pointer-events: none;
-}
 .bg-orb {
   position: absolute; border-radius: 50%; filter: blur(16px); z-index: -1; pointer-events: none; opacity: 0.5; 
 }
@@ -207,8 +200,7 @@ footer p { font-weight: 800; font-size: .95rem; color: var(--ink); }
   <div class="photo-wrap reveal">
     <img src="photo2.jpg" alt="Bengü Karakurt TEDx">
   </div>
-      <div class="sg-item"><div class="sg-n">98%</div><div class="sg-l">Memnuniyet</div></div>
-      <div class="sg-item"><div class="sg-n">500+</div><div class="sg-l">Materyal</div></div>
+
     </div>
   </div>
 </div>

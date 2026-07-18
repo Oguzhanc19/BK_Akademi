@@ -1,6 +1,6 @@
 <style>
 :root{
-  --bg:#0a0e27;--sur:rgba(30,41,59,0.4);--sur2:rgba(15,23,42,0.6);
+  --bg: #ffffff;--sur:rgba(30,41,59,0.4);--sur2:rgba(15,23,42,0.6);
   --ink:#f8fafc;--ink2:#cbd5e1;--mu:#94a3b8;
   --bdr:rgba(255,255,255,0.1);--bdr2:rgba(255,255,255,0.05);
   --ac:#6366f1;--al:rgba(99,102,241,0.15);--ac2:#8b5cf6;
@@ -13,7 +13,7 @@
   --sw:256px;--r:14px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);display:flex;min-height:100vh;overflow:hidden;position:relative;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background: #ffffff;color:var(--ink);display:flex;min-height:100vh;overflow:hidden;position:relative;}
 html{height:100%;}
 body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);background-size:24px 24px;z-index:-2;pointer-events:none;}
 body::after{content:'';position:fixed;width:600px;height:600px;background:rgba(99,102,241,0.05);border-radius:50%;filter:blur(16px);top:-200px;right:-200px;z-index:-1;pointer-events:none;}

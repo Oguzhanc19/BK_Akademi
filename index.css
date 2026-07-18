@@ -3,8 +3,8 @@
   --ink: #f8fafc;
   --ink2: #cbd5e1;
   --muted: #94a3b8;
-  --bg: #0f172a;
-  --bg-gradient: linear-gradient(135deg, #0a0e27 0%, #141539 100%);
+  --bg: #ffffff;
+  --bg-gradient: #ffffff;
   --surface: rgba(30, 41, 59, 0.4);
   --surface-hover: rgba(30, 41, 59, 0.6);
   --accent: #6366f1;
@@ -18,16 +18,9 @@
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-gradient); color: var(--ink); overflow-x: hidden; min-height: 100vh; position: relative; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #ffffff; color: var(--ink); overflow-x: hidden; min-height: 100vh; position: relative; }
 
 /* ANIMATED BACKGROUND GRID & ORBS */
-body::before {
-  content: ''; position: fixed; inset: 0;
-  background-image: 
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 40px 40px; z-index: -2; pointer-events: none;
-}
 .bg-orb {
   position: absolute; border-radius: 50%; filter: blur(16px); z-index: -1; pointer-events: none; opacity: 0.5; 
 }

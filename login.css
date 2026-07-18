@@ -1,8 +1,8 @@
 <style>
-:root{--ink:#f8fafc;--mu:#94a3b8;--bdr:rgba(255,255,255,0.1);--bg:#0a0e27;--ac:#6366f1;--ac2:#8b5cf6;--al:rgba(99,102,241,0.1);--grn:#059669;}
+:root{--ink:#f8fafc;--mu:#94a3b8;--bdr:rgba(255,255,255,0.1);--bg: #ffffff;--ac:#6366f1;--ac2:#8b5cf6;--al:rgba(99,102,241,0.1);--grn:#059669;}
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;color:var(--ink);}
-body{display:flex;min-height:100vh;background:var(--bg);}
+body{display:flex;min-height:100vh;background: #ffffff;}
 
 /* ── LEFT VISUAL PANEL ── */
 .left{
