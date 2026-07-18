@@ -438,7 +438,7 @@ textarea.inp{resize:vertical;min-height:100px;}
 <aside>
   <div>
     <div class="s-head">
-      <a href="index.html" class="s-logo">BK<em>Akademi</em></a>
+      <a href="/" class="s-logo">BK<em>Akademi</em></a>
       <div class="s-sub">Öğrenci Paneli</div>
     </div>
     <div class="s-nav">
@@ -801,7 +801,7 @@ const pageTitles = {
 // ══════════════════════════════════════════
 auth.onAuthStateChanged(async (user) => {
   if (!user) {
-    window.location.href = 'login.html'; return;
+    window.location.href="login"; return;
   }
   cu = user;
   const n = user.displayName || user.email.split('@')[0];
@@ -821,7 +821,7 @@ auth.onAuthStateChanged(async (user) => {
   initWordGame();
 });
 
-function doLogout() { sessionStorage.clear(); auth.signOut().then(() => window.location.href = 'index.html'); }
+function doLogout() { sessionStorage.clear(); auth.signOut().then(() => window.location.href="/"); }
 
 // ══════════════════════════════════════════
 //  NAV

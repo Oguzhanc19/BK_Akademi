@@ -52,7 +52,7 @@
                 document.getElementById('status').innerText = "Hesap başarıyla oluşturuldu! Admin paneline yönlendiriliyorsunuz...";
                 
                 setTimeout(() => {
-                    window.location.href = "admin.html";
+                    window.location.href="admin";
                 }, 2000);
             } catch (error) {
                 // If account already exists
@@ -77,7 +77,7 @@
                             console.error("Kod oluşturma hatası: ", err);
                         }
 
-                        window.location.href = "admin.html";
+                        window.location.href="admin";
                     } catch (e) {
                         document.getElementById('status').innerText = "Giriş hatası: Şifreniz farklı olabilir. Lütfen login.html sayfasına giderek manuel giriş yapın.";
                     }

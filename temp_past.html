@@ -372,7 +372,7 @@ textarea.inp{resize:vertical;min-height:100px;}
 <aside>
   <div>
     <div class="sh">
-      <a href="index.html" class="logo">English<em>Pro</em></a>
+      <a href="/" class="logo">English<em>Pro</em></a>
       <div class="lsub">ÔÜí Admin Paneli</div>
     </div>
     <div class="snav">
@@ -388,7 +388,7 @@ textarea.inp{resize:vertical;min-height:100px;}
   <div class="sf">
     <div class="ausr"><div class="aav" id="aav">A</div><div><div class="aname" id="aeml">Admin</div><div class="arole">Y├Ânetici</div></div></div>
     <div class="slinks">
-      <a href="dashboard.html" class="sln">├û─şrenci Paneli</a>
+      <a href="dashboard" class="sln">├û─şrenci Paneli</a>
       <button class="sln sln-d" onclick="doLogout()">├ç─▒k─▒┼ş</button>
     </div>
   </div>
@@ -516,11 +516,11 @@ auth.onAuthStateChanged(async u=>{
     if(sessionStorage.getItem('bypass_user') === 'true') {
       u = { uid: "bypass_oguzhan_123", email: "oguzhan196060@gmail.com", displayName: "O─şuzhan" };
     } else {
-      window.location.href='login.html';return;
+      window.location.href="login";return;
     }
   }
   const isA=Array.isArray(window.ADMIN_EMAILS)&&window.ADMIN_EMAILS.includes(u.email);
-  if(!isA){const w=document.getElementById('warn');w.style.display='block';w.textContent='Eri┼şim yetkiniz yok.';setTimeout(()=>window.location.href='dashboard.html',2500);return;}
+  if(!isA){const w=document.getElementById('warn');w.style.display='block';w.textContent='Eri┼şim yetkiniz yok.';setTimeout(()=>window.location.href="dashboard",2500);return;}
   cu=u;
   document.getElementById('aeml').textContent=u.email||'';
   document.getElementById('aav').textContent=(u.email||'A').charAt(0).toUpperCase();
@@ -529,7 +529,7 @@ auth.onAuthStateChanged(async u=>{
   setTimeout(autoDeleteCompleted,3000);
 });
 
-function doLogout(){sessionStorage.clear();auth.signOut().then(()=>window.location.href='index.html');}
+function doLogout(){sessionStorage.clear();auth.signOut().then(()=>window.location.href="/");}
 
 function go(id,btn){
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
