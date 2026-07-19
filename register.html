@@ -212,7 +212,23 @@ async function doReg(e){
     await c.user.updateProfile({displayName: fullName});
     await verifyAndEnter(c.user, err, codeDoc.id);
   }
-  catch(e){ err.textContent = norm(e); }
+  catch(e){ 
+    if(e.code === 'auth/email-already-in-use') {
+      try {
+        const c = await auth.signInWithEmailAndPassword(em, pw);
+        
+        // Remove from blockedUsers if they are recovering a deleted account
+        try { await db.collection('blockedUsers').doc(em).delete(); } catch(err) {}
+        
+        await c.user.updateProfile({displayName: fname + ' ' + lname});
+        await verifyAndEnter(c.user, err, codeDoc.id);
+      } catch(signInErr) {
+        err.textContent = 'Bu e-posta adresi kullanımda. Sildiğiniz bir hesabı yeniden açıyorsanız lütfen eski şifrenizi doğru girdiğinizden emin olun.';
+      }
+    } else {
+      err.textContent = norm(e); 
+    }
+  }
 }
 
 async function doGoogle(){
@@ -249,6 +265,7 @@ async function doGoogle(){
       return;
     }
 
+    try { await db.collection('blockedUsers').doc(r.user.email).delete(); } catch(err) {}
     await verifyAndEnter(r.user, err, codeDoc.id);
   }
   catch(e){ err.textContent = 'Google ile kayıt başarısız: ' + (e.message || ''); }
