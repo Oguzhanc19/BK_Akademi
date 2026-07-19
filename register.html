@@ -150,7 +150,23 @@
   </div>
 </div>
 <script>
-auth.onAuthStateChanged(u => { if(u) window.location.href=Array.isArray(window.ADMIN_EMAILS)&&window.ADMIN_EMAILS.includes(u.email)?'admin':'dashboard'; });
+auth.onAuthStateChanged(async u => { 
+  if(u) {
+    try {
+      const blocked = await db.collection('blockedUsers').doc(u.email).get();
+      if (blocked.exists) {
+        await auth.signOut();
+        const err = document.getElementById('err');
+        if (err) {
+          err.style.display='block';
+          err.innerHTML='<i class="fas fa-exclamation-triangle"></i> Bu hesap kalıcı olarak silinmiştir.';
+        }
+        return;
+      }
+    } catch(e) {}
+    window.location.href=Array.isArray(window.ADMIN_EMAILS)&&window.ADMIN_EMAILS.includes(u.email)?'admin':'dashboard'; 
+  }
+});
 function norm(e){if(!e||!e.code)return'Bir hata oluştu.';if(e.code==='auth/email-already-in-use')return'Bu e-posta zaten kayıtlı.';if(e.code==='auth/weak-password')return'Şifre en az 6 karakter olmalı.';return e.message||'Bir hata oluştu.';}
 
 async function doReg(e){

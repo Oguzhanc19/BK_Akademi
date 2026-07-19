@@ -383,7 +383,19 @@ auth.onAuthStateChanged(u => {
   if(u) red(u); 
 });
 
-function red(u){
+async function red(u){
+  try {
+    const blocked = await db.collection('blockedUsers').doc(u.email).get();
+    if (blocked.exists) {
+      await auth.signOut();
+      const err = document.getElementById('err');
+      if (err) {
+        err.style.display='block';
+        err.innerHTML='<i class="fas fa-exclamation-triangle"></i> Bu hesap kalıcı olarak silinmiştir.';
+      }
+      return;
+    }
+  } catch(e) {}
   window.location.href = Array.isArray(window.ADMIN_EMAILS) && window.ADMIN_EMAILS.includes(u.email) ? 'admin' : 'dashboard';
 }
 

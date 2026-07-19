@@ -779,6 +779,15 @@ auth.onAuthStateChanged(async (user) => {
     window.location.href="login"; return;
   }
   cu = user;
+  try {
+    const blocked = await db.collection('blockedUsers').doc(user.email).get();
+    if (blocked.exists) {
+      auth.signOut();
+      window.location.href = 'login';
+      return;
+    }
+  } catch(e) {}
+  
   const n = user.displayName || user.email.split('@')[0];
   const ini = n.charAt(0).toUpperCase();
   ['sav','av-top','pav'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = ini; });
