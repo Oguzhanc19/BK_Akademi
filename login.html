@@ -384,7 +384,7 @@ auth.onAuthStateChanged(u => {
 });
 
 function red(u){
-  window.location.href = Array.isArray(window.ADMIN_EMAILS) && window.ADMIN_EMAILS.includes(u.email) ? 'admin.html' : 'dashboard.html';
+  window.location.href = Array.isArray(window.ADMIN_EMAILS) && window.ADMIN_EMAILS.includes(u.email) ? 'admin' : 'dashboard';
 }
 
 // LOGIN

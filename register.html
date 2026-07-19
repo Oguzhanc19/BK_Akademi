@@ -150,7 +150,7 @@
   </div>
 </div>
 <script>
-auth.onAuthStateChanged(u => { if(u) window.location.href=Array.isArray(window.ADMIN_EMAILS)&&window.ADMIN_EMAILS.includes(u.email)?'admin.html':'dashboard.html'; });
+auth.onAuthStateChanged(u => { if(u) window.location.href=Array.isArray(window.ADMIN_EMAILS)&&window.ADMIN_EMAILS.includes(u.email)?'admin':'dashboard'; });
 function norm(e){if(!e||!e.code)return'Bir hata oluştu.';if(e.code==='auth/email-already-in-use')return'Bu e-posta zaten kayıtlı.';if(e.code==='auth/weak-password')return'Şifre en az 6 karakter olmalı.';return e.message||'Bir hata oluştu.';}
 
 async function doReg(e){
@@ -266,7 +266,7 @@ async function verifyAndEnter(user, errEl, codeDocId) {
         }
     }
     
-    window.location.href = isAdmin ? 'admin.html' : 'dashboard.html';
+    window.location.href = isAdmin ? 'admin' : 'dashboard';
 }
 </script>
 </body></html>

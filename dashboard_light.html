@@ -651,7 +651,7 @@ textarea.inp{resize:vertical;min-height:100px;}
         <div class="card"><div class="cb">
           <div style="display:flex;align-items:center;gap:1.2rem;margin-bottom:1.5rem;">
             <div class="pav-lg" id="pav">S</div>
-            <div><div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;" id="pname">—</div><div style="font-size:.8rem;color:var(--mu);" id="pemail">—</div></div>
+            <div><div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;" id="pname">—</div><div style="font-size:.8rem;color:var(--mu);" id="pemail">—</div><div style="font-size:.85rem;color:var(--ac);margin-top:0.3rem;" id="pcode"></div></div>
           </div>
           <div class="ir"><span class="ik">Ad Soyad</span><span class="iv" id="pn">—</span></div>
           <div class="ir"><span class="ik">E-posta</span><span class="iv" id="pe">—</span></div>
@@ -810,6 +810,7 @@ auth.onAuthStateChanged(async (user) => {
   document.getElementById('sname').textContent = n;
   document.getElementById('pname').textContent = n;
   document.getElementById('pemail').textContent = user.email;
+  try { db.collection('accessCodes').where('usedBy', '==', user.uid).get().then(snap => { if(!snap.empty) document.getElementById('pcode').innerHTML = 'Erişim Kodu: <strong>' + snap.docs[0].data().code + '</strong>'; }); } catch(e) {}
   document.getElementById('pn').textContent = n;
   document.getElementById('pe').textContent = user.email;
 
