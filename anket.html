@@ -152,6 +152,36 @@
     .success-icon { font-size: 4.5rem; color: #10b981; margin-bottom: 1.5rem; text-shadow: 0 0 30px rgba(16,185,129,0.4); animation: pop 0.5s ease; }
     @keyframes pop { 0% { transform: scale(0); } 80% { transform: scale(1.2); } 100% { transform: scale(1); } }
     
+    /* Trial Card */
+    .trial-card {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+        border: 2px dashed var(--accent);
+        padding: 1.5rem;
+        border-radius: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    .trial-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.2);
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
+    }
+    .trial-card input {
+        width: 26px;
+        height: 26px;
+        accent-color: var(--accent);
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+    .trial-card-content { flex: 1; }
+    .trial-card-title { font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 0.3rem; }
+    .trial-card-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.4; }
+    
     
     
 
@@ -197,7 +227,7 @@
         <div style="flex: 1;"><a href="/" class="nav-logo">BK<em>Akademi</em></a></div>
         <div class="nav-links" style="flex: 1; justify-content: center;">
             <a href="about">Hakkında</a>
-            <a href="/features">Özellikler</a>
+            <a href="/#features">Özellikler</a>
             <a href="login">Giriş</a>
         </div>
         <div style="flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 1rem;">
@@ -404,10 +434,13 @@
                         <label for="kvkk"><a href="#">KVKK Sözleşmesi</a>'ni okudum, onaylıyorum.</label>
                     </div>
                     
-                    <div class="checkbox-group">
+                    <label class="trial-card" for="qTrial">
                         <input type="checkbox" id="qTrial">
-                        <label for="qTrial" style="color: #6366f1; font-weight: 600;">Tanışma dersi ister misiniz? (Öncelikli olarak değerlendirilecektir)</label>
-                    </div>
+                        <div class="trial-card-content">
+                            <div class="trial-card-title">🎁 Ücretsiz Tanışma Dersi İster Misiniz?</div>
+                            <div class="trial-card-desc">Sınırlı kontenjana sahip tanışma dersi fırsatından yararlananlar eğitim programı planlamasında <strong>öncelikli olarak</strong> değerlendirilecektir.</div>
+                        </div>
+                    </label>
                     
                     <div class="survey-nav">
                         <button type="button" class="btn-back" onclick="prevStep(5)"><i class="fa-solid fa-arrow-left"></i> Geri</button>
