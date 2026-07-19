@@ -412,8 +412,16 @@ auth.onAuthStateChanged(async u=>{
   if(!u){
     window.location.href="login";return;
   }
-  const isA=Array.isArray(window.ADMIN_EMAILS)&&window.ADMIN_EMAILS.includes(u.email);
-  if(!isA){const w=document.getElementById('warn');w.style.display='block';w.textContent='Erişim yetkiniz yok.';setTimeout(()=>window.location.href="dashboard",2500);return;}
+  let isA = Array.isArray(window.ADMIN_EMAILS) && window.ADMIN_EMAILS.includes(u.email);
+  if (!isA) {
+    try {
+      const userDoc = await db.collection('users').doc(u.uid).get();
+      if (userDoc.exists && userDoc.data().role === 'admin') {
+        isA = true;
+      }
+    } catch(e) {}
+  }
+  if(!isA){const w=document.getElementById('warn');if(w){w.style.display='block';w.textContent='Erişim yetkiniz yok.';}setTimeout(()=>window.location.href="dashboard",2500);return;}
   cu=u;
   document.getElementById('aeml').textContent=u.email||'';
   document.getElementById('aav').textContent=(u.email||'A').charAt(0).toUpperCase();
@@ -671,12 +679,25 @@ async function loadUsers(){
       const isSelf=u.email===cu.email;
       const acts=isSelf?`<span style="font-size:.75rem;color:var(--mut);">Kendi hesabınız</span>`:`
         <div style="display:flex;gap:.4rem;justify-content:flex-end;flex-wrap:wrap;">
+          <button class="tbn tb-b" onclick="toggleAdmin('${u.id}', '${u.role}')"><i class="fas fa-user-shield"></i> ${u.role === 'admin' ? 'Yetkiyi Al' : 'Admin Yap'}</button>
           <button class="tbn tb-b" onclick="viewUA('${u.email||''}')"><i class="fas fa-calendar"></i> Randevular</button>
           <button class="tbn tb-r" onclick="openDel('${u.id}','${(u.displayName||u.email||'').replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i> Sil</button>
         </div>`;
       return `<tr><td><div class="uc"><div class="uav">${ini}</div><div><div class="un">${escapeHTML(u.displayName||"Öğrenci")}</div><div class="ue">${u.email||''}</div></div></div></td><td>${rb}</td><td style="font-size:.85rem;font-weight:700;">${cnt[u.id]||0}</td><td style="font-size:.75rem;color:var(--mut);">${date}</td><td>${acts}</td></tr>`;
     }).join('');
   }catch(e){tb.innerHTML=`<tr><td colspan="5" style="text-align:center;color:var(--red);padding:2rem;">Hata: ${e.message}</td></tr>`;}
+}
+
+async function toggleAdmin(uid, currentRole) {
+  const newRole = currentRole === 'admin' ? 'student' : 'admin';
+  if(!confirm(newRole === 'admin' ? 'Bu kullanıcıya ADMIN yetkisi vermek istediğinize emin misiniz?' : 'Bu kullanıcının ADMIN yetkisini almak istediğinize emin misiniz?')) return;
+  try {
+    await db.collection('users').doc(uid).update({ role: newRole });
+    toast(newRole === 'admin' ? 'Kullanıcıya Admin yetkisi verildi.' : 'Kullanıcının Admin yetkisi alındı.', 's');
+    loadUsers();
+  } catch (e) {
+    toast('Hata: ' + e.message, 'e');
+  }
 }
 
 // ── AUTO-DELETE completed appointments after 1 day ──

@@ -164,7 +164,18 @@ auth.onAuthStateChanged(async u => {
         return;
       }
     } catch(e) {}
-    window.location.href=Array.isArray(window.ADMIN_EMAILS)&&window.ADMIN_EMAILS.includes(u.email)?'admin':'dashboard'; 
+    let target = 'dashboard';
+    if (Array.isArray(window.ADMIN_EMAILS) && window.ADMIN_EMAILS.includes(u.email)) {
+      target = 'admin';
+    } else {
+      try {
+        const userDoc = await db.collection('users').doc(u.uid).get();
+        if (userDoc.exists && userDoc.data().role === 'admin') {
+          target = 'admin';
+        }
+      } catch(e) {}
+    }
+    window.location.href = target; 
   }
 });
 function norm(e){if(!e||!e.code)return'Bir hata oluştu.';if(e.code==='auth/email-already-in-use')return'Bu e-posta zaten kayıtlı.';if(e.code==='auth/weak-password')return'Şifre en az 6 karakter olmalı.';return e.message||'Bir hata oluştu.';}

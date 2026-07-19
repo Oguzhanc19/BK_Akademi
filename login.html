@@ -396,7 +396,18 @@ async function red(u){
       return;
     }
   } catch(e) {}
-  window.location.href = Array.isArray(window.ADMIN_EMAILS) && window.ADMIN_EMAILS.includes(u.email) ? 'admin' : 'dashboard';
+  let target = 'dashboard';
+  if (Array.isArray(window.ADMIN_EMAILS) && window.ADMIN_EMAILS.includes(u.email)) {
+    target = 'admin';
+  } else {
+    try {
+      const userDoc = await db.collection('users').doc(u.uid).get();
+      if (userDoc.exists && userDoc.data().role === 'admin') {
+        target = 'admin';
+      }
+    } catch(e) {}
+  }
+  window.location.href = target;
 }
 
 // LOGIN
