@@ -59,9 +59,9 @@
     .mob-menu-open .nav-links {display:flex!important;flex-direction:column;position:absolute;top:100%;left:0;width:100%;background:rgba(255,255,255,0.95);padding:1rem;}
     
     /* CONTACT SECTION */
-    .contact-container { padding: 4rem 3rem; max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; }
+    .contact-container { padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 5vw, 3rem); max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; }
     .contact-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-bottom: 5rem; }
-    .ch-left h1 { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 700; color: var(--ink); margin-bottom: 1rem; }
+    .ch-left h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 700; color: var(--ink); margin-bottom: 1rem; }
     .ch-left p { color: var(--ink2); font-size: 1rem; margin-bottom: 2.5rem; line-height: 1.6; }
     
     .form-group { margin-bottom: 1.2rem; }
@@ -86,7 +86,7 @@
     
     /* CARDS SECTION */
     .cards-header { text-align: center; margin-bottom: 3rem; }
-    .cards-header h2 { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700; color: var(--ink); margin-bottom: 1rem; }
+    .cards-header h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.2rem); font-weight: 700; color: var(--ink); margin-bottom: 1rem; }
     .cards-header p { color: var(--ink2); font-size: 1rem; max-width: 600px; margin: 0 auto; line-height: 1.6; }
     
     .contact-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }

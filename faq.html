@@ -28,7 +28,7 @@
       --sh: 0 8px 32px rgba(100, 80, 160, 0.08);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { min-height: 67vh; zoom: 1.5;   display: flex; flex-direction: column;          font-family: 'Plus Jakarta Sans', sans-serif; background: #ffffff; color: var(--ink);    overflow-x: hidden; position: relative; }
+    body { min-height: 67vh; display: flex; flex-direction: column; font-family: 'Plus Jakarta Sans', sans-serif; background: #ffffff; color: var(--ink); overflow-x: hidden; position: relative; }
     
     /* Background Elements */
     body::before { content: ''; position: fixed; inset: 0; background-image: radial-gradient(rgba(100, 80, 160, 0.045) 1px, transparent 1px); background-size: 30px 30px; z-index: -2; pointer-events: none; }
@@ -51,7 +51,7 @@
     /* FAQ Container */
     .faq-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 4rem 2rem; }
     .faq-header { text-align: center; margin-bottom: 4rem; max-width: 600px; }
-    .faq-header h1 { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--ink); margin-bottom: 1rem; line-height: 1.2; }
+    .faq-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3rem); color: var(--ink); margin-bottom: 1rem; line-height: 1.2; }
     .faq-header p { color: var(--ink2); font-size: 1.1rem; line-height: 1.6; }
     
     .faq-list { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 1.2rem; }

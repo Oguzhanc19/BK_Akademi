@@ -188,12 +188,12 @@ footer p { font-weight: 800; font-size: .95rem; color: var(--ink); }
   </div>
 </nav>
 <main style="flex: 1 0 auto; width: 100%; display: flex; flex-direction: column;">
-<section style="padding: 5rem 5%; background: #fff;">
+<section style="padding: clamp(2rem, 5vw, 5rem) 5%; background: #fff;">
   <div style="max-width: 1200px; margin: 0 auto;">
     
     <div style="text-align:center; margin-bottom: 4rem;">
       <div class="eyebrow"><i class="fas fa-star"></i> Hakkımda</div>
-      <h1 style="font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--ink);">Bengü Karakurt Kimdir?</h1>
+      <h1 style="font-family: 'Playfair Display', serif; font-size: clamp(2rem, 6vw, 3rem); color: var(--ink);">Bengü Karakurt Kimdir?</h1>
       <p style="font-size: 1.1rem; color: var(--ink2); max-width: 700px; margin: 1rem auto; line-height: 1.8;">
         İngilizceyi bir ders olmaktan çıkarıp, hayatınızın merkezine yerleştiren, kalıpları yıkan eğitim ve gelişim vizyoneri.
       </p>
@@ -227,7 +227,7 @@ footer p { font-weight: 800; font-size: .95rem; color: var(--ink); }
     object-fit: cover;
     display: block;
   }
-  .bio-text {
+  .bio-text {\n    padding: 0 1rem;\n    color: var(--ink2);
     color: var(--ink2);
     font-size: 1.1rem;
     line-height: 1.9;
